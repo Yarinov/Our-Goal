@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:textAlignment="gravity"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:textDirection="locale">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="7sp"
+        app:cardCornerRadius="8sp"
+        android:elevation="4sp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/goalTitleLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginEnd="10sp"
+                android:layout_marginBottom="5sp"
+                android:fontFamily="@font/lato_bold"
+                android:text="Goal Title"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/goalDescriptionLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20sp"
+                android:layout_marginEnd="10sp"
+                android:layout_marginBottom="8sp"
+                android:fontFamily="@font/lato"
+                android:text="Goal Description"
+                android:textSize="16sp" />
+
+            <com.shuhart.stepview.StepView
+                android:id="@+id/step_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20sp"
+                android:layout_marginRight="20sp"
+                android:layout_marginBottom="10sp"
+                android:padding="12sp"
+                app:sv_animationType="Line"
+                app:sv_doneCircleColor="@color/colorPrimary"
+                app:sv_doneCircleRadius="12dp"
+                app:sv_doneStepLineColor="@color/softBrown"
+                app:sv_doneStepMarkColor="@color/softBrown"
+                app:sv_doneTextColor="@color/softBrown"
+                app:sv_nextStepLineColor="@color/colorPrimary"
+                app:sv_nextTextColor="@color/colorPrimary"
+                app:sv_selectedCircleColor="@color/colorPrimary"
+                app:sv_selectedCircleRadius="12dp"
+                app:sv_selectedStepNumberColor="@color/softBrown"
+                app:sv_selectedTextColor="@color/colorPrimary"
+                app:sv_stepLineWidth="1dp"
+                app:sv_stepNumberTextSize="12sp"
+                app:sv_stepPadding="4dp"
+                app:sv_stepViewStyle="@style/StepView" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="18sp"
+                android:layout_marginEnd="18sp"
+                android:background="@color/dividerColor" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginBottom="10sp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/goalSupportLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="20sp"
+                        android:layout_height="20sp"
+                        custom:srcCompat="@drawable/support_empty_ic" />
+
+                    <TextView
+                        android:id="@+id/supportersCounterLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8sp"
+                        android:fontFamily="@font/lato"
+                        android:text="Support " />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/goalCommentLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20sp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="20sp"
+                        android:layout_height="20sp"
+                        custom:srcCompat="@drawable/comment_ic" />
+
+                    <TextView
+                        android:id="@+id/commentsCounterLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8sp"
+                        android:fontFamily="@font/lato"
+                        android:text="Comment " />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

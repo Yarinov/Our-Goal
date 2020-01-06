@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ConnectionFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/connectionTitleLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15sp"
+            android:layout_marginTop="25sp"
+            android:layout_marginBottom="10sp"
+            android:fontFamily="@font/lato"
+            android:text="Connections"
+            android:textColor="@color/colorPrimary"
+            android:textSize="28sp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/friendRequestsSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15sp"
+            android:layout_marginTop="8sp"
+            android:layout_marginRight="15sp"
+            android:layout_marginBottom="10sp"
+            android:visibility="gone"
+            app:cardCornerRadius="7sp"
+            app:cardElevation="4sp"
+            app:cardMaxElevation="8sp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="12sp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
+                    android:src="@drawable/friend_request_section_ic" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8sp"
+                    android:fontFamily="@font/lato"
+                    android:text="Friend Requests"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/friendRequestCount"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
+                    android:layout_margin="5sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:background="@drawable/rounded_primary_button"
+                    android:text="1"
+                    android:textColor="#fff" />
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+</FrameLayout>

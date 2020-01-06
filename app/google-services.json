@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "313029737507",
+    "firebase_url": "https://ourgoal-ebee9.firebaseio.com",
+    "project_id": "ourgoal-ebee9",
+    "storage_bucket": "ourgoal-ebee9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313029737507:android:6c35ce511b2f9fcda80596",
+        "android_client_info": {
+          "package_name": "com.yarinov.ourgoal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313029737507-ltu6tlgbg0l2jjkhh46d79p39ehr6bjo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yarinov.ourgoal",
+            "certificate_hash": "9a8ce317a2107e0e01a7ddbca3bd8fb2c730c71f"
+          }
+        },
+        {
+          "client_id": "313029737507-p9ks0f69umkldo1u2pmj8j87df2phtkp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8V0-iLhXkoe9fm1wknJCZF3QrOkDOTiU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313029737507-p9ks0f69umkldo1u2pmj8j87df2phtkp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

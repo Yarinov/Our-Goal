@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#D56D6E</color>
+    <color name="colorPrimaryDark">#634978</color>
+    <color name="colorAccent">#6989A4</color>
+    <color name="softBrown">#EFB76C</color>
+    <color name="lightSoftBrown">#FFDC91</color>
+    <color name="com_facebook_button_background_color_disabled">#777777</color>
+    <color name="com_facebook_button_login_silver_background_color_pressed">#326397</color>
+    <color name="com_facebook_button_login_silver_background_color">#f4f6f8</color>
+    <color name="dividerColor">#D1898A</color>
+
+
+</resources>
