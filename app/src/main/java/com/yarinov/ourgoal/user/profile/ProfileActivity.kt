@@ -5,6 +5,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -24,13 +26,18 @@ class ProfileActivity : AppCompatActivity() {
     var profileUserInfoLabel: TextView? = null
     var goalsTitleLabel: TextView? = null
 
-    var inProfileGoalsList: RecyclerView? = null
-
     var followSection: CardView? = null
+    var textInFollowSection: TextView? = null
 
     var userInProfileGoalsList: ArrayList<Goal>? = null
+    lateinit var goalsInProfileAdapter: GoalsInProfileAdapter
+    var inProfileGoalsList: RecyclerView? = null
 
     var currentUser: FirebaseUser? = null
+
+    var friendPathFlag: Boolean? = null
+    var blockedPathFlag: Boolean? = null
+    var friendRequestPathFlag: Boolean? = null
 
     lateinit var userFirstName: String
     lateinit var userLastName: String
@@ -44,11 +51,13 @@ class ProfileActivity : AppCompatActivity() {
         currentUser = FirebaseAuth.getInstance().currentUser
 
         userInProfileGoalsList = ArrayList()
+        goalsInProfileAdapter = GoalsInProfileAdapter(this, userInProfileGoalsList!!)
 
         profileUserNameLabel = findViewById(R.id.profileUserNameLabel)
         profileUserInfoLabel = findViewById(R.id.profileUserInfoLabel)
         goalsTitleLabel = findViewById(R.id.goalsTitleLabel)
         followSection = findViewById(R.id.followSection)
+        textInFollowSection = findViewById(R.id.textInFollowSection)
         inProfileGoalsList = findViewById(R.id.inProfileGoalsList)
 
         var extra = intent.extras
@@ -62,6 +71,43 @@ class ProfileActivity : AppCompatActivity() {
             followSection!!.visibility = View.GONE
 
         getUserInProfileData()
+
+        inProfileGoalsList?.adapter = goalsInProfileAdapter
+        inProfileGoalsList?.layoutManager = LinearLayoutManager(this)
+        inProfileGoalsList?.hasFixedSize()
+
+        followSection?.setOnClickListener {
+            followSectionPressed()
+        }
+    }
+
+    private fun followSectionPressed() {
+
+        val currentUserDB =
+            FirebaseDatabase.getInstance()
+                .reference.child("connections/${currentUser!!.uid}/friends/$userInProfileId")
+
+        if (friendPathFlag!!) {
+            //Remove Friend
+        } else if (friendRequestPathFlag!!) {
+            //Delete friend request
+        } else if (blockedPathFlag!!) {
+            //Remove blocked user
+        } else {
+
+            //Send friend request
+            FirebaseDatabase.getInstance()
+                .reference.child("connections/${currentUser!!.uid}/friend_request/sent/$userInProfileId")
+                .setValue(true)
+
+            FirebaseDatabase.getInstance()
+                .reference.child("connections/$userInProfileId/friend_request/received/${currentUser!!.uid}")
+                .setValue(true)
+
+            setFollowSection(2)
+        }
+
+
     }
 
     private fun getUserInProfileData() {
@@ -100,36 +146,86 @@ class ProfileActivity : AppCompatActivity() {
         val profileUserGoalsDB =
             FirebaseDatabase.getInstance().reference.child("goals/$userInProfileId")
 
-        val getProfileUserGoalsListener = object : ValueEventListener{
+        val getProfileUserGoalsListener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
 
                 userInProfileGoalsList?.clear()
 
-                if (p0.exists()){//If user in profile have goals
+                if (p0.exists()) {//If user in profile have goals
 
-                    for (goal in p0.children){
+                    for (goal in p0.children) {
 
                         val userGoalMap = goal.value as HashMap<*, *>
-                        val userGoal = Goal(userGoalMap["goalId"].toString(),
+                        val userGoal = Goal(
+                            userGoalMap["goalId"].toString(),
                             userGoalMap["goalTitle"].toString(),
                             userGoalMap["goalDescription"].toString(),
                             userGoalMap["goalProgress"] as Long,
                             userGoalMap["goalSteps"] as Long,
                             userGoalMap["commentSectionId"].toString(),
-                            userGoalMap["goalStatus"].toString())
+                            userGoalMap["goalStatus"].toString()
+                        )
 
                         userInProfileGoalsList?.add(userGoal)
                     }
 
-                }else{//If user in profile dont have goals
+                } else {//If user in profile dont have goals
                     //TODO Add 'No goals' label
                 }
+
+                goalsInProfileAdapter.notifyDataSetChanged()
             }
 
         }
 
         profileUserGoalsDB.addListenerForSingleValueEvent(getProfileUserGoalsListener)
+
+        if (!currentUserProfileFlag!!) {//If current user isn't the user in the profile
+
+            //Get relationship between current user to user in profile
+            val currentUserDB =
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/${currentUser!!.uid}")
+
+            val getRelationshipListener = object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError) {}
+
+                override fun onDataChange(p0: DataSnapshot) {
+
+                    friendPathFlag = p0.child("friends/$userInProfileId").exists()
+                    blockedPathFlag = p0.child("blocked/$userInProfileId").exists()
+                    friendRequestPathFlag =
+                        p0.child("friend_request/sent/$userInProfileId").exists()
+
+                    //Check if friends
+                    when {
+                        friendPathFlag!! -> setFollowSection(1)
+                        friendRequestPathFlag!! -> setFollowSection(2)
+                        blockedPathFlag!! -> setFollowSection(-1)
+                        else -> setFollowSection(0)
+                    }
+                }
+
+            }
+
+            currentUserDB.addListenerForSingleValueEvent(getRelationshipListener)
+
+        }
+    }
+
+    private fun setFollowSection(i: Int) {
+
+        //0 - None | 1 - Friends | 2 - Sent friend request | -1 - Blocked
+
+        if (i == 1) {
+            textInFollowSection!!.text = "Friends"
+            followSection!!.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
+        } else if (i == 2) {
+            textInFollowSection!!.text = "Friend Request Sent"
+            followSection!!.setBackgroundColor(ContextCompat.getColor(this, R.color.gray))
+        }
+
     }
 }

@@ -1,4 +1,4 @@
-package com.yarinov.ourgoal
+package com.yarinov.ourgoal.connection
 
 
 import android.os.Bundle
@@ -14,6 +14,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.yarinov.ourgoal.R
 
 /**
  * A simple [Fragment] subclass.
@@ -52,7 +53,7 @@ class ConnectionFragment : Fragment() {
 
         val currentUserConnectionDB =
             FirebaseDatabase.getInstance()
-                .reference.child("connections/${currentUser!!.uid}/friend_requests")
+                .reference.child("connections/${currentUser!!.uid}/friend_request/received")
 
         val getFriendRequestsListener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
@@ -61,6 +62,7 @@ class ConnectionFragment : Fragment() {
 
                 if (p0.exists()) {
                     friendRequestsSection?.visibility = View.VISIBLE
+
 
                     for (userRequest in p0.children) {
                         usersRequestIdList?.add(userRequest.key.toString())

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ConnectionFragment">
+    tools:context=".connection.ConnectionFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -33,7 +33,7 @@
             android:layout_marginTop="8sp"
             android:layout_marginRight="15sp"
             android:layout_marginBottom="10sp"
-            android:visibility="gone"
+            android:visibility="visible"
             app:cardCornerRadius="7sp"
             app:cardElevation="4sp"
             app:cardMaxElevation="8sp">
@@ -48,6 +48,7 @@
                     android:id="@+id/imageView4"
                     android:layout_width="30sp"
                     android:layout_height="30sp"
+                    android:layout_gravity="center"
                     android:src="@drawable/friend_request_section_ic" />
 
                 <TextView
@@ -69,7 +70,7 @@
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
                     android:background="@drawable/rounded_primary_button"
-                    android:text="1"
+                    android:text="0"
                     android:textColor="#fff" />
 
 
