@@ -21,18 +21,34 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/goalTitleLabel"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginEnd="10sp"
-                android:layout_marginBottom="5sp"
-                android:fontFamily="@font/lato_bold"
-                android:text="Goal Title"
-                android:textColor="@color/colorPrimary"
-                android:textSize="20sp" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/goalTitleLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20sp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginEnd="10sp"
+                    android:layout_marginBottom="5sp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/lato_bold"
+                    android:text="Goal Title"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/goalDoneIcon"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10sp"
+                    android:visibility="gone"
+                    custom:srcCompat="@drawable/milestone_done_ic" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/goalDescriptionLabel"

@@ -99,7 +99,9 @@ class MyGoalsFragment : Fragment() {
                             userGoalMap["goalProgress"] as Long,
                             userGoalMap["goalSteps"] as Long,
                             userGoalMap["commentSectionId"].toString(),
-                            userGoalMap["goalStatus"].toString())
+                            userGoalMap["goalStatus"].toString(),
+                            userGoalMap["datePosted"].toString(),
+                            userGoalMap["userId"].toString())
 
                         myGoalsList?.add(userGoal)
 
@@ -113,6 +115,7 @@ class MyGoalsFragment : Fragment() {
 
                 }
 
+                myGoalsAdapter!!.sortByAsc()
                 myGoalsAdapter!!.notifyDataSetChanged()
             }
 

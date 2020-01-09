@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
@@ -14,6 +15,10 @@ import com.google.firebase.database.ValueEventListener
 import com.shuhart.stepview.StepView
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
+import com.yarinov.ourgoal.goal.MilestoneTitle
+import java.util.*
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 
 class MyGoalsAdapter(
     private val context: Context,
@@ -21,7 +26,7 @@ class MyGoalsAdapter(
     private val currentUserUid: String
 ) : RecyclerView.Adapter<MyGoalsAdapter.ViewHolder>() {
 
-    var currentGoalMilestonesTitle: ArrayList<String>? = null
+    var currentGoalMilestonesTitle: ArrayList<MilestoneTitle>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -38,7 +43,7 @@ class MyGoalsAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        var currentGoal = myGoalsList[position]
+        val currentGoal = myGoalsList[position]
 
         holder.goalTitleLabel!!.text = currentGoal.goalTitle
         holder.goalDescriptionLabel!!.text = currentGoal.goalDescription
@@ -101,27 +106,35 @@ class MyGoalsAdapter(
             override fun onDataChange(p0: DataSnapshot) {
 
                 currentGoalMilestonesTitle!!.clear()
-                currentGoalMilestonesTitle!!.add("Start")
+                currentGoalMilestonesTitle!!.add(MilestoneTitle("Start", 0))
 
                 if (p0.exists()) {//Goal have milestone/s
-
                     for (milestone in p0.children) {
-                        currentGoalMilestonesTitle!!.add(milestone.child("goalMilestoneTitle").value.toString())
-                    }
 
+                        val currentMileTitle = milestone.child("goalMilestoneTitle").value.toString()
+                        val currentMileOrder = milestone.child("goalMilestoneOrder").value.toString()
+
+                        currentGoalMilestonesTitle!!.add(MilestoneTitle(currentMileTitle, currentMileOrder.toInt()))
+
+                    }
                 }
 
-                currentGoalMilestonesTitle!!.add(currentGoal.goalTitle)
-                holder.myGoalProgressBar!!.setSteps(currentGoalMilestonesTitle)
+                currentGoalMilestonesTitle!!.add(MilestoneTitle(currentGoal.goalTitle, currentGoalMilestonesTitle!!.size))
+
+                currentGoalMilestonesTitle!!.sortBy { it.milestoneOrder }
+
+                holder.myGoalProgressBar!!.setStepsNumber(currentGoalMilestonesTitle!!.size)
 
                 //Set the current goal progress
                 if (currentGoal.goalProgress == 100.toLong()) {//If goal accomplished
                     holder.myGoalProgressBar!!.go(currentGoalMilestonesTitle!!.size - 1, true)
                     holder.myGoalProgressBar!!.done(true)
+
+                    holder.goalDoneIcon!!.visibility = View.VISIBLE
                 } else if (currentGoal.goalSteps != 0.toLong() && currentGoal.goalProgress != 0.toLong()) {
 
-                    var stepWeight = 100 / (currentGoal.goalSteps + 1)
-                    var milestonesAccomplished = currentGoal.goalProgress/stepWeight
+                    val stepWeight = 100 / (currentGoal.goalSteps + 1)
+                    val milestonesAccomplished = currentGoal.goalProgress/stepWeight
 
                     holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt() + 1, true)
 
@@ -150,14 +163,14 @@ class MyGoalsAdapter(
     }
 
 
-//    fun sortByAsc() {
-//        val comparator: Comparator<User> =
-//            Comparator { object1: User, object2: User ->
-//                object1.firstName.compareTo(object2.firstName, true)
-//            }
-//        Collections.sort(searchUsersResultList, comparator)
-//        notifyDataSetChanged()
-//    }
+    fun sortByAsc() {
+        val comparator: Comparator<Goal> =
+            Comparator { object1: Goal, object2: Goal ->
+                object2.datePosted.compareTo(object1.datePosted, true)
+            }
+        Collections.sort(myGoalsList, comparator)
+        notifyDataSetChanged()
+    }
 
 
     inner class ViewHolder(private val mView: View) : RecyclerView.ViewHolder(mView) {
@@ -166,6 +179,7 @@ class MyGoalsAdapter(
         var goalDescriptionLabel: TextView? = null
         var supportersCounterLabel: TextView? = null
         var commentsCounterLabel: TextView? = null
+        var goalDoneIcon: ImageView? = null
         var myGoalProgressBar: StepView? = null
 
         init {
@@ -176,6 +190,7 @@ class MyGoalsAdapter(
                 mView.findViewById(R.id.supportersCounterLabel) as TextView
             commentsCounterLabel =
                 mView.findViewById(R.id.commentsCounterLabel) as TextView
+            goalDoneIcon = mView.findViewById(R.id.goalDoneIcon) as ImageView
             myGoalProgressBar =
                 mView.findViewById(R.id.step_view) as StepView
 

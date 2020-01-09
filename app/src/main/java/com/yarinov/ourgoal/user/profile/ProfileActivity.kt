@@ -165,7 +165,9 @@ class ProfileActivity : AppCompatActivity() {
                             userGoalMap["goalProgress"] as Long,
                             userGoalMap["goalSteps"] as Long,
                             userGoalMap["commentSectionId"].toString(),
-                            userGoalMap["goalStatus"].toString()
+                            userGoalMap["goalStatus"].toString(),
+                            userGoalMap["datePosted"].toString(),
+                            userGoalMap["userId"].toString()
                         )
 
                         userInProfileGoalsList?.add(userGoal)

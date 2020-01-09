@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:textAlignment="gravity"
+    android:textDirection="locale">
+
+
+    <LinearLayout
+        android:id="@+id/resultSearchUserView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/searchUserProfilePic"
+            android:layout_width="32sp"
+            android:layout_height="32sp"
+            android:layout_gravity="center"
+            android:layout_margin="20sp"
+            android:src="@drawable/search_black_ic"
+            custom:civ_border_color="@color/colorPrimaryDark"
+            custom:civ_border_width="2dp" />
+
+        <TextView
+            android:id="@+id/userNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:fontFamily="@font/lato"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="USER NAME"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/acceptButton"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:layout_gravity="center"
+            android:layout_margin="8sp"
+            android:background="@drawable/accept_ic"
+            android:gravity="clip_vertical" />
+
+        <Button
+            android:id="@+id/denyButton"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
+            android:layout_gravity="center"
+            android:layout_margin="9sp"
+            android:background="@drawable/deny_ic"
+            android:gravity="clip_vertical" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginStart="14sp"
+        android:background="@color/dividerColor" />
+
+</LinearLayout>

@@ -17,6 +17,9 @@ import com.yarinov.ourgoal.goal.GOAL_STATUS
 import com.yarinov.ourgoal.goal.Goal
 import com.yarinov.ourgoal.goal.GoalMilestone
 import com.yarinov.ourgoal.goal.GoalMilestoneAdapter
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CreateNewGoalActivity : AppCompatActivity() {
 
@@ -116,13 +119,17 @@ class CreateNewGoalActivity : AppCompatActivity() {
 
         if (checkEmptyField()) return
 
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'")
+        val currentDate = dateFormat.format(Date())
 
         //Create new Goal
         val newGoal = Goal(
             myGoalInputEditText!!.text.toString(),
             myGoalDescriptionInputEditText!!.text.toString(),
             currentGoalMilestones!!.size.toLong(),
-            GOAL_STATUS.ON_PROGRESS.toString()
+            GOAL_STATUS.ON_PROGRESS.toString(),
+            currentDate,
+            currentUser!!.uid
         )
 
         //Write To Goals Database

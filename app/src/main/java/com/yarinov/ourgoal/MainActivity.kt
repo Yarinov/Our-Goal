@@ -9,6 +9,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.yarinov.ourgoal.connection.ConnectionFragment
+import com.yarinov.ourgoal.feed.HomeFragment
 import com.yarinov.ourgoal.goal.mygoals.MyGoalsFragment
 import com.yarinov.ourgoal.search.SearchFragment
 import com.yarinov.ourgoal.user.auth.AuthenticationActivity
