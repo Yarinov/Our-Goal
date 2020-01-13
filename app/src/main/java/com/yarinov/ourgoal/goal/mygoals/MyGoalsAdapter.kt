@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -15,7 +16,7 @@ import com.google.firebase.database.ValueEventListener
 import com.shuhart.stepview.StepView
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
-import com.yarinov.ourgoal.goal.MilestoneTitle
+import com.yarinov.ourgoal.goal.milestone.MilestoneTitle
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -106,24 +107,45 @@ class MyGoalsAdapter(
             override fun onDataChange(p0: DataSnapshot) {
 
                 currentGoalMilestonesTitle!!.clear()
-                currentGoalMilestonesTitle!!.add(MilestoneTitle("Start", 0))
+                currentGoalMilestonesTitle!!.add(
+                    MilestoneTitle(
+                        "Start",
+                        0
+                    )
+                )
 
                 if (p0.exists()) {//Goal have milestone/s
                     for (milestone in p0.children) {
 
-                        val currentMileTitle = milestone.child("goalMilestoneTitle").value.toString()
-                        val currentMileOrder = milestone.child("goalMilestoneOrder").value.toString()
+                        val currentMileTitle =
+                            milestone.child("goalMilestoneTitle").value.toString()
+                        val currentMileOrder =
+                            milestone.child("goalMilestoneOrder").value.toString()
 
-                        currentGoalMilestonesTitle!!.add(MilestoneTitle(currentMileTitle, currentMileOrder.toInt()))
+
+                        currentGoalMilestonesTitle!!.add(
+                            MilestoneTitle(
+                                currentMileTitle,
+                                currentMileOrder.toInt()
+                            )
+                        )
 
                     }
                 }
 
-                currentGoalMilestonesTitle!!.add(MilestoneTitle(currentGoal.goalTitle, currentGoalMilestonesTitle!!.size))
+
+
+                currentGoalMilestonesTitle!!.add(
+                    MilestoneTitle(
+                        currentGoal.goalTitle,
+                        currentGoalMilestonesTitle!!.size
+                    )
+                )
 
                 currentGoalMilestonesTitle!!.sortBy { it.milestoneOrder }
 
                 holder.myGoalProgressBar!!.setStepsNumber(currentGoalMilestonesTitle!!.size)
+
 
                 //Set the current goal progress
                 if (currentGoal.goalProgress == 100.toLong()) {//If goal accomplished
@@ -134,7 +156,7 @@ class MyGoalsAdapter(
                 } else if (currentGoal.goalSteps != 0.toLong() && currentGoal.goalProgress != 0.toLong()) {
 
                     val stepWeight = 100 / (currentGoal.goalSteps + 1)
-                    val milestonesAccomplished = currentGoal.goalProgress/stepWeight
+                    val milestonesAccomplished = currentGoal.goalProgress / stepWeight
 
                     holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt() + 1, true)
 
@@ -193,7 +215,6 @@ class MyGoalsAdapter(
             goalDoneIcon = mView.findViewById(R.id.goalDoneIcon) as ImageView
             myGoalProgressBar =
                 mView.findViewById(R.id.step_view) as StepView
-
         }
 
     }

@@ -31,8 +31,11 @@
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:layout_gravity="center"
-                    android:layout_margin="15sp"
 
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginTop="15sp"
+                    android:layout_marginRight="8sp"
+                    android:layout_marginBottom="15sp"
                     android:src="@drawable/search_black_ic"
                     custom:civ_border_color="@color/colorPrimaryDark"
                     custom:civ_border_width="2dp" />

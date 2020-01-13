@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.yarinov.ourgoal.R
+import com.yarinov.ourgoal.SimpleUserAdapter
 import com.yarinov.ourgoal.user.User
 
 /**
@@ -30,7 +31,7 @@ class SearchFragment : Fragment() {
     var searchResults: ArrayList<User>? = null
 
     var searchRecyclerView: RecyclerView? = null
-    var searchResultAdapter: SearchResultAdapter? = null
+    var searchResultAdapter: SimpleUserAdapter? = null
 
     var rootDB: FirebaseDatabase? = null
 
@@ -51,7 +52,8 @@ class SearchFragment : Fragment() {
 
         //Init Search Results
         searchResults = ArrayList()
-        searchResultAdapter = SearchResultAdapter(context!!, searchResults!!)
+        searchResultAdapter =
+            SimpleUserAdapter(context!!, searchResults!!)
 
         searchInputEditText?.setOnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER) {

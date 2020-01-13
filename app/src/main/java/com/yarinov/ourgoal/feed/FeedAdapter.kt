@@ -2,6 +2,7 @@ package com.yarinov.ourgoal.feed
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,8 @@ import com.google.firebase.database.ValueEventListener
 import com.shuhart.stepview.StepView
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
-import com.yarinov.ourgoal.goal.MilestoneTitle
+import com.yarinov.ourgoal.goal.SingleGoalActivity
+import com.yarinov.ourgoal.goal.milestone.MilestoneTitle
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -44,6 +46,8 @@ class FeedAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        holder.setIsRecyclable(false)
+
         val currentGoal = goalsList[position]
 
         holder.goalTitleLabel!!.text = currentGoal.goalTitle
@@ -61,8 +65,17 @@ class FeedAdapter(
         //Setup Current Goal Progressbar
         setupCurrentGoalProgress(currentGoal, holder)
 
+        holder.itemView.setOnClickListener {
+
+            val moveToSingleGoalIntent = Intent(context, SingleGoalActivity::class.java)
+
+            moveToSingleGoalIntent.putExtra("currentGoal", currentGoal)
+
+            context.startActivity(moveToSingleGoalIntent)
+        }
 
     }
+
 
     private fun setupCurrentGoalProgress(currentGoal: Goal, holder: FeedAdapter.ViewHolder) {
         val currentGoalMilestonesDB =
@@ -75,7 +88,12 @@ class FeedAdapter(
             override fun onDataChange(p0: DataSnapshot) {
 
                 currentGoalMilestonesTitle!!.clear()
-                currentGoalMilestonesTitle!!.add(MilestoneTitle("Start", 0))
+                currentGoalMilestonesTitle!!.add(
+                    MilestoneTitle(
+                        "Start",
+                        0
+                    )
+                )
 
                 if (p0.exists()) {//Goal have milestone/s
                     for (milestone in p0.children) {
@@ -145,6 +163,9 @@ class FeedAdapter(
                     //If current user is support this goal, mark as supported
                     if (p0.child(currentUserId).exists())
                         holder.supportIcon!!.setBackgroundResource(R.drawable.support_full_ic)
+
+                    holder.supportersCounterLabel!!.visibility = View.VISIBLE
+
 
                 } else
                     holder.supportersCounterLabel!!.visibility = View.GONE

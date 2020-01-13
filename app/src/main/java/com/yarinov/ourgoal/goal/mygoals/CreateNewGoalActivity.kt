@@ -1,12 +1,15 @@
 package com.yarinov.ourgoal.goal.mygoals
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -15,8 +18,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.GOAL_STATUS
 import com.yarinov.ourgoal.goal.Goal
-import com.yarinov.ourgoal.goal.GoalMilestone
-import com.yarinov.ourgoal.goal.GoalMilestoneAdapter
+import com.yarinov.ourgoal.goal.milestone.GoalMilestone
+import com.yarinov.ourgoal.goal.milestone.GoalMilestoneAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -37,6 +40,8 @@ class CreateNewGoalActivity : AppCompatActivity() {
     var currentUser: FirebaseUser? = null
     var currentMilestoneNumber = 0
 
+    var coordinatorLayout: CoordinatorLayout? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_new_goal)
@@ -52,9 +57,15 @@ class CreateNewGoalActivity : AppCompatActivity() {
         myGoalDescriptionInputEditText = findViewById(R.id.myGoalDescriptionInputEditText)
         createGoalButton = findViewById(R.id.createGoalButton)
 
+        coordinatorLayout = findViewById(R.id.mainLayout)
+
         //Init this goal milestones arraylist and set recycleradapter with it
         currentGoalMilestones = ArrayList()
-        goalMilestoneAdapter = GoalMilestoneAdapter(this, currentGoalMilestones!!)
+        goalMilestoneAdapter =
+            GoalMilestoneAdapter(
+                this,
+                currentGoalMilestones!!
+            )
 
         //Setup recyclerview
         milestonesRecyclerView!!.layoutManager = LinearLayoutManager(this)
@@ -103,7 +114,12 @@ class CreateNewGoalActivity : AppCompatActivity() {
     private fun addNewMilestone() {
 
         //Add new milestone with correct order
-        currentGoalMilestones?.add(GoalMilestone("", currentMilestoneNumber + 1))
+        currentGoalMilestones?.add(
+            GoalMilestone(
+                "",
+                currentMilestoneNumber + 1
+            )
+        )
 
         //Nofify the adapter about the latest change and update milestone counting
         goalMilestoneAdapter!!.notifyItemInserted(currentGoalMilestones!!.size - 1)
@@ -150,6 +166,13 @@ class CreateNewGoalActivity : AppCompatActivity() {
                 FirebaseDatabase.getInstance()
                     .reference.child("goals/milestones/${currentUser!!.uid}/${newGoal.goalId}")
                     .setValue(goalMilestonesMap).addOnCompleteListener {
+
+                        //Soft Hide Keypad
+                        val imm =
+                            this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(myGoalInputEditText?.windowToken, 0)
+                        imm.hideSoftInputFromWindow(myGoalDescriptionInputEditText?.windowToken, 0)
+
                         finish()
                     }
             } else {

@@ -5,7 +5,8 @@ import java.util.*
 class Comment(
     var commentSectionId: String,
     var commentUserId: String,
-    var commentText: String
+    var commentText: String,
+    var datePosted: String
 ) {
 
 
@@ -19,8 +20,9 @@ class Comment(
         commentId: String,
         commentSectionId: String,
         commentUserId: String,
-        commentText: String
-    ) : this(commentSectionId, commentUserId, commentText) {
+        commentText: String,
+        datePosted: String
+    ) : this(commentSectionId, commentUserId, commentText, datePosted) {
         this.commentId = commentId
 
     }

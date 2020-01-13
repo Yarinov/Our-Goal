@@ -1,4 +1,4 @@
-package com.yarinov.ourgoal.goal
+package com.yarinov.ourgoal.goal.milestone
 
 import android.os.Parcel
 import android.os.Parcelable

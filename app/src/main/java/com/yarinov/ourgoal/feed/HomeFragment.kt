@@ -56,6 +56,9 @@ class HomeFragment : Fragment() {
 
         feedRecyclerView!!.adapter = feedAdapter
         feedRecyclerView!!.layoutManager = LinearLayoutManager(context)
+        feedRecyclerView!!.itemAnimator!!.changeDuration = 0
+        feedRecyclerView!!.setHasFixedSize(true)
+        feedRecyclerView!!.setItemViewCacheSize(20)
 
         profileImage!!.setOnClickListener {
             var moveToMyProfile = Intent(context, ProfileActivity::class.java)
@@ -63,8 +66,16 @@ class HomeFragment : Fragment() {
             startActivity(moveToMyProfile)
         }
 
+
         getFeed()
+
         return homeView
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        //getAllPosts()
     }
 
     private fun getFeed() {
@@ -99,21 +110,22 @@ class HomeFragment : Fragment() {
         currentFeedGoalsList!!.clear()
 
         //Get each user's goals
-        for (userId in currentFeedUsersIdList!!){
+        for (userId in currentFeedUsersIdList!!) {
 
             val userGoalsDB =
                 FirebaseDatabase.getInstance()
                     .reference.child("goals/$userId")
 
-            val getAllUserGoalsListener = object : ValueEventListener{
+            val getAllUserGoalsListener = object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {}
 
                 override fun onDataChange(p0: DataSnapshot) {
 
-                    for (goal in p0.children){
+                    for (goal in p0.children) {
 
                         val userGoalMap = goal.value as HashMap<*, *>
-                        val userGoal = Goal(userGoalMap["goalId"].toString(),
+                        val userGoal = Goal(
+                            userGoalMap["goalId"].toString(),
                             userGoalMap["goalTitle"].toString(),
                             userGoalMap["goalDescription"].toString(),
                             userGoalMap["goalProgress"] as Long,
@@ -121,7 +133,8 @@ class HomeFragment : Fragment() {
                             userGoalMap["commentSectionId"].toString(),
                             userGoalMap["goalStatus"].toString(),
                             userGoalMap["datePosted"].toString(),
-                            userGoalMap["userId"].toString())
+                            userGoalMap["userId"].toString()
+                        )
 
                         currentFeedGoalsList!!.add(userGoal)
                     }

@@ -1,4 +1,4 @@
-package com.yarinov.ourgoal.search
+package com.yarinov.ourgoal
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,22 +10,21 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.yarinov.ourgoal.user.profile.ProfileActivity
-import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.user.User
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 import kotlin.Comparator
 
-class SearchResultAdapter(
+class SimpleUserAdapter(
     private val context: Context,
-    private var searchUsersResultList: List<User>
-) : RecyclerView.Adapter<SearchResultAdapter.ViewHolder>() {
+    private var simpleUsersList: List<User>
+) : RecyclerView.Adapter<SimpleUserAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val view =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.search_result_layout, parent, false)
+                .inflate(R.layout.simple_user_layout, parent, false)
 
 
         return ViewHolder(view)
@@ -36,15 +35,17 @@ class SearchResultAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        if (position == 0)
+            holder.divider!!.visibility = View.GONE
 
         holder.userNameLabel!!.text =
-            "${searchUsersResultList[position].firstName} ${searchUsersResultList[position].lastName}"
+            "${simpleUsersList[position].firstName} ${simpleUsersList[position].lastName}"
         //holder.userNameLabel!!.isSelected = true
 
 
         holder.itemView.setOnClickListener {
             var moveToUserIntent = Intent(context, ProfileActivity::class.java)
-            moveToUserIntent.putExtra("userId", searchUsersResultList[position].userId)
+            moveToUserIntent.putExtra("userId", simpleUsersList[position].userId)
             context.startActivity(moveToUserIntent)
         }
 
@@ -71,7 +72,7 @@ class SearchResultAdapter(
 
 
     override fun getItemCount(): Int {
-        return searchUsersResultList.size
+        return simpleUsersList.size
     }
 
     override fun getItemId(position: Int): Long {
@@ -79,7 +80,7 @@ class SearchResultAdapter(
     }
 
     fun getItem(position: Int): User {
-        return searchUsersResultList[position]
+        return simpleUsersList[position]
     }
 
 
@@ -88,7 +89,7 @@ class SearchResultAdapter(
             Comparator { object1: User, object2: User ->
                 object1.firstName.compareTo(object2.firstName, true)
             }
-        Collections.sort(searchUsersResultList, comparator)
+        Collections.sort(simpleUsersList, comparator)
         notifyDataSetChanged()
     }
 
@@ -100,12 +101,16 @@ class SearchResultAdapter(
 
         var resultSearchUserView: LinearLayout? = null
 
+        var divider: View? = null
+
         init {
 
             userNameLabel = mView.findViewById(R.id.userNameLabel) as TextView
             searchUserProfilePic = mView.findViewById(R.id.searchUserProfilePic) as CircleImageView
 
             resultSearchUserView = mView.findViewById(R.id.resultSearchUserView) as LinearLayout
+
+            divider = mView.findViewById(R.id.divider) as View
         }
     }
 

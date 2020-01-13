@@ -54,6 +54,7 @@ dependencies {
 
     //Step Progressbar
     implementation 'com.shuhart.stepview:stepview:1.5.0'
+    implementation 'com.ernestoyaquello.stepperform:vertical-stepper-form:2.2.2'
 
     // Facebook Android SDK (everything)
     implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
