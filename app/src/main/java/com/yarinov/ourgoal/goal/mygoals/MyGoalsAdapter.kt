@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -107,12 +106,6 @@ class MyGoalsAdapter(
             override fun onDataChange(p0: DataSnapshot) {
 
                 currentGoalMilestonesTitle!!.clear()
-                currentGoalMilestonesTitle!!.add(
-                    MilestoneTitle(
-                        "Start",
-                        0
-                    )
-                )
 
                 if (p0.exists()) {//Goal have milestone/s
                     for (milestone in p0.children) {
@@ -131,6 +124,13 @@ class MyGoalsAdapter(
                         )
 
                     }
+                } else {//If goal have no milestone add 'Starting Point'
+                    currentGoalMilestonesTitle!!.add(
+                        MilestoneTitle(
+                            "Start",
+                            0
+                        )
+                    )
                 }
 
 
@@ -160,6 +160,8 @@ class MyGoalsAdapter(
 
                     holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt() + 1, true)
 
+                } else if (currentGoal.goalSteps != 0.toLong() && currentGoal.goalProgress == 0.toLong()) {
+                    holder.myGoalProgressBar!!.go(0, true)
                 } else {
                     //Skip the first 'Start' Step
                     holder.myGoalProgressBar!!.go(1, true)

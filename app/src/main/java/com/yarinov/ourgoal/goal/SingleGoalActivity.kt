@@ -2,6 +2,7 @@ package com.yarinov.ourgoal.goal
 
 import android.content.Context
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -15,11 +16,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.shuhart.stepview.StepView
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.comment.Comment
 import com.yarinov.ourgoal.goal.comment.CommentAdapter
 import com.yarinov.ourgoal.goal.milestone.MilestoneTitle
+import com.yarinov.ourgoal.goal.milestone.MilestoneTitleAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,6 +29,7 @@ import kotlin.collections.ArrayList
 class SingleGoalActivity : AppCompatActivity() {
 
     var currentGoal: Goal? = null
+    var currentGoalMilestoneNumber: Long? = null
     var currentUser: FirebaseUser? = null
 
     var commentsRecyclerView: RecyclerView? = null
@@ -51,8 +53,9 @@ class SingleGoalActivity : AppCompatActivity() {
 
     var noCommentsLayout: LinearLayout? = null
 
-    var stepView: StepView? = null
     var currentGoalMilestonesTitle: ArrayList<MilestoneTitle>? = null
+    var milestonesRecyclerView: RecyclerView? = null
+    var milestoneTitleAdapter: MilestoneTitleAdapter? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +68,10 @@ class SingleGoalActivity : AppCompatActivity() {
         val extra = intent.extras
         currentGoal = extra!!.getParcelable("currentGoal")
 
+        val stepWeight = 100 / (currentGoal!!.goalSteps + 1)
+        currentGoalMilestoneNumber = currentGoal!!.goalProgress / stepWeight
+
+
         commentsRecyclerView = findViewById(R.id.commentsRecyclerView)
         goalUserFullNameLabel = findViewById(R.id.goalUserFullNameLabel)
         goalDescriptionLabel = findViewById(R.id.goalDescriptionLabel)
@@ -75,13 +82,24 @@ class SingleGoalActivity : AppCompatActivity() {
         sendCommentButton = findViewById(R.id.sendCommentButton)
         supportSection = findViewById(R.id.supportSection)
         supportIcon = findViewById(R.id.supportIcon)
-
+        milestonesRecyclerView = findViewById(R.id.milestonesRecyclerView)
         noCommentsLayout = findViewById(R.id.noCommentsLayout)
-
-        stepView = findViewById(R.id.stepView)
 
         setupStepView()
 
+        //Milestones RecyclerView
+        currentGoalMilestonesTitle = ArrayList()
+        milestoneTitleAdapter = MilestoneTitleAdapter(
+            this,
+            currentGoalMilestonesTitle!!,
+            currentGoal!!,
+            currentGoalMilestoneNumber!!
+        )
+        milestonesRecyclerView!!.layoutManager = LinearLayoutManager(this)
+        milestonesRecyclerView!!.adapter = milestoneTitleAdapter
+        milestonesRecyclerView!!.hasFixedSize()
+
+        //Comments RecyclerView
         commentsArrayList = ArrayList()
         commentsAdapter = CommentAdapter(this, commentsArrayList!!, currentUser!!.uid)
 
@@ -95,6 +113,7 @@ class SingleGoalActivity : AppCompatActivity() {
         supportSection!!.setOnClickListener {
             supportSectionPressed()
         }
+
         initUI()
     }
 
@@ -112,12 +131,6 @@ class SingleGoalActivity : AppCompatActivity() {
             override fun onDataChange(p0: DataSnapshot) {
 
                 currentGoalMilestonesTitle!!.clear()
-                currentGoalMilestonesTitle!!.add(
-                    MilestoneTitle(
-                        "Start",
-                        0
-                    )
-                )
 
                 if (p0.exists()) {//Goal have milestone/s
                     for (milestone in p0.children) {
@@ -135,36 +148,25 @@ class SingleGoalActivity : AppCompatActivity() {
                         )
 
                     }
+                } else {//If goal have no milestone add 'Starting Point'
+                    currentGoalMilestonesTitle!!.add(
+                        MilestoneTitle(
+                            "Start",
+                            0
+                        )
+                    )
                 }
 
                 currentGoalMilestonesTitle!!.add(
                     MilestoneTitle(
                         currentGoal!!.goalTitle,
-                        currentGoalMilestonesTitle!!.size
+                        currentGoalMilestonesTitle!!.size + 1
                     )
                 )
 
                 currentGoalMilestonesTitle!!.sortBy { it.milestoneOrder }
 
-                stepView!!.setStepsNumber(currentGoalMilestonesTitle!!.size)
-
-                //Set the current goal progress
-                if (currentGoal!!.goalProgress == 100.toLong()) {//If goal accomplished
-                    stepView!!.go(currentGoalMilestonesTitle!!.size - 1, true)
-                    stepView!!.done(true)
-
-
-                } else if (currentGoal!!.goalSteps != 0.toLong() && currentGoal!!.goalProgress != 0.toLong()) {
-
-                    val stepWeight = 100 / (currentGoal!!.goalSteps + 1)
-                    val milestonesAccomplished = currentGoal!!.goalProgress / stepWeight
-
-                    stepView!!.go(milestonesAccomplished.toInt() + 1, true)
-
-                } else {
-                    //Skip the first 'Start' Step
-                    stepView!!.go(1, true)
-                }
+                milestoneTitleAdapter!!.notifyDataSetChanged()
             }
 
         }

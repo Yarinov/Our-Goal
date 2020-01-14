@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".goal.SingleGoalActivity">
 
     <LinearLayout
@@ -14,6 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -25,7 +27,7 @@
                 android:layout_marginTop="15sp"
                 android:layout_marginBottom="15sp"
                 android:src="@drawable/search_black_ic"
-                app:civ_border_color="@color/colorPrimaryDark"
+                app:civ_border_color="@android:color/white"
                 app:civ_border_width="2dp" />
 
             <TextView
@@ -35,7 +37,8 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="15sp"
                 android:layout_weight="1"
-                android:fontFamily="@font/lato"
+                android:fontFamily="@font/lato_bold"
+                android:textColor="@android:color/white"
                 android:textSize="22sp" />
 
             <ImageView
@@ -43,208 +46,212 @@
                 android:layout_width="20sp"
                 android:layout_height="20sp"
                 android:layout_margin="17sp"
+                android:tint="@android:color/white"
                 app:srcCompat="@drawable/deny_ic" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/goalTitleLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginBottom="10sp"
-                android:layout_weight="1"
-                android:fontFamily="@font/lato_bold"
-                android:textColor="@color/colorPrimary"
-                android:textSize="30sp" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/supportSection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|right"
-                android:layout_marginLeft="10sp"
-                android:layout_marginTop="10sp"
-                android:layout_marginRight="12sp"
-                android:layout_marginBottom="10sp"
-                app:cardCornerRadius="8sp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5sp"
-                    android:layout_weight="1"
-                    android:gravity="bottom|right|center_vertical"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/supportIcon"
-                        android:layout_width="27sp"
-                        android:layout_height="27sp"
-                        app:srcCompat="@drawable/support_empty_ic" />
-
-                    <TextView
-                        android:id="@+id/textView12"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="3sp"
-                        android:fontFamily="@font/lato"
-                        android:text="Support"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="21sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/goalDescriptionLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15sp"
-            android:layout_marginTop="5sp"
-            android:layout_marginBottom="15sp"
-            android:fontFamily="@font/lato"
-            android:textSize="19sp" />
-
-        <com.shuhart.stepview.StepView
-            android:id="@+id/stepView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20sp"
-            android:layout_marginRight="20sp"
-            android:layout_marginBottom="10sp"
-            android:padding="15sp"
-            app:sv_animationType="All"
-            app:sv_doneCircleColor="@color/colorPrimary"
-            app:sv_doneCircleRadius="14dp"
-            app:sv_doneStepLineColor="@color/softBrown"
-            app:sv_doneStepMarkColor="@color/softBrown"
-            app:sv_doneTextColor="@color/softBrown"
-            app:sv_nextStepLineColor="@color/colorPrimary"
-            app:sv_nextTextColor="@color/colorPrimary"
-            app:sv_selectedCircleColor="@color/colorPrimary"
-            app:sv_selectedCircleRadius="12dp"
-            app:sv_selectedStepNumberColor="@color/softBrown"
-            app:sv_selectedTextColor="@color/colorPrimary"
-            app:sv_stepLineWidth="1dp"
-            app:sv_stepNumberTextSize="15sp"
-            app:sv_stepPadding="6dp"
-            app:sv_stepViewStyle="@style/StepView" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5sp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/supportCountLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15sp"
-                android:fontFamily="@font/lato_light" />
-
-            <TextView
-                android:id="@+id/commentCountLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20sp"
-                android:fontFamily="@font/lato_light" />
-        </LinearLayout>
-
-        <View
-            android:id="@+id/divider5"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/dividerColor" />
-
-        <LinearLayout
-            android:id="@+id/noCommentsLayout"
-            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:background="@drawable/in_goal_cardview_bg"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imageView9"
-                android:layout_width="150sp"
-                android:layout_height="150sp"
-                android:layout_gravity="center"
-                android:layout_marginTop="30sp"
-                app:srcCompat="@drawable/no_comment_ic" />
-
-            <TextView
-                android:id="@+id/textView13"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12sp"
-                android:fontFamily="@font/lato_bold"
-                android:gravity="center"
-                android:text="No Comments Yet"
-                android:textSize="16sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/goalTitleLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginBottom="10sp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/lato_bold"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="27sp" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/supportSection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|right"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginRight="12sp"
+                    android:layout_marginBottom="10sp"
+                    app:cardBackgroundColor="@color/colorPrimary"
+                    app:cardCornerRadius="8sp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8sp"
+                        android:layout_weight="1"
+                        android:gravity="bottom|right|center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/supportIcon"
+                            android:layout_width="27sp"
+                            android:layout_height="27sp"
+                            android:tint="@android:color/white"
+                            app:srcCompat="@drawable/support_empty_ic" />
+
+                        <TextView
+                            android:id="@+id/textView12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="3sp"
+                            android:fontFamily="@font/lato"
+                            android:text="Support"
+                            android:textColor="@android:color/white"
+                            android:textSize="21sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/textView14"
-                android:layout_width="match_parent"
+                android:id="@+id/goalDescriptionLabel"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2sp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginTop="5sp"
+                android:layout_marginBottom="5sp"
                 android:fontFamily="@font/lato"
-                android:gravity="center"
-                android:text="Be the first one to help out." />
-        </LinearLayout>
+                android:textSize="19sp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/commentsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="15sp"
-            android:layout_weight="1"
-            android:overScrollMode="never"
-            android:visibility="gone">
 
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <View
-            android:id="@+id/divider6"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/dividerColor" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/commentInputEditText"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/milestonesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15sp"
-                android:layout_weight="1"
-                android:background="@drawable/rounded_comment_layout"
-                android:ems="10"
-                android:hint="Write Your Comment"
-                android:inputType="textCapSentences|textMultiLine"
-                android:maxLength="2000"
-                android:padding="8sp" />
+                android:layout_margin="12sp"
+                android:overScrollMode="never"
+                android:stateListAnimator="@animator/open_milestone_selection" />
 
-            <Button
-                android:id="@+id/sendCommentButton"
-                android:layout_width="25sp"
-                android:layout_height="25sp"
-                android:layout_gravity="center"
-                android:layout_marginRight="10sp"
-                android:layout_weight="0"
-                android:background="@drawable/send_pr_ic" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10sp"
+                android:layout_marginBottom="5sp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/supportCountLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:fontFamily="@font/lato_light" />
+
+                <TextView
+                    android:id="@+id/commentCountLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20sp"
+                    android:fontFamily="@font/lato_light" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider5"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerColor" />
+
+            <LinearLayout
+                android:id="@+id/noCommentsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10sp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView9"
+                    android:layout_width="150sp"
+                    android:layout_height="150sp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20sp"
+                    app:srcCompat="@drawable/no_comment_ic" />
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12sp"
+                    android:fontFamily="@font/lato_bold"
+                    android:gravity="center"
+                    android:text="No Comments Yet"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2sp"
+                    android:fontFamily="@font/lato"
+                    android:gravity="center"
+                    android:text="Be the first one to help out." />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/commentsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5sp"
+                android:layout_weight="1"
+                android:overScrollMode="never"
+                android:visibility="gone">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <View
+                android:id="@+id/divider6"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerColor" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3sp"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/commentInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15sp"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginRight="15sp"
+                    android:layout_marginBottom="5sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/rounded_comment_layout"
+                    android:ems="10"
+                    android:hint="Write Your Comment"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLength="2000"
+                    android:padding="8sp" />
+
+                <Button
+                    android:id="@+id/sendCommentButton"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10sp"
+                    android:layout_weight="0"
+                    android:background="@drawable/send_pr_ic" />
+            </LinearLayout>
+
         </LinearLayout>
+
 
     </LinearLayout>
 

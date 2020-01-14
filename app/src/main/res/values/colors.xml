@@ -9,6 +9,7 @@
     <color name="com_facebook_button_login_silver_background_color_pressed">#326397</color>
     <color name="com_facebook_button_login_silver_background_color">#f4f6f8</color>
     <color name="dividerColor">#D1898A</color>
+    <color name="defaultBGColor">#FAFAFA</color>
 
 
 </resources>

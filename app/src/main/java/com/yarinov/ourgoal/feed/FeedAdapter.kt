@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -74,6 +75,8 @@ class FeedAdapter(
             context.startActivity(moveToSingleGoalIntent)
         }
 
+        setFadeAnimation(holder.itemView)
+
     }
 
 
@@ -88,12 +91,6 @@ class FeedAdapter(
             override fun onDataChange(p0: DataSnapshot) {
 
                 currentGoalMilestonesTitle!!.clear()
-                currentGoalMilestonesTitle!!.add(
-                    MilestoneTitle(
-                        "Start",
-                        0
-                    )
-                )
 
                 if (p0.exists()) {//Goal have milestone/s
                     for (milestone in p0.children) {
@@ -111,12 +108,19 @@ class FeedAdapter(
                         )
 
                     }
+                } else {//If goal have no milestone add 'Starting Point'
+                    currentGoalMilestonesTitle!!.add(
+                        MilestoneTitle(
+                            "Start",
+                            0
+                        )
+                    )
                 }
 
                 currentGoalMilestonesTitle!!.add(
                     MilestoneTitle(
                         currentGoal.goalTitle,
-                        currentGoalMilestonesTitle!!.size
+                        currentGoalMilestonesTitle!!.size + 1
                     )
                 )
 
@@ -135,8 +139,10 @@ class FeedAdapter(
                     val stepWeight = 100 / (currentGoal.goalSteps + 1)
                     val milestonesAccomplished = currentGoal.goalProgress / stepWeight
 
-                    holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt() + 1, true)
+                    holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt() , true)
 
+                } else if (currentGoal.goalSteps != 0.toLong() && currentGoal.goalProgress == 0.toLong()) {
+                    holder.myGoalProgressBar!!.go(0, true)
                 } else {
                     //Skip the first 'Start' Step
                     holder.myGoalProgressBar!!.go(1, true)
@@ -243,6 +249,13 @@ class FeedAdapter(
     }
 
 
+    private fun setFadeAnimation(view: View) {
+        val anim = AlphaAnimation(0.0f, 1.0f)
+        anim.duration = 900
+        view.startAnimation(anim)
+    }
+
+
     inner class ViewHolder(private val mView: View) : RecyclerView.ViewHolder(mView) {
 
         var userNameLabel: TextView? = null
@@ -302,8 +315,7 @@ class FeedAdapter(
                         currentGoalSupportDB.removeValue()
 
                         supportIcon!!.setBackgroundResource(R.drawable.support_empty_ic)
-                    }
-                    else{//Current user support the goal
+                    } else {//Current user support the goal
                         currentGoalSupportDB.setValue(true)
                         supportIcon!!.setBackgroundResource(R.drawable.support_full_ic)
                     }

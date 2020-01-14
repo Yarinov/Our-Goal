@@ -205,6 +205,8 @@ class CreateNewGoalActivity : AppCompatActivity() {
             }
         }
 
+        //TODO Limit length of text to around 40 chars
+
         return false
     }
 }
