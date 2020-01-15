@@ -191,4 +191,13 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <TextView
+        android:id="@+id/timeStampLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="11sp"
+        android:layout_marginBottom="5sp"
+        android:fontFamily="@font/lato_italic"
+        android:gravity="right" />
+
 </LinearLayout>

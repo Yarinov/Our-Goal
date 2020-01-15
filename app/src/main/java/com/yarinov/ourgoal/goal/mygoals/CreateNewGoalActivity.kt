@@ -167,12 +167,6 @@ class CreateNewGoalActivity : AppCompatActivity() {
                     .reference.child("goals/milestones/${currentUser!!.uid}/${newGoal.goalId}")
                     .setValue(goalMilestonesMap).addOnCompleteListener {
 
-                        //Soft Hide Keypad
-                        val imm =
-                            this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(myGoalInputEditText?.windowToken, 0)
-                        imm.hideSoftInputFromWindow(myGoalDescriptionInputEditText?.windowToken, 0)
-
                         finish()
                     }
             } else {
@@ -208,5 +202,17 @@ class CreateNewGoalActivity : AppCompatActivity() {
         //TODO Limit length of text to around 40 chars
 
         return false
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        //Soft Hide Keypad
+        val view = this.currentFocus
+        if (view != null) {
+            val imm =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 }

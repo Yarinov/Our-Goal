@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,10 +35,17 @@ class HomeFragment : Fragment() {
     var feedRecyclerView: RecyclerView? = null
     var feedAdapter: FeedAdapter? = null
 
+    var refreshSection: CardView? = null
+
     var currentUser: FirebaseUser? = null
 
     var currentFeedUsersIdList: ArrayList<String>? = null
     var currentFeedGoalsList: ArrayList<Goal>? = null
+
+    var updatedCurrentFeedUsersIdList: ArrayList<String>? = null
+    var updatedCurrentFeedGoalsList: ArrayList<Goal>? = null
+
+    var firstFeedLoadFlag: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,16 +59,18 @@ class HomeFragment : Fragment() {
 
         profileImage = homeView.findViewById(R.id.profileImage)
         feedRecyclerView = homeView.findViewById(R.id.feedRecyclerView)
+        refreshSection = homeView.findViewById(R.id.refreshSection)
 
         currentFeedUsersIdList = ArrayList()
         currentFeedGoalsList = ArrayList()
+        updatedCurrentFeedUsersIdList = ArrayList()
+        updatedCurrentFeedGoalsList = ArrayList()
 
         feedAdapter = context?.let { FeedAdapter(it, currentFeedGoalsList!!, currentUser!!.uid) }
 
         feedRecyclerView!!.adapter = feedAdapter
         feedRecyclerView!!.layoutManager = LinearLayoutManager(context)
         feedRecyclerView!!.itemAnimator!!.changeDuration = 0
-        feedRecyclerView!!.setHasFixedSize(true)
         feedRecyclerView!!.setItemViewCacheSize(20)
 
         profileImage!!.setOnClickListener {
@@ -69,14 +79,14 @@ class HomeFragment : Fragment() {
             startActivity(moveToMyProfile)
         }
 
-
         //Load current user profile pic
         loadUserProfilePic()
 
-        getFeed()
+        getFeed(currentFeedUsersIdList, currentFeedGoalsList!!)
 
         return homeView
     }
+
 
     private fun loadUserProfilePic() {
         val storage = FirebaseStorage.getInstance()
@@ -102,12 +112,47 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        //getAllPosts()
+        //On first load don't Refresh
+        if (!firstFeedLoadFlag)
+            getUpdatedFeed()
+        else
+            firstFeedLoadFlag = false
     }
 
-    private fun getFeed() {
+    private fun getUpdatedFeed() {
 
-        currentFeedUsersIdList!!.clear()
+        LoadFeedAsyncTask(
+            currentUser!!.uid,
+            updatedCurrentFeedUsersIdList!!,
+            updatedCurrentFeedGoalsList!!,
+            refreshSection!!
+        ).execute()
+
+        if (currentFeedUsersIdList!! != updatedCurrentFeedUsersIdList!! || currentFeedGoalsList!! != updatedCurrentFeedGoalsList!!) {
+
+            refreshSection!!.setOnClickListener {
+
+                currentFeedUsersIdList!!.clear()
+                currentFeedGoalsList!!.clear()
+
+                currentFeedUsersIdList!!.addAll(updatedCurrentFeedUsersIdList!!)
+                currentFeedGoalsList!!.addAll(updatedCurrentFeedGoalsList!!)
+
+                refreshSection!!.visibility = View.GONE
+
+                feedAdapter!!.sortByAsc()
+                feedAdapter!!.notifyDataSetChanged()
+
+                //Go to the top of the feed
+                feedRecyclerView!!.smoothScrollToPosition(0)
+            }
+
+        }
+    }
+
+    private fun getFeed(usersIdList: ArrayList<String>?, feedGoalsList: ArrayList<Goal>) {
+
+        usersIdList!!.clear()
 
         val currentUserConnectionDB =
             FirebaseDatabase.getInstance()
@@ -120,11 +165,11 @@ class HomeFragment : Fragment() {
 
                 //Add all current user friends
                 for (userId in p0.children)
-                    currentFeedUsersIdList!!.add(userId.key.toString())
+                    usersIdList.add(userId.key.toString())
 
-                currentFeedUsersIdList!!.add(currentUser!!.uid)
+                usersIdList.add(currentUser!!.uid)
 
-                getAllPosts()
+                getAllPosts(usersIdList, feedGoalsList)
             }
 
         }
@@ -132,12 +177,15 @@ class HomeFragment : Fragment() {
         currentUserConnectionDB.addListenerForSingleValueEvent(getAllFriendsIdListener)
     }
 
-    private fun getAllPosts() {
+    private fun getAllPosts(
+        usersIdList: ArrayList<String>,
+        feedGoalsList: ArrayList<Goal>
+    ) {
 
-        currentFeedGoalsList!!.clear()
+        feedGoalsList.clear()
 
         //Get each user's goals
-        for (userId in currentFeedUsersIdList!!) {
+        for (userId in usersIdList) {
 
             val userGoalsDB =
                 FirebaseDatabase.getInstance()
@@ -163,7 +211,7 @@ class HomeFragment : Fragment() {
                             userGoalMap["userId"].toString()
                         )
 
-                        currentFeedGoalsList!!.add(userGoal)
+                        feedGoalsList.add(userGoal)
                     }
 
                     feedAdapter!!.sortByAsc()

@@ -84,7 +84,9 @@ class FeedAdapter(
         //Get user pic (if exits)
         AdapterUtils().loadUserProfilePic(holder.goalUserProfilePic, currentGoal.userId)
 
-        AdapterUtils().setFadeAnimation(holder.itemView, 950)
+        AdapterUtils().setFadeAnimation(holder.itemView, 1000)
+
+        holder.timeStampLabel!!.text = AdapterUtils().getTimeSincePosted(position, currentGoal.datePosted)
 
     }
 
@@ -265,6 +267,8 @@ class FeedAdapter(
         var goalDescriptionLabel: TextView? = null
         var supportersCounterLabel: TextView? = null
         var commentsCounterLabel: TextView? = null
+        var timeStampLabel: TextView? = null
+
 
         var goalOptions: ImageView? = null
         var supportIcon: ImageView? = null
@@ -284,6 +288,8 @@ class FeedAdapter(
                 mView.findViewById(R.id.supportersCounterLabel) as TextView
             commentsCounterLabel =
                 mView.findViewById(R.id.commentsCounterLabel) as TextView
+            timeStampLabel = mView.findViewById(R.id.timeStampLabel) as TextView
+
 
             goalUserProfilePic =
                 mView.findViewById(R.id.goalUserProfilePic) as CircleImageView
