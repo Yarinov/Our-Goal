@@ -1,8 +1,7 @@
 package com.yarinov.ourgoal.feed
 
 import android.os.AsyncTask
-import android.view.View
-import androidx.cardview.widget.CardView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -15,18 +14,21 @@ class LoadFeedAsyncTask : AsyncTask<Void, Void, String> {
     var usersIdList: ArrayList<String>
     var feedGoalsList: ArrayList<Goal>
     var currentUserId: String
-    var refreshSection: CardView
+    var feedAdapter: FeedAdapter?
+    var swipeContainer: SwipeRefreshLayout
 
     constructor(
         currentUserId: String,
         usersIdList: ArrayList<String>,
         feedGoalsList: ArrayList<Goal>,
-        refreshSection: CardView
+        feedAdapter: FeedAdapter?,
+        swipeContainer: SwipeRefreshLayout
     ) {
         this.currentUserId = currentUserId
         this.usersIdList = usersIdList
         this.feedGoalsList = feedGoalsList
-        this.refreshSection = refreshSection
+        this.feedAdapter = feedAdapter
+        this.swipeContainer = swipeContainer
     }
 
     override fun doInBackground(vararg p0: Void?): String {
@@ -38,8 +40,10 @@ class LoadFeedAsyncTask : AsyncTask<Void, Void, String> {
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
 
-        refreshSection.visibility = View.VISIBLE
+        swipeContainer.isRefreshing = false
+
     }
+
 
     private fun getFeed(usersIdList: ArrayList<String>?, feedGoalsList: ArrayList<Goal>) {
 
@@ -104,6 +108,9 @@ class LoadFeedAsyncTask : AsyncTask<Void, Void, String> {
 
                         feedGoalsList.add(userGoal)
                     }
+
+                    feedAdapter!!.sortByAsc()
+                    feedAdapter!!.notifyDataSetChanged()
 
                 }
 

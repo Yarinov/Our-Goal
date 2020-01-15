@@ -2,6 +2,7 @@ package com.yarinov.ourgoal.feed
 
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -42,10 +44,7 @@ class HomeFragment : Fragment() {
     var currentFeedUsersIdList: ArrayList<String>? = null
     var currentFeedGoalsList: ArrayList<Goal>? = null
 
-    var updatedCurrentFeedUsersIdList: ArrayList<String>? = null
-    var updatedCurrentFeedGoalsList: ArrayList<Goal>? = null
-
-    var firstFeedLoadFlag: Boolean = true
+    var swipeContainer: SwipeRefreshLayout? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,11 +59,10 @@ class HomeFragment : Fragment() {
         profileImage = homeView.findViewById(R.id.profileImage)
         feedRecyclerView = homeView.findViewById(R.id.feedRecyclerView)
         refreshSection = homeView.findViewById(R.id.refreshSection)
+        swipeContainer = homeView.findViewById(R.id.swipeContainer)
 
         currentFeedUsersIdList = ArrayList()
         currentFeedGoalsList = ArrayList()
-        updatedCurrentFeedUsersIdList = ArrayList()
-        updatedCurrentFeedGoalsList = ArrayList()
 
         feedAdapter = context?.let { FeedAdapter(it, currentFeedGoalsList!!, currentUser!!.uid) }
 
@@ -84,7 +82,29 @@ class HomeFragment : Fragment() {
 
         getFeed(currentFeedUsersIdList, currentFeedGoalsList!!)
 
+        //Refresh Feed
+        swipeContainer!!.setOnRefreshListener {
+            fetchFeedAsync()
+        }
+
+
+        //Set swipe-to-load colors
+        swipeContainer!!.setProgressBackgroundColor(R.color.colorPrimary)
+        swipeContainer!!.setColorSchemeColors(Color.WHITE)
+
         return homeView
+    }
+
+    private fun fetchFeedAsync() {
+
+        LoadFeedAsyncTask(
+            currentUser!!.uid,
+            currentFeedUsersIdList!!,
+            currentFeedGoalsList!!,
+            feedAdapter,
+            swipeContainer!!
+        ).execute()
+
     }
 
 
@@ -107,47 +127,6 @@ class HomeFragment : Fragment() {
                     //Not Found
                 }
             }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        //On first load don't Refresh
-        if (!firstFeedLoadFlag)
-            getUpdatedFeed()
-        else
-            firstFeedLoadFlag = false
-    }
-
-    private fun getUpdatedFeed() {
-
-        LoadFeedAsyncTask(
-            currentUser!!.uid,
-            updatedCurrentFeedUsersIdList!!,
-            updatedCurrentFeedGoalsList!!,
-            refreshSection!!
-        ).execute()
-
-        if (currentFeedUsersIdList!! != updatedCurrentFeedUsersIdList!! || currentFeedGoalsList!! != updatedCurrentFeedGoalsList!!) {
-
-            refreshSection!!.setOnClickListener {
-
-                currentFeedUsersIdList!!.clear()
-                currentFeedGoalsList!!.clear()
-
-                currentFeedUsersIdList!!.addAll(updatedCurrentFeedUsersIdList!!)
-                currentFeedGoalsList!!.addAll(updatedCurrentFeedGoalsList!!)
-
-                refreshSection!!.visibility = View.GONE
-
-                feedAdapter!!.sortByAsc()
-                feedAdapter!!.notifyDataSetChanged()
-
-                //Go to the top of the feed
-                feedRecyclerView!!.smoothScrollToPosition(0)
-            }
-
-        }
     }
 
     private fun getFeed(usersIdList: ArrayList<String>?, feedGoalsList: ArrayList<Goal>) {
