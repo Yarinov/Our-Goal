@@ -15,6 +15,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
+import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
 import com.yarinov.ourgoal.user.profile.ProfileActivity
@@ -46,7 +49,7 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         val homeView = inflater.inflate(R.layout.fragment_home, container, false)
 
-        profileImage = homeView.findViewById(R.id.profile_image)
+        profileImage = homeView.findViewById(R.id.profileImage)
         feedRecyclerView = homeView.findViewById(R.id.feedRecyclerView)
 
         currentFeedUsersIdList = ArrayList()
@@ -67,9 +70,33 @@ class HomeFragment : Fragment() {
         }
 
 
+        //Load current user profile pic
+        loadUserProfilePic()
+
         getFeed()
 
         return homeView
+    }
+
+    private fun loadUserProfilePic() {
+        val storage = FirebaseStorage.getInstance()
+
+        val gsReference =
+            storage.getReferenceFromUrl("gs://ourgoal-ebee9.appspot.com/users/profile_pic/${currentUser!!.uid}.jpg")
+
+        gsReference.downloadUrl
+            .addOnSuccessListener {
+
+                Picasso.get().load(it).placeholder(R.drawable.default_user_ic).noFade()
+                    .into(profileImage)
+
+            }
+            .addOnFailureListener { exception ->
+                val errorCode = (exception as StorageException).errorCode
+                if (errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                    //Not Found
+                }
+            }
     }
 
     override fun onResume() {

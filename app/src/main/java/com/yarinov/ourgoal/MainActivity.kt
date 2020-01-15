@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
         mainTabLayout = findViewById(R.id.mainTabLayout)
         mainViewPager = findViewById(R.id.mainViewPager)
 
-        mainTabsPagerViewAdapter = MainTabsPagerViewAdapter(supportFragmentManager)
+        mainTabsPagerViewAdapter =
+            MainTabsPagerViewAdapter(supportFragmentManager)
 
         mainTabsPagerViewAdapter!!.addFragment(SearchFragment(), "Search")
         mainTabsPagerViewAdapter!!.addFragment(HomeFragment(), "Our Goal")

@@ -19,14 +19,15 @@
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image"
+                android:id="@+id/inGoalProfilePic"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="15sp"
                 android:layout_marginTop="15sp"
                 android:layout_marginBottom="15sp"
-                android:src="@drawable/search_black_ic"
+                android:src="@drawable/default_user_ic"
+                android:tint="@android:color/white"
                 app:civ_border_color="@android:color/white"
                 app:civ_border_width="2dp" />
 
@@ -138,116 +139,125 @@
 
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10sp"
-                android:layout_marginBottom="5sp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/supportCountLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
-                    android:fontFamily="@font/lato_light" />
-
-                <TextView
-                    android:id="@+id/commentCountLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20sp"
-                    android:fontFamily="@font/lato_light" />
-            </LinearLayout>
-
-            <View
-                android:id="@+id/divider5"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/dividerColor" />
-
-            <LinearLayout
-                android:id="@+id/noCommentsLayout"
+                android:id="@+id/commentSectionLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="10sp"
-                android:layout_weight="1"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imageView9"
-                    android:layout_width="150sp"
-                    android:layout_height="150sp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="20sp"
-                    app:srcCompat="@drawable/no_comment_ic" />
-
-                <TextView
-                    android:id="@+id/textView13"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12sp"
-                    android:fontFamily="@font/lato_bold"
-                    android:gravity="center"
-                    android:text="No Comments Yet"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/textView14"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2sp"
-                    android:fontFamily="@font/lato"
-                    android:gravity="center"
-                    android:text="Be the first one to help out." />
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/commentsRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5sp"
-                android:layout_weight="1"
-                android:overScrollMode="never"
-                android:visibility="gone">
-
-            </androidx.recyclerview.widget.RecyclerView>
-
-            <View
-                android:id="@+id/divider6"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/dividerColor" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="3sp"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/commentInputEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15sp"
                     android:layout_marginTop="10sp"
-                    android:layout_marginRight="15sp"
                     android:layout_marginBottom="5sp"
-                    android:layout_weight="1"
-                    android:background="@drawable/rounded_comment_layout"
-                    android:ems="10"
-                    android:hint="Write Your Comment"
-                    android:inputType="textCapSentences|textMultiLine"
-                    android:maxLength="2000"
-                    android:padding="8sp" />
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/sendCommentButton"
-                    android:layout_width="30sp"
-                    android:layout_height="30sp"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="10sp"
-                    android:layout_weight="0"
-                    android:background="@drawable/send_pr_ic" />
+                    <TextView
+                        android:id="@+id/supportCountLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15sp"
+                        android:fontFamily="@font/lato_light" />
+
+                    <TextView
+                        android:id="@+id/commentCountLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20sp"
+                        android:fontFamily="@font/lato_light" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider5"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/dividerColor" />
+
+                <LinearLayout
+                    android:id="@+id/noCommentsLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="10sp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imageView9"
+                        android:layout_width="150sp"
+                        android:layout_height="150sp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20sp"
+                        app:srcCompat="@drawable/no_comment_ic" />
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12sp"
+                        android:fontFamily="@font/lato_bold"
+                        android:gravity="center"
+                        android:text="No Comments Yet"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/textView14"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2sp"
+                        android:fontFamily="@font/lato"
+                        android:gravity="center"
+                        android:text="Be the first one to help out." />
+                </LinearLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/commentsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5sp"
+                    android:layout_weight="1"
+                    android:overScrollMode="never"
+                    android:visibility="gone">
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <View
+                    android:id="@+id/divider6"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/dividerColor" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="3sp"
+                    android:background="#DDFFFFFF"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/commentInputEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15sp"
+                        android:layout_marginTop="8sp"
+                        android:layout_marginRight="15sp"
+                        android:layout_marginBottom="8sp"
+                        android:layout_weight="1"
+                        android:background="@drawable/rounded_comment_layout"
+                        android:ems="10"
+                        android:hint="Write Your Comment"
+                        android:inputType="textCapSentences|textMultiLine"
+                        android:maxLength="2000"
+                        android:padding="8sp" />
+
+                    <Button
+                        android:id="@+id/sendCommentButton"
+                        android:layout_width="30sp"
+                        android:layout_height="30sp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="10sp"
+                        android:layout_weight="0"
+                        android:background="@drawable/send_pr_ic" />
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>

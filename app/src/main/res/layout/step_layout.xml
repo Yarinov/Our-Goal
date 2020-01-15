@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:textAlignment="gravity"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:textDirection="locale">
 
     <LinearLayout
@@ -33,7 +32,7 @@
                 android:background="@drawable/milestone_ic" />
 
             <View
-                android:id="@+id/lowwerDivider"
+                android:id="@+id/lowerDivider"
                 android:layout_width="1sp"
                 android:layout_height="30sp"
                 android:layout_marginLeft="29sp"

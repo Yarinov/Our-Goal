@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ import com.shuhart.stepview.StepView
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
 import com.yarinov.ourgoal.goal.milestone.MilestoneTitle
+import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -158,7 +160,7 @@ class MyGoalsAdapter(
                     val stepWeight = 100 / (currentGoal.goalSteps + 1)
                     val milestonesAccomplished = currentGoal.goalProgress / stepWeight
 
-                    holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt() + 1, true)
+                    holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt() , true)
 
                 } else if (currentGoal.goalSteps != 0.toLong() && currentGoal.goalProgress == 0.toLong()) {
                     holder.myGoalProgressBar!!.go(0, true)
@@ -170,6 +172,8 @@ class MyGoalsAdapter(
 
         }
         currentGoalMilestonesDB.addListenerForSingleValueEvent(getGoalMilestonesListener)
+
+        AdapterUtils().setFadeAnimation(holder.itemView, 950)
 
     }
 

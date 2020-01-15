@@ -84,7 +84,7 @@
             android:layout_marginLeft="15sp"
             android:layout_marginTop="20sp"
             android:layout_marginBottom="5sp"
-            android:fontFamily="@font/lato"
+            android:fontFamily="@font/lato_bold"
             android:text="My Friends"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
@@ -92,9 +92,8 @@
         <View
             android:id="@+id/divider4"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="2dp"
             android:layout_marginLeft="15sp"
-            android:layout_marginBottom="5sp"
             android:background="@color/dividerColor" />
 
         <androidx.recyclerview.widget.RecyclerView

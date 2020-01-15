@@ -7,16 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
+import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 
 class MilestoneTitleAdapter(
     private val context: Context,
     private var goalMilestoneTitleList: ArrayList<MilestoneTitle>,
     private val currentGoal: Goal,
-    private var currentGoalMilestoneNumber: Long
+    private var currentGoalMilestoneNumber: Long,
+    private var commentSectionLayout: LinearLayout
 ) : RecyclerView.Adapter<MilestoneTitleAdapter.ViewHolder>() {
 
     private var minimizedMilestones = true
@@ -39,10 +42,20 @@ class MilestoneTitleAdapter(
 
         holder.milestoneTitleLabel!!.text = goalMilestoneTitleList[position].milestoneTitle
 
-        if (position == currentGoalMilestoneNumber.toInt())
-            holder.milestoneStatusIcon!!.setImageResource(R.drawable.current_milestone_ic)
-        else if (position < currentGoalMilestoneNumber.toInt())
-            holder.milestoneStatusIcon!!.setImageResource(R.drawable.complete_milestone_ic)
+        if (currentGoal.goalSteps > 0) {
+
+            if (position == currentGoalMilestoneNumber.toInt())
+                holder.milestoneStatusIcon!!.setImageResource(R.drawable.current_milestone_ic)
+            else if (position < currentGoalMilestoneNumber.toInt())
+                holder.milestoneStatusIcon!!.setImageResource(R.drawable.complete_milestone_ic)
+        } else {
+            if (currentGoal.goalProgress == 100.toLong())
+                holder.milestoneStatusIcon!!.setImageResource(R.drawable.complete_milestone_ic)
+            else
+                holder.milestoneStatusIcon!!.setImageResource(R.drawable.current_milestone_ic)
+
+        }
+
 
         //If milestone list is minimized hide the rest of milestones except the current one
         if (position != currentGoalMilestoneNumber.toInt() && minimizedMilestones) {
@@ -63,21 +76,26 @@ class MilestoneTitleAdapter(
         //Open/Close the full milestones list
         holder.itemView.setOnClickListener {
 
-            minimizedMilestones = !minimizedMilestones
+            if (currentGoal.goalSteps != 0.toLong()) {
 
-            notifyDataSetChanged()
+                if (minimizedMilestones) {
+
+                    minimizedMilestones = false
+                    commentSectionLayout.visibility = View.GONE
+
+                } else {
+                    minimizedMilestones = true
+                    commentSectionLayout.visibility = View.VISIBLE
+                }
+
+
+                notifyDataSetChanged()
+            }
         }
 
-        setFadeAnimation(holder.itemView)
+        AdapterUtils().setFadeAnimation(holder.itemView, 950)
 
     }
-
-    private fun setFadeAnimation(view: View) {
-        val anim = AlphaAnimation(0.0f, 1.0f)
-        anim.duration = 900
-        view.startAnimation(anim)
-    }
-
 
     override fun getItemCount(): Int {
         return goalMilestoneTitleList.size
@@ -111,7 +129,7 @@ class MilestoneTitleAdapter(
         init {
 
             milestoneTitleLabel = mView.findViewById(R.id.milestoneTitleLabel) as TextView
-            lowerDivider = mView.findViewById(R.id.lowwerDivider) as View
+            lowerDivider = mView.findViewById(R.id.lowerDivider) as View
             milestoneStatusIcon = mView.findViewById(R.id.milestoneStatusIcon) as ImageView
 
         }

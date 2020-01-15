@@ -15,11 +15,16 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
 import com.shuhart.stepview.StepView
+import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
 import com.yarinov.ourgoal.goal.SingleGoalActivity
 import com.yarinov.ourgoal.goal.milestone.MilestoneTitle
+import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
+import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 import kotlin.Comparator
 import kotlin.collections.ArrayList
@@ -75,7 +80,11 @@ class FeedAdapter(
             context.startActivity(moveToSingleGoalIntent)
         }
 
-        setFadeAnimation(holder.itemView)
+
+        //Get user pic (if exits)
+        AdapterUtils().loadUserProfilePic(holder.goalUserProfilePic, currentGoal.userId)
+
+        AdapterUtils().setFadeAnimation(holder.itemView, 950)
 
     }
 
@@ -139,7 +148,7 @@ class FeedAdapter(
                     val stepWeight = 100 / (currentGoal.goalSteps + 1)
                     val milestonesAccomplished = currentGoal.goalProgress / stepWeight
 
-                    holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt() , true)
+                    holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt(), true)
 
                 } else if (currentGoal.goalSteps != 0.toLong() && currentGoal.goalProgress == 0.toLong()) {
                     holder.myGoalProgressBar!!.go(0, true)
@@ -249,13 +258,6 @@ class FeedAdapter(
     }
 
 
-    private fun setFadeAnimation(view: View) {
-        val anim = AlphaAnimation(0.0f, 1.0f)
-        anim.duration = 900
-        view.startAnimation(anim)
-    }
-
-
     inner class ViewHolder(private val mView: View) : RecyclerView.ViewHolder(mView) {
 
         var userNameLabel: TextView? = null
@@ -271,6 +273,7 @@ class FeedAdapter(
 
         var goalSupportLayout: LinearLayout? = null
         var goalCommentLayout: LinearLayout? = null
+        var goalUserProfilePic: CircleImageView? = null
 
         init {
 
@@ -281,6 +284,9 @@ class FeedAdapter(
                 mView.findViewById(R.id.supportersCounterLabel) as TextView
             commentsCounterLabel =
                 mView.findViewById(R.id.commentsCounterLabel) as TextView
+
+            goalUserProfilePic =
+                mView.findViewById(R.id.goalUserProfilePic) as CircleImageView
 
             goalOptions = mView.findViewById(R.id.goalOptions) as ImageView
             supportIcon = mView.findViewById(R.id.supportIcon) as ImageView

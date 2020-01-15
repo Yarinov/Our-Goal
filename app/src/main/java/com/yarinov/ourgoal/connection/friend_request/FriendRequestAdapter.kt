@@ -11,9 +11,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
+import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.user.User
 import com.yarinov.ourgoal.user.profile.ProfileActivity
+import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 import kotlin.Comparator
@@ -55,24 +59,8 @@ class FriendRequestAdapter(
         }
 
 
-        //Get show pic (if exits) TODO Return to this part later
-//        val storage = FirebaseStorage.getInstance()
-//
-//        val gsReference =
-//            storage.getReferenceFromUrl("gs://random-episode-generator.appspot.com/$showNameLowerCase.jpg")
-//
-//        gsReference.downloadUrl
-//            .addOnSuccessListener {
-//
-//                Picasso.get().load(it).noPlaceholder().into(holder.showImg)
-//
-//            }
-//            .addOnFailureListener { exception ->
-//                val errorCode = (exception as StorageException).errorCode
-//                if (errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
-//                    //Not Found
-//                }
-//            }
+        AdapterUtils().loadUserProfilePic(holder.userProfilePic, friendRequestsList[position].userId)
+
 
     }
 
@@ -103,7 +91,7 @@ class FriendRequestAdapter(
     inner class ViewHolder(private val mView: View) : RecyclerView.ViewHolder(mView) {
 
         var userNameLabel: TextView? = null
-        var searchUserProfilePic: CircleImageView? = null
+        var userProfilePic: CircleImageView? = null
 
         var resultSearchUserView: LinearLayout? = null
         var divider: View? = null
@@ -114,7 +102,7 @@ class FriendRequestAdapter(
         init {
 
             userNameLabel = mView.findViewById(R.id.userNameLabel) as TextView
-            searchUserProfilePic = mView.findViewById(R.id.searchUserProfilePic) as CircleImageView
+            userProfilePic = mView.findViewById(R.id.searchUserProfilePic) as CircleImageView
 
             resultSearchUserView = mView.findViewById(R.id.resultSearchUserView) as LinearLayout
             divider = mView.findViewById(R.id.divider) as View

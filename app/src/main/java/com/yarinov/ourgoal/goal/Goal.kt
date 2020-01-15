@@ -3,7 +3,6 @@ package com.yarinov.ourgoal.goal
 import android.os.Parcel
 import android.os.Parcelable
 import java.util.*
-import kotlin.collections.HashMap
 
 
 class Goal(

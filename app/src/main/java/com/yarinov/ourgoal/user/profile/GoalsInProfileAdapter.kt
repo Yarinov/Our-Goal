@@ -7,12 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
+import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 
 class GoalsInProfileAdapter(
     private val context: Context,
@@ -36,7 +33,7 @@ class GoalsInProfileAdapter(
         holder.goalTitleLabel!!.text = currentGoal.goalTitle
         holder.goalDescriptionLabel!!.text = currentGoal.goalDescription
 
-
+        AdapterUtils().setFadeAnimation(holder.itemView, 950)
     }
 
 

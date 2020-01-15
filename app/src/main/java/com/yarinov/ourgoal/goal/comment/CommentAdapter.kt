@@ -5,17 +5,23 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AlphaAnimation
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
+import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.R
+import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 import de.hdodenhof.circleimageview.CircleImageView
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.Comparator
-import kotlin.collections.ArrayList
+
 
 class CommentAdapter(
     private val context: Context,
@@ -43,7 +49,13 @@ class CommentAdapter(
 
         getCommentUserName(currentComment, holder)
 
+        AdapterUtils().loadUserProfilePic(holder.profileImageInComment, currentComment.commentUserId)
+        AdapterUtils().setFadeAnimation(holder.itemView, 950)
+
+        holder.timeStampLabel!!.text = AdapterUtils().getTimeSincePosted(position, commentsList[position].datePosted)
+
     }
+
 
     fun getCommentUserName(
         currentComment: Comment,
@@ -84,7 +96,7 @@ class CommentAdapter(
     fun sortByAsc() {
         val comparator: Comparator<Comment> =
             Comparator { object1: Comment, object2: Comment ->
-                object2.datePosted.compareTo(object1.datePosted, true)
+                object1.datePosted.compareTo(object2.datePosted, true)
             }
         Collections.sort(commentsList, comparator)
         notifyDataSetChanged()
@@ -95,14 +107,20 @@ class CommentAdapter(
 
         var userNameLabel: TextView? = null
         var commentLabel: TextView? = null
-        var profileImage: CircleImageView? = null
+        var profileImageInComment: CircleImageView? = null
+
+        var replyLabel: TextView? = null
+        var timeStampLabel: TextView? = null
 
         init {
 
             userNameLabel = mView.findViewById(R.id.userNameLabel) as TextView
             commentLabel = mView.findViewById(R.id.commentLabel) as TextView
-            profileImage =
+            profileImageInComment =
                 mView.findViewById(R.id.profile_image) as CircleImageView
+
+            replyLabel = mView.findViewById(R.id.replyLabel) as TextView
+            timeStampLabel = mView.findViewById(R.id.timeStampLabel) as TextView
 
         }
 

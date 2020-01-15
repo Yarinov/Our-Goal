@@ -2,7 +2,6 @@ package com.yarinov.ourgoal.goal
 
 import android.content.Context
 import android.os.Bundle
-import android.transition.TransitionManager
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -16,11 +15,15 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageException
+import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.comment.Comment
 import com.yarinov.ourgoal.goal.comment.CommentAdapter
 import com.yarinov.ourgoal.goal.milestone.MilestoneTitle
 import com.yarinov.ourgoal.goal.milestone.MilestoneTitleAdapter
+import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -42,6 +45,8 @@ class SingleGoalActivity : AppCompatActivity() {
     var goalUserFullNameLabel: TextView? = null
     var goalDescriptionLabel: TextView? = null
     var goalTitleLabel: TextView? = null
+    var inGoalProfilePic: CircleImageView? = null
+
 
     var supportCountLabel: TextView? = null
     var commentCountLabel: TextView? = null
@@ -57,6 +62,8 @@ class SingleGoalActivity : AppCompatActivity() {
     var milestonesRecyclerView: RecyclerView? = null
     var milestoneTitleAdapter: MilestoneTitleAdapter? = null
 
+    var commentSectionLayout: LinearLayout? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,9 +75,13 @@ class SingleGoalActivity : AppCompatActivity() {
         val extra = intent.extras
         currentGoal = extra!!.getParcelable("currentGoal")
 
-        val stepWeight = 100 / (currentGoal!!.goalSteps + 1)
-        currentGoalMilestoneNumber = currentGoal!!.goalProgress / stepWeight
 
+        currentGoalMilestoneNumber = if (currentGoal!!.goalProgress == 100.toLong()) {
+            currentGoal!!.goalSteps
+        } else {
+            val stepWeight = 100 / (currentGoal!!.goalSteps + 1)
+            currentGoal!!.goalProgress / stepWeight
+        }
 
         commentsRecyclerView = findViewById(R.id.commentsRecyclerView)
         goalUserFullNameLabel = findViewById(R.id.goalUserFullNameLabel)
@@ -84,6 +95,8 @@ class SingleGoalActivity : AppCompatActivity() {
         supportIcon = findViewById(R.id.supportIcon)
         milestonesRecyclerView = findViewById(R.id.milestonesRecyclerView)
         noCommentsLayout = findViewById(R.id.noCommentsLayout)
+        commentSectionLayout = findViewById(R.id.commentSectionLayout)
+        inGoalProfilePic = findViewById(R.id.inGoalProfilePic)
 
         setupStepView()
 
@@ -93,11 +106,13 @@ class SingleGoalActivity : AppCompatActivity() {
             this,
             currentGoalMilestonesTitle!!,
             currentGoal!!,
-            currentGoalMilestoneNumber!!
+            currentGoalMilestoneNumber!!,
+            commentSectionLayout!!
         )
         milestonesRecyclerView!!.layoutManager = LinearLayoutManager(this)
         milestonesRecyclerView!!.adapter = milestoneTitleAdapter
         milestonesRecyclerView!!.hasFixedSize()
+
 
         //Comments RecyclerView
         commentsArrayList = ArrayList()
@@ -116,6 +131,28 @@ class SingleGoalActivity : AppCompatActivity() {
 
         initUI()
     }
+
+    private fun loadUserProfilePic() {
+        val storage = FirebaseStorage.getInstance()
+
+        val gsReference =
+            storage.getReferenceFromUrl("gs://ourgoal-ebee9.appspot.com/users/profile_pic/${currentGoal!!.userId}.jpg")
+
+        gsReference.downloadUrl
+            .addOnSuccessListener {
+
+                Picasso.get().load(it).placeholder(R.drawable.default_user_ic).noFade()
+                    .into(inGoalProfilePic)
+
+            }
+            .addOnFailureListener { exception ->
+                val errorCode = (exception as StorageException).errorCode
+                if (errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                    //Not Found
+                }
+            }
+    }
+
 
     private fun setupStepView() {
 
@@ -149,12 +186,8 @@ class SingleGoalActivity : AppCompatActivity() {
 
                     }
                 } else {//If goal have no milestone add 'Starting Point'
-                    currentGoalMilestonesTitle!!.add(
-                        MilestoneTitle(
-                            "Start",
-                            0
-                        )
-                    )
+
+
                 }
 
                 currentGoalMilestonesTitle!!.add(
@@ -223,6 +256,9 @@ class SingleGoalActivity : AppCompatActivity() {
                     this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(commentInputEditText?.windowToken, 0)
 
+                //Move to last comment posted
+                commentsRecyclerView!!.smoothScrollToPosition(commentsArrayList!!.size)
+
             }
     }
 
@@ -231,6 +267,7 @@ class SingleGoalActivity : AppCompatActivity() {
         setGoalTitleAndDescription()
         getSupportersCountAndStatus()
         getComments()
+        loadUserProfilePic()
     }
 
     private fun setGoalTitleAndDescription() {
