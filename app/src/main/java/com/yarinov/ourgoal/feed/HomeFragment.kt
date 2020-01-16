@@ -37,8 +37,6 @@ class HomeFragment : Fragment() {
     var feedRecyclerView: RecyclerView? = null
     var feedAdapter: FeedAdapter? = null
 
-    var refreshSection: CardView? = null
-
     var currentUser: FirebaseUser? = null
 
     var currentFeedUsersIdList: ArrayList<String>? = null
@@ -58,7 +56,6 @@ class HomeFragment : Fragment() {
 
         profileImage = homeView.findViewById(R.id.profileImage)
         feedRecyclerView = homeView.findViewById(R.id.feedRecyclerView)
-        refreshSection = homeView.findViewById(R.id.refreshSection)
         swipeContainer = homeView.findViewById(R.id.swipeContainer)
 
         currentFeedUsersIdList = ArrayList()

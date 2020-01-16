@@ -149,7 +149,7 @@
                                     android:layout_height="26sp"
                                     android:layout_margin="6sp"
                                     android:layout_weight="1"
-                                    app:srcCompat="@drawable/remove_milestone_ic" />
+                                    app:srcCompat="@drawable/delete_milestone_ic" />
 
                                 <TextView
                                     android:id="@+id/textView9"

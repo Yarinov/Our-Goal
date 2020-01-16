@@ -1,6 +1,8 @@
 package com.yarinov.ourgoal.goal
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -47,14 +49,18 @@ class SingleGoalActivity : AppCompatActivity() {
     var goalTitleLabel: TextView? = null
     var inGoalProfilePic: CircleImageView? = null
 
-
     var supportCountLabel: TextView? = null
     var commentCountLabel: TextView? = null
 
-    var supportSection: CardView? = null
-    var supportIcon: ImageView? = null
+    var miniCube: CardView? = null
+    var miniCubeIcon: ImageView? = null
+    var miniCubeLabel: TextView? = null
+
+    var titleInEditMood:EditText? = null
+    var descriptionInEditMood:EditText? = null
 
     var currentUserSupportCurrentGoalFlag: Boolean? = null
+    var currentUserGoalFlag: Boolean? = null
 
     var noCommentsLayout: LinearLayout? = null
 
@@ -69,20 +75,6 @@ class SingleGoalActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_goal)
 
-        currentUser = FirebaseAuth.getInstance().currentUser
-        currentUserSupportCurrentGoalFlag = false
-
-        val extra = intent.extras
-        currentGoal = extra!!.getParcelable("currentGoal")
-
-
-        currentGoalMilestoneNumber = if (currentGoal!!.goalProgress == 100.toLong()) {
-            currentGoal!!.goalSteps
-        } else {
-            val stepWeight = 100 / (currentGoal!!.goalSteps + 1)
-            currentGoal!!.goalProgress / stepWeight
-        }
-
         commentsRecyclerView = findViewById(R.id.commentsRecyclerView)
         goalUserFullNameLabel = findViewById(R.id.goalUserFullNameLabel)
         goalDescriptionLabel = findViewById(R.id.goalDescriptionLabel)
@@ -91,12 +83,48 @@ class SingleGoalActivity : AppCompatActivity() {
         commentCountLabel = findViewById(R.id.commentCountLabel)
         commentInputEditText = findViewById(R.id.commentInputEditText)
         sendCommentButton = findViewById(R.id.sendCommentButton)
-        supportSection = findViewById(R.id.supportSection)
-        supportIcon = findViewById(R.id.supportIcon)
+
+        miniCube = findViewById(R.id.miniCube)
+        miniCubeIcon = findViewById(R.id.miniCubeIcon)
+        miniCubeLabel = findViewById(R.id.miniCubeLabel)
+
+        titleInEditMood = findViewById(R.id.titleInEditMood)
+        descriptionInEditMood = findViewById(R.id.descriptionInEditMood)
+
         milestonesRecyclerView = findViewById(R.id.milestonesRecyclerView)
         noCommentsLayout = findViewById(R.id.noCommentsLayout)
         commentSectionLayout = findViewById(R.id.commentSectionLayout)
         inGoalProfilePic = findViewById(R.id.inGoalProfilePic)
+
+        //init current user
+        currentUser = FirebaseAuth.getInstance().currentUser
+
+        //init support flag as false
+        currentUserSupportCurrentGoalFlag = false
+
+        val extra = intent.extras
+        currentGoal = extra!!.getParcelable("currentGoal")
+
+        //Check if this goal is current user goal
+        currentUserGoalFlag = (currentUser!!.uid == currentGoal!!.userId)
+
+        /*
+        Change mini cube.
+        If current user create this goal change mini cube to 'Edit Goal' Section.
+        Else keep the mini cube as 'Support' Section
+         */
+        if (currentUserGoalFlag!!) {
+            miniCubeLabel!!.text = "Edit Goal"
+            miniCubeIcon!!.setImageResource(R.drawable.edit_goal_ic)
+
+        }
+
+        currentGoalMilestoneNumber = if (currentGoal!!.goalProgress == 100.toLong()) {
+            currentGoal!!.goalSteps
+        } else {
+            val stepWeight = 100 / (currentGoal!!.goalSteps + 1)
+            currentGoal!!.goalProgress / stepWeight
+        }
 
         setupStepView()
 
@@ -125,11 +153,37 @@ class SingleGoalActivity : AppCompatActivity() {
             sendComment()
         }
 
-        supportSection!!.setOnClickListener {
-            supportSectionPressed()
+        miniCube!!.setOnClickListener {
+
+            if (currentUser!!.uid != currentGoal!!.userId)
+                supportPressed()
+            else
+                editGoal()
         }
 
         initUI()
+    }
+
+    private fun editGoal() {
+
+        //Change mini cube style
+        var miniCubeEditColor = Color.parseColor("#C1D95C")
+        miniCube!!.setCardBackgroundColor(miniCubeEditColor)
+        miniCubeLabel!!.text = "Done"
+        miniCubeIcon!!.setImageResource(R.drawable.accept_ic)
+
+        //Open full goal's milestone list
+        milestoneTitleAdapter!!.inEditMood()
+
+        //Replace Title label and description label with editText
+        goalTitleLabel!!.visibility = View.GONE
+        titleInEditMood!!.setText(goalTitleLabel!!.text.toString())
+        titleInEditMood!!.visibility = View.VISIBLE
+
+        goalDescriptionLabel!!.visibility = View.GONE
+        descriptionInEditMood!!.setText(goalDescriptionLabel!!.text.toString())
+        descriptionInEditMood!!.visibility = View.VISIBLE
+
     }
 
     private fun loadUserProfilePic() {
@@ -208,7 +262,7 @@ class SingleGoalActivity : AppCompatActivity() {
 
     }
 
-    private fun supportSectionPressed() {
+    private fun supportPressed() {
 
         val currentGoalSupportDB =
             FirebaseDatabase.getInstance()
@@ -312,10 +366,10 @@ class SingleGoalActivity : AppCompatActivity() {
                     //If current user is support this goal, mark as supported
                     currentUserSupportCurrentGoalFlag = p0.child(currentUser!!.uid).exists()
 
-                    if (currentUserSupportCurrentGoalFlag!!)
-                        supportIcon!!.setImageResource(R.drawable.support_full_ic)
-                    else {
-                        supportIcon!!.setImageResource(R.drawable.support_empty_ic)
+                    if (currentUserSupportCurrentGoalFlag!! && !currentUserGoalFlag!!)
+                        miniCubeIcon!!.setImageResource(R.drawable.support_full_ic)
+                    else if (!currentUserGoalFlag!!) {
+                        miniCubeIcon!!.setImageResource(R.drawable.support_empty_ic)
                     }
 
                     supportCountLabel!!.visibility = View.VISIBLE
@@ -324,9 +378,12 @@ class SingleGoalActivity : AppCompatActivity() {
 
                     supportCountLabel!!.visibility = View.GONE
 
-                    supportIcon!!.setImageResource(R.drawable.support_empty_ic)
+                    if (!currentUserGoalFlag!!) {
+                        miniCubeIcon!!.setImageResource(R.drawable.support_empty_ic)
 
-                    currentUserSupportCurrentGoalFlag = false
+                        currentUserSupportCurrentGoalFlag = false
+                    }
+
                 }
 
             }
