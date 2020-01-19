@@ -1,6 +1,7 @@
 package com.yarinov.ourgoal.goal.milestone
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
@@ -171,37 +172,70 @@ class MilestoneTitleAdapter(
     private fun deleteMilestone(position: Int) {
 
 
-        val deleteMilestoneAlert = AlertDialog.Builder(context)
-        deleteMilestoneAlert.setMessage("Are you sure?")
-            .setPositiveButton("Delete Milestone", DialogInterface.OnClickListener { dialog, which ->
+        if (currentGoal.goalTitle == goalMilestoneTitleList[position].milestoneTitle) {//Removing the whole goal
+            val deleteGoalAlert = AlertDialog.Builder(context)
+            deleteGoalAlert.setMessage("This Action Will Delete The Goal Itself, Are You Sure?")
+                .setPositiveButton(
+                    "Delete Goal",
+                    DialogInterface.OnClickListener { dialog, which ->
 
-                goalMilestoneTitleList.removeAt(position)
+                        //Update the milestone DB
+                        FirebaseDatabase.getInstance()
+                            .reference.child("goals/milestones/${currentGoal.userId}/${currentGoal.goalId}")
+                            .removeValue()
 
-                var newMilestoneMap: HashMap<String, GoalMilestone> = HashMap()
+                        //Update number of steps in the goal DB
+                        FirebaseDatabase.getInstance()
+                            .reference.child("goals/${currentGoal.userId}/${currentGoal.goalId}")
+                            .removeValue()
 
-                for (position in 0 until goalMilestoneTitleList.size -1) {
-                    var tempGoalMilestone = GoalMilestone(
-                        UUID.randomUUID().toString(),
-                        goalMilestoneTitleList[position].milestoneTitle,
-                        position + 1
-                    )
 
-                    newMilestoneMap[tempGoalMilestone.goalMilestoneId] = tempGoalMilestone
-                }
+                        (context as Activity).finish()
 
-                FirebaseDatabase.getInstance()
-                    .reference.child("goals/milestones/${currentGoal.userId}/${currentGoal.goalId}")
-                    .setValue(newMilestoneMap)
 
-                FirebaseDatabase.getInstance()
-                    .reference.child("goals/${currentGoal.userId}/${currentGoal.goalId}/goalSteps")
-                    .setValue(newMilestoneMap.size)
+                    }).setNegativeButton("Cancel", null)
 
-                notifyDataSetChanged()
+            deleteGoalAlert.create().show()
+        } else {//Delete just milestone
+            val deleteMilestoneAlert = AlertDialog.Builder(context)
+            deleteMilestoneAlert.setMessage("Are you sure?")
+                .setPositiveButton(
+                    "Delete Milestone",
+                    DialogInterface.OnClickListener { dialog, which ->
 
-            }).setNegativeButton("Cancel", null)
+                        goalMilestoneTitleList.removeAt(position)// remove the milestone from current goal's milestones
 
-        deleteMilestoneAlert.create().show()
+                        //Creating new map with goal milestones to update the goal in db
+                        var newMilestoneMap: HashMap<String, GoalMilestone> = HashMap()
+
+                        //New milestone order after deleting the milestone
+                        for (position in 0 until goalMilestoneTitleList.size - 1) {
+                            var tempGoalMilestone = GoalMilestone(
+                                UUID.randomUUID().toString(),
+                                goalMilestoneTitleList[position].milestoneTitle,
+                                position + 1
+                            )
+
+                            newMilestoneMap[tempGoalMilestone.goalMilestoneId] = tempGoalMilestone
+                        }
+
+                        //Update the milestone DB
+                        FirebaseDatabase.getInstance()
+                            .reference.child("goals/milestones/${currentGoal.userId}/${currentGoal.goalId}")
+                            .setValue(newMilestoneMap)
+
+                        //Update number of steps in the goal DB
+                        FirebaseDatabase.getInstance()
+                            .reference.child("goals/${currentGoal.userId}/${currentGoal.goalId}/goalSteps")
+                            .setValue(newMilestoneMap.size)
+
+                        notifyDataSetChanged()
+
+                    }).setNegativeButton("Cancel", null)
+
+            deleteMilestoneAlert.create().show()
+        }
+
 
     }
 
