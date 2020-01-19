@@ -6,10 +6,12 @@
     <color name="softBrown">#EFB76C</color>
     <color name="lightSoftBrown">#FFDC91</color>
     <color name="gray">#C0C0C0</color>
+    <color name="dimColor">#AE757575</color>
     <color name="com_facebook_button_login_silver_background_color_pressed">#326397</color>
     <color name="com_facebook_button_login_silver_background_color">#f4f6f8</color>
     <color name="dividerColor">#D1898A</color>
     <color name="defaultBGColor">#FAFAFA</color>
+    <color name="white">#fff</color>
 
 
 </resources>

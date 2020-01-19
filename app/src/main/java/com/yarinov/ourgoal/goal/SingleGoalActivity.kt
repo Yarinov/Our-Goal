@@ -70,6 +70,8 @@ class SingleGoalActivity : AppCompatActivity() {
 
     var commentSectionLayout: LinearLayout? = null
 
+    var inEditMoodFlag: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,23 +168,36 @@ class SingleGoalActivity : AppCompatActivity() {
 
     private fun editGoal() {
 
-        //Change mini cube style
-        var miniCubeEditColor = Color.parseColor("#C1D95C")
-        miniCube!!.setCardBackgroundColor(miniCubeEditColor)
-        miniCubeLabel!!.text = "Done"
-        miniCubeIcon!!.setImageResource(R.drawable.accept_ic)
+        if (!inEditMoodFlag){//enter edit mood
 
-        //Open full goal's milestone list
-        milestoneTitleAdapter!!.inEditMood()
+            inEditMoodFlag = true
 
-        //Replace Title label and description label with editText
-        goalTitleLabel!!.visibility = View.GONE
-        titleInEditMood!!.setText(goalTitleLabel!!.text.toString())
-        titleInEditMood!!.visibility = View.VISIBLE
+            //Change mini cube style
+            var miniCubeEditColor = Color.parseColor("#C1D95C")
+            miniCube!!.setCardBackgroundColor(miniCubeEditColor)
+            miniCubeLabel!!.text = "Done"
+            miniCubeIcon!!.setImageResource(R.drawable.accept_ic)
 
-        goalDescriptionLabel!!.visibility = View.GONE
-        descriptionInEditMood!!.setText(goalDescriptionLabel!!.text.toString())
-        descriptionInEditMood!!.visibility = View.VISIBLE
+            //Open full goal's milestone list
+            milestoneTitleAdapter!!.inEditMood()
+
+            //Replace Title label and description label with editText
+            goalTitleLabel!!.visibility = View.GONE
+            titleInEditMood!!.setText(goalTitleLabel!!.text.toString())
+            titleInEditMood!!.visibility = View.VISIBLE
+
+            goalDescriptionLabel!!.visibility = View.GONE
+            descriptionInEditMood!!.setText(goalDescriptionLabel!!.text.toString())
+            descriptionInEditMood!!.visibility = View.VISIBLE
+        }else{//Exit from edit mood
+
+            inEditMoodFlag = false
+
+            //Close full goal's milestone list
+            milestoneTitleAdapter!!.inEditMood()
+
+        }
+
 
     }
 

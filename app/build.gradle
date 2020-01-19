@@ -14,6 +14,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
         release {
@@ -53,8 +55,8 @@ dependencies {
     //Timber
     implementation 'com.jakewharton.timber:timber:4.1.1'
 
-    //CircularFloatingActionMenu
-    implementation 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
+    //AllAngleExpandableButton
+    implementation 'com.github.uin3566:AllAngleExpandableButton:v1.2.0'
 
     //Step Progressbar
     implementation 'com.shuhart.stepview:stepview:1.5.0'

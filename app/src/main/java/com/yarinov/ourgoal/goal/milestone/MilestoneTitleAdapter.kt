@@ -1,23 +1,27 @@
 package com.yarinov.ourgoal.goal.milestone
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.view.Gravity
+import android.content.DialogInterface
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu
-import com.oguzdev.circularfloatingactionmenu.library.SubActionButton
+import com.fangxu.allangleexpandablebutton.AllAngleExpandableButton
+import com.fangxu.allangleexpandablebutton.ButtonData
+import com.fangxu.allangleexpandablebutton.ButtonEventListener
+import com.google.firebase.database.FirebaseDatabase
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
 import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class MilestoneTitleAdapter(
@@ -31,130 +35,33 @@ class MilestoneTitleAdapter(
     private var minimizedMilestones = true
     private var inEditMoodFlag = false
 
-    var milestoneStatusIcon: Button? = null
+    var menuButtonIconsArrayList: ArrayList<ButtonData>? = null
+
+
+    init {
+
+        menuButtonIconsArrayList = ArrayList()
+
+        val iconsForMenuButton =
+            intArrayOf(
+                R.drawable.edit_milestone_ic,
+                R.drawable.popup_menu_edit_milestone_ic,
+                R.drawable.popup_menu_target_milestone_ic,
+                R.drawable.popup_menu_sort_milestone_ic,
+                R.drawable.popup_menu_delete_milestone_ic
+            )
+
+        for (icon in iconsForMenuButton) {
+            menuButtonIconsArrayList!!.add(ButtonData.buildIconButton(context, icon, 4f))
+        }
+
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val view =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.step_layout, parent, false)
-
-        milestoneStatusIcon = view.findViewById(R.id.milestoneStatusIcon) as Button
-        milestoneStatusIcon!!.isEnabled = inEditMoodFlag
-
-        //Creating the popupmenu for milestone
-        var menuItemCardLayoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT, 160
-        )
-        menuItemCardLayoutParams.setMargins(18, 30, 30, 25)
-
-        val textLayoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        textLayoutParams.gravity = Gravity.CENTER_VERTICAL
-        textLayoutParams.setMargins(20, -30, 0, 0)
-
-        //Edit current milestone card section
-        var editMilestoneLayout = LinearLayout(context)
-        editMilestoneLayout.orientation = LinearLayout.HORIZONTAL
-        editMilestoneLayout.layoutParams = menuItemCardLayoutParams
-
-        var editMilestoneImage = ImageView(context)
-        editMilestoneImage.setImageResource(R.drawable.popup_menu_edit_milestone_ic)
-        editMilestoneImage.layoutParams = LinearLayout.LayoutParams(90, 90)
-        editMilestoneImage.maxWidth = 10
-
-        val editMilestoneText = TextView(context)
-        editMilestoneText.text = "Edit Current Milestone"
-        editMilestoneText.textSize = 17f
-        editMilestoneText.layoutParams = textLayoutParams
-
-        editMilestoneLayout.addView(editMilestoneImage)
-        editMilestoneLayout.addView(editMilestoneText)
-
-        var editMilestoneCard = CardView(context)
-        editMilestoneCard.layoutParams = menuItemCardLayoutParams
-        editMilestoneCard.addView(editMilestoneLayout)
-        editMilestoneCard.radius = 30f
-
-        //Set current milestone card section
-        var setMilestoneLayout = LinearLayout(context)
-        setMilestoneLayout.orientation = LinearLayout.HORIZONTAL
-        setMilestoneLayout.layoutParams = menuItemCardLayoutParams
-
-        var setMilestoneImage = ImageView(context)
-        setMilestoneImage.setImageResource(R.drawable.popup_menu_target_milestone_ic)
-        setMilestoneImage.layoutParams = LinearLayout.LayoutParams(90, 90)
-        setMilestoneImage.maxWidth = 10
-
-        val setMilestoneText = TextView(context)
-        setMilestoneText.text = "Set Current Milestone"
-        setMilestoneText.textSize = 17f
-        setMilestoneText.layoutParams = textLayoutParams
-
-        setMilestoneLayout.addView(setMilestoneImage)
-        setMilestoneLayout.addView(setMilestoneText)
-
-        var setMilestoneCard = CardView(context)
-        setMilestoneCard.layoutParams = menuItemCardLayoutParams
-        setMilestoneCard.addView(setMilestoneLayout)
-        setMilestoneCard.radius = 30f
-
-        //Move current milestone card section
-        var moveMilestoneLayout = LinearLayout(context)
-        moveMilestoneLayout.orientation = LinearLayout.HORIZONTAL
-        moveMilestoneLayout.layoutParams = menuItemCardLayoutParams
-
-        var moveMilestoneImage = ImageView(context)
-        moveMilestoneImage.setImageResource(R.drawable.popup_menu_sort_milestone_ic)
-        moveMilestoneImage.layoutParams = LinearLayout.LayoutParams(90, 90)
-        moveMilestoneImage.maxWidth = 10
-
-        val moveMilestoneText = TextView(context)
-        moveMilestoneText.text = "Move Current Milestone"
-        moveMilestoneText.textSize = 17f
-        moveMilestoneText.layoutParams = textLayoutParams
-
-        moveMilestoneLayout.addView(moveMilestoneImage)
-        moveMilestoneLayout.addView(moveMilestoneText)
-
-        var moveMilestoneCard = CardView(context)
-        moveMilestoneCard.layoutParams = menuItemCardLayoutParams
-        moveMilestoneCard.addView(moveMilestoneLayout)
-        moveMilestoneCard.radius = 30f
-
-        //Delete current milestone card section
-        var deleteMilestoneLayout = LinearLayout(context)
-        deleteMilestoneLayout.orientation = LinearLayout.HORIZONTAL
-        deleteMilestoneLayout.layoutParams = menuItemCardLayoutParams
-
-        var deleteMilestoneImage = ImageView(context)
-        deleteMilestoneImage.setImageResource(R.drawable.popup_menu_delete_milestone_ic)
-        deleteMilestoneImage.layoutParams = LinearLayout.LayoutParams(90, 90)
-        deleteMilestoneImage.maxWidth = 10
-
-        val deleteMilestoneText = TextView(context)
-        deleteMilestoneText.text = "Delete Current Milestone"
-        deleteMilestoneText.textSize = 17f
-        deleteMilestoneText.layoutParams = textLayoutParams
-
-        deleteMilestoneLayout.addView(deleteMilestoneImage)
-        deleteMilestoneLayout.addView(deleteMilestoneText)
-
-        var deleteMilestoneCard = CardView(context)
-        deleteMilestoneCard.layoutParams = menuItemCardLayoutParams
-        deleteMilestoneCard.addView(deleteMilestoneLayout)
-        deleteMilestoneCard.radius = 30f
-
-        val subBuilder = SubActionButton.Builder(context as Activity?)
-
-        var circleMenu =
-            FloatingActionMenu.Builder(context).setStartAngle(-50).setEndAngle(50).setRadius(500)
-                .addSubActionView(editMilestoneCard).addSubActionView(moveMilestoneCard)
-                .addSubActionView(setMilestoneCard)
-                .addSubActionView(deleteMilestoneCard).attachTo(milestoneStatusIcon).build()
-
 
         return ViewHolder(view)
 
@@ -165,24 +72,25 @@ class MilestoneTitleAdapter(
 
         holder.setIsRecyclable(false)
 
+        holder.editMilestoneExpandableButton!!.buttonDatas = menuButtonIconsArrayList
+
         //Popup menu for milestone can only open in edit mood
-        holder.milestoneStatusIcon!!.isEnabled = inEditMoodFlag
+        holder.milestoneStatusIcon!!.isEnabled = false
 
 
         holder.milestoneTitleLabel!!.text = goalMilestoneTitleList[position].milestoneTitle
 
-        if (currentGoal.goalSteps > 0) {
 
+        if (currentGoal.goalSteps > 0) {
             if (position == currentGoalMilestoneNumber.toInt())
-                milestoneStatusIcon!!.setBackgroundResource(R.drawable.current_milestone_ic)
+                holder.milestoneStatusIcon!!.setBackgroundResource(R.drawable.current_milestone_ic)
             else if (position < currentGoalMilestoneNumber.toInt())
-                milestoneStatusIcon!!.setBackgroundResource(R.drawable.complete_milestone_ic)
+                holder.milestoneStatusIcon!!.setBackgroundResource(R.drawable.complete_milestone_ic)
         } else {
             if (currentGoal.goalProgress == 100.toLong())
-                milestoneStatusIcon!!.setBackgroundResource(R.drawable.complete_milestone_ic)
+                holder.milestoneStatusIcon!!.setBackgroundResource(R.drawable.complete_milestone_ic)
             else
-                milestoneStatusIcon!!.setBackgroundResource(R.drawable.current_milestone_ic)
-
+                holder.milestoneStatusIcon!!.setBackgroundResource(R.drawable.current_milestone_ic)
         }
 
 
@@ -200,7 +108,7 @@ class MilestoneTitleAdapter(
 
         //Hide last vertical divider
         if (currentGoal.goalTitle == goalMilestoneTitleList[position].milestoneTitle)
-            holder.lowerDivider!!.visibility = View.GONE
+            holder.lowerDivider!!.setBackgroundColor(Color.parseColor("#ffffff"))
 
         //Open/Close the full milestones list
         holder.itemView.setOnClickListener {
@@ -215,13 +123,98 @@ class MilestoneTitleAdapter(
         if (inEditMoodFlag) {
 
             //Change all milestone status icon
-            milestoneStatusIcon!!.setBackgroundResource(R.drawable.edit_milestone_ic)
+            holder.milestoneStatusIcon!!.visibility = View.GONE
+            holder.editMilestoneExpandableButton!!.visibility = View.VISIBLE
 
+            holder.editMilestoneExpandableButton!!.setButtonEventListener(object :
+                ButtonEventListener {
+                override fun onButtonClicked(buttonNumber: Int) {
+                    when (buttonNumber) {
+
+                        1 -> {
+                            editMilestoneTitle()
+                        }
+                        2 -> {
+                            markMilestoneAsComplete()
+                        }
+                        3 -> {
+                            sortMilestone()
+                        }
+                        4 -> {
+                            deleteMilestone(position)
+                        }
+                    }
+                }
+
+                override fun onExpand() {
+                    println("a")
+                }
+
+                override fun onCollapse() {
+                    println("v")
+                }
+
+            })
+
+
+        } else {
+
+            holder.milestoneStatusIcon!!.visibility = View.VISIBLE
+            holder.editMilestoneExpandableButton!!.visibility = View.GONE
 
         }
 
         AdapterUtils().setFadeAnimation(holder.itemView, 950)
 
+    }
+
+    private fun deleteMilestone(position: Int) {
+
+
+        val deleteMilestoneAlert = AlertDialog.Builder(context)
+        deleteMilestoneAlert.setMessage("Are you sure?")
+            .setPositiveButton("Delete Milestone", DialogInterface.OnClickListener { dialog, which ->
+
+                goalMilestoneTitleList.removeAt(position)
+
+                var newMilestoneMap: HashMap<String, GoalMilestone> = HashMap()
+
+                for (position in 0 until goalMilestoneTitleList.size -1) {
+                    var tempGoalMilestone = GoalMilestone(
+                        UUID.randomUUID().toString(),
+                        goalMilestoneTitleList[position].milestoneTitle,
+                        position + 1
+                    )
+
+                    newMilestoneMap[tempGoalMilestone.goalMilestoneId] = tempGoalMilestone
+                }
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("goals/milestones/${currentGoal.userId}/${currentGoal.goalId}")
+                    .setValue(newMilestoneMap)
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("goals/${currentGoal.userId}/${currentGoal.goalId}/goalSteps")
+                    .setValue(newMilestoneMap.size)
+
+                notifyDataSetChanged()
+
+            }).setNegativeButton("Cancel", null)
+
+        deleteMilestoneAlert.create().show()
+
+    }
+
+    private fun sortMilestone() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun markMilestoneAsComplete() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    private fun editMilestoneTitle() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun expendMilestoneList() {
@@ -275,6 +268,8 @@ class MilestoneTitleAdapter(
         var milestoneTitleLabel: TextView? = null
         var lowerDivider: View? = null
         var milestoneStatusIcon: Button? = null
+        var editMilestoneExpandableButton: AllAngleExpandableButton? = null
+        var iconLinearLayout: LinearLayout? = null
 
 
         init {
@@ -282,6 +277,10 @@ class MilestoneTitleAdapter(
             milestoneTitleLabel = mView.findViewById(R.id.milestoneTitleLabel) as TextView
             lowerDivider = mView.findViewById(R.id.lowerDivider) as View
             milestoneStatusIcon = mView.findViewById(R.id.milestoneStatusIcon) as Button
+            editMilestoneExpandableButton =
+                mView.findViewById(R.id.editMilestoneExpandableButton) as AllAngleExpandableButton
+            iconLinearLayout =
+                mView.findViewById(R.id.iconLinearLayout) as LinearLayout
 
         }
 

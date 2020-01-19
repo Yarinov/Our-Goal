@@ -8,9 +8,11 @@
     android:textDirection="locale">
 
     <LinearLayout
+        android:id="@+id/iconLinearLayout"
         android:layout_width="match_parent"
-        android:layout_height="88sp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -22,6 +24,7 @@
                 android:layout_width="1sp"
                 android:layout_height="30sp"
                 android:layout_marginLeft="29sp"
+                android:layout_weight="1"
                 android:background="?android:attr/listDivider" />
 
             <Button
@@ -29,13 +32,39 @@
                 android:layout_width="28sp"
                 android:layout_height="28sp"
                 android:layout_marginLeft="15sp"
-                android:background="@drawable/milestone_ic" />
+                android:background="@drawable/milestone_ic"
+                />
+
+            <com.fangxu.allangleexpandablebutton.AllAngleExpandableButton
+                android:id="@+id/editMilestoneExpandableButton"
+                android:layout_width="10sp"
+                android:layout_height="28sp"
+                android:layout_marginLeft="7sp"
+                app:aebAnimDurationMillis="175"
+                app:aebButtonElevation="4dp"
+                app:aebEndAngleDegree="-70"
+                app:aebIsSelectionMode="false"
+                app:aebMainButtonRotateAnimDurationMillis="250"
+                app:aebMainButtonRotateDegree="-135"
+                app:aebMainButtonSizeDp="28dp"
+                app:aebMainButtonTextColor="#ffff5656"
+                app:aebMainButtonTextSizeSp="60dp"
+                app:aebRippleColor="@color/softBrown"
+                app:aebRippleEffect="true"
+                app:aebStartAngleDegree="70"
+                app:aebSubButtonSizeDp="32dp"
+                app:aebButtonGapDp="50sp"
+                app:aebSubButtonTextSizeSp="18dp"
+                app:aebBlurBackground="true"
+                android:visibility="gone"
+                />
 
             <View
                 android:id="@+id/lowerDivider"
                 android:layout_width="1sp"
                 android:layout_height="30sp"
                 android:layout_marginLeft="29sp"
+                android:layout_weight="1"
                 android:background="?android:attr/listDivider" />
 
         </LinearLayout>
@@ -45,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="15sp"
+            android:layout_margin="25sp"
             app:cardCornerRadius="7sp"
             app:cardElevation="2sp"
             app:cardMaxElevation="2sp">
