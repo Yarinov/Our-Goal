@@ -63,7 +63,6 @@ class MilestoneTitleAdapter(
         }
 
 
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -131,6 +130,7 @@ class MilestoneTitleAdapter(
             holder.editMilestoneExpandableButton!!.setButtonEventListener(object :
                 ButtonEventListener {
                 override fun onButtonClicked(buttonNumber: Int) {
+
                     when (buttonNumber) {
 
                         1 -> {
@@ -140,7 +140,7 @@ class MilestoneTitleAdapter(
                             markMilestoneAsComplete(position)
                         }
                         3 -> {
-                            sortMilestone(holder)
+                            sortMilestone(position, holder)
                         }
                         4 -> {
                             deleteMilestone(position)
@@ -193,7 +193,7 @@ class MilestoneTitleAdapter(
         notifyDataSetChanged()
     }
 
-    fun exitEditMood(){
+    fun exitEditMood() {
 
         milestoneStatusIcon!!.visibility = View.VISIBLE
         editMilestoneExpandableButton!!.visibility = View.GONE
@@ -205,10 +205,7 @@ class MilestoneTitleAdapter(
 
     }
 
-    private fun setupMilestonesIcons(
-        position: Int,
-        holder: ViewHolder
-    ) {
+    private fun setupMilestonesIcons(position: Int, holder: ViewHolder) {
         if (currentGoal.goalSteps > 0) {
 
             when {
@@ -233,6 +230,14 @@ class MilestoneTitleAdapter(
 
     private fun deleteMilestone(position: Int) {
 
+        if (position < currentGoalMilestoneNumber) {
+            Toast.makeText(
+                context,
+                "You Can't Edit Milestone That Was Marked As Complete.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
 
         if (currentGoal.goalTitle == goalMilestoneTitleList[position].goalMilestoneTitle) {//Removing the whole goal
             val deleteGoalAlert = AlertDialog.Builder(context)
@@ -305,18 +310,32 @@ class MilestoneTitleAdapter(
 
     }
 
-    private fun sortMilestone(
-        holder: ViewHolder
-    ) {
+    private fun sortMilestone(position: Int, holder: ViewHolder) {
 
+        if (position < currentGoalMilestoneNumber) {
+            Toast.makeText(
+                context,
+                "You Can't Edit Milestone That Was Marked As Complete.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
         holder.sortMilestoneLayout!!.visibility = View.VISIBLE
         holder.itemView.clearFocus()
 
 
     }
 
-
     private fun markMilestoneAsComplete(position: Int) {
+
+        if (position < currentGoalMilestoneNumber) {
+            Toast.makeText(
+                context,
+                "You Can't Edit Milestone That Was Marked As Complete.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
 
         val currentGoalStepWeight = AdapterUtils().getStepWeight(currentGoal)
 
@@ -380,6 +399,15 @@ class MilestoneTitleAdapter(
     }
 
     private fun editMilestoneTitle(position: Int) {
+
+        if (position < currentGoalMilestoneNumber) {
+            Toast.makeText(
+                context,
+                "You Can't Edit Milestone That Was Marked As Complete.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
 
         val popupView = (context as Activity).layoutInflater.inflate(
             R.layout.milestone_edit_dialog_layout,
@@ -487,16 +515,6 @@ class MilestoneTitleAdapter(
     }
 
 
-//    fun sortByAsc() {
-//        val comparator: Comparator<User> =
-//            Comparator { object1: User, object2: User ->
-//                object1.firstName.compareTo(object2.firstName, true)
-//            }
-//        Collections.sort(searchUsersResultList, comparator)
-//        notifyDataSetChanged()
-//    }
-
-
     inner class ViewHolder(private val mView: View) : RecyclerView.ViewHolder(mView) {
 
         var milestoneTitleLabel: TextView? = null
@@ -509,7 +527,6 @@ class MilestoneTitleAdapter(
         var upButton: Button? = null
         var downButton: Button? = null
         var okButton: Button? = null
-
 
         init {
 
