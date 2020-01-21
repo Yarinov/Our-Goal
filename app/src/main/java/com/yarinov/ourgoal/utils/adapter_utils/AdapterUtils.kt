@@ -7,6 +7,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
 import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.R
+import com.yarinov.ourgoal.goal.Goal
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.time.Duration
@@ -92,5 +93,10 @@ class AdapterUtils {
                     //Not Found
                 }
             }
+    }
+
+    fun getStepWeight(goal:Goal): Long {
+
+        return 100 / (goal.goalSteps + 1)
     }
 }

@@ -1,6 +1,5 @@
 package com.yarinov.ourgoal.goal
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -23,7 +22,7 @@ import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.comment.Comment
 import com.yarinov.ourgoal.goal.comment.CommentAdapter
-import com.yarinov.ourgoal.goal.milestone.MilestoneTitle
+import com.yarinov.ourgoal.goal.milestone.GoalMilestone
 import com.yarinov.ourgoal.goal.milestone.MilestoneTitleAdapter
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
@@ -56,15 +55,15 @@ class SingleGoalActivity : AppCompatActivity() {
     var miniCubeIcon: ImageView? = null
     var miniCubeLabel: TextView? = null
 
-    var titleInEditMood:EditText? = null
-    var descriptionInEditMood:EditText? = null
+    var titleInEditMood: EditText? = null
+    var descriptionInEditMood: EditText? = null
 
     var currentUserSupportCurrentGoalFlag: Boolean? = null
     var currentUserGoalFlag: Boolean? = null
 
     var noCommentsLayout: LinearLayout? = null
 
-    var currentGoalMilestonesTitle: ArrayList<MilestoneTitle>? = null
+    var currentGoalMilestonesTitle: ArrayList<GoalMilestone>? = null
     var milestonesRecyclerView: RecyclerView? = null
     var milestoneTitleAdapter: MilestoneTitleAdapter? = null
 
@@ -168,7 +167,7 @@ class SingleGoalActivity : AppCompatActivity() {
 
     private fun editGoal() {
 
-        if (!inEditMoodFlag){//enter edit mood
+        if (!inEditMoodFlag) {//enter edit mood
 
             inEditMoodFlag = true
 
@@ -189,16 +188,61 @@ class SingleGoalActivity : AppCompatActivity() {
             goalDescriptionLabel!!.visibility = View.GONE
             descriptionInEditMood!!.setText(goalDescriptionLabel!!.text.toString())
             descriptionInEditMood!!.visibility = View.VISIBLE
-        }else{//Exit from edit mood
+        } else {//Exit from edit mood
 
             inEditMoodFlag = false
 
-            //Close full goal's milestone list
-            milestoneTitleAdapter!!.inEditMood()
+            var miniCubeEditColor = Color.parseColor("#D56D6E")
+            miniCube!!.setCardBackgroundColor(miniCubeEditColor)
+            miniCubeLabel!!.text = "Edit Goal"
+            miniCubeIcon!!.setImageResource(R.drawable.edit_goal_ic)
 
+            getUpdatedGoalOnExitEditMood()
+
+            titleInEditMood!!.visibility = View.GONE
+            goalTitleLabel!!.text = goalTitleLabel!!.text.toString()
+            goalTitleLabel!!.visibility = View.VISIBLE
+
+            descriptionInEditMood!!.visibility = View.GONE
+            goalDescriptionLabel!!.text = goalDescriptionLabel!!.text.toString()
+            goalDescriptionLabel!!.visibility = View.VISIBLE
         }
 
 
+    }
+
+    private fun getUpdatedGoalOnExitEditMood() {
+
+        val goalDB =
+            FirebaseDatabase.getInstance()
+                .reference.child("goals/${currentGoal!!.userId}/${currentGoal!!.goalId}")
+
+        val getNewGoalDataListener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(p0: DataSnapshot) {
+
+                val newGoalMap = p0.value as HashMap<*, *>
+                currentGoal = Goal(
+                    newGoalMap["goalId"].toString(),
+                    newGoalMap["goalTitle"].toString(),
+                    newGoalMap["goalDescription"].toString(),
+                    newGoalMap["goalProgress"] as Long,
+                    newGoalMap["goalSteps"] as Long,
+                    newGoalMap["commentSectionId"].toString(),
+                    newGoalMap["goalStatus"].toString(),
+                    newGoalMap["datePosted"].toString(),
+                    newGoalMap["userId"].toString()
+                )
+
+                milestoneTitleAdapter!!.notifyDataSetChanged()
+
+                milestoneTitleAdapter!!.exitEditMood()
+            }
+
+        }
+
+        goalDB.addListenerForSingleValueEvent(getNewGoalDataListener)
     }
 
     private fun loadUserProfilePic() {
@@ -241,13 +285,16 @@ class SingleGoalActivity : AppCompatActivity() {
                 if (p0.exists()) {//Goal have milestone/s
                     for (milestone in p0.children) {
 
+                        val currentMileId =
+                            milestone.child("goalMilestoneId").value.toString()
                         val currentMileTitle =
                             milestone.child("goalMilestoneTitle").value.toString()
                         val currentMileOrder =
                             milestone.child("goalMilestoneOrder").value.toString()
 
                         currentGoalMilestonesTitle!!.add(
-                            MilestoneTitle(
+                            GoalMilestone(
+                                currentMileId,
                                 currentMileTitle,
                                 currentMileOrder.toInt()
                             )
@@ -260,19 +307,20 @@ class SingleGoalActivity : AppCompatActivity() {
                 }
 
                 currentGoalMilestonesTitle!!.add(
-                    MilestoneTitle(
+                    GoalMilestone(
+                        "",
                         currentGoal!!.goalTitle,
                         currentGoalMilestonesTitle!!.size + 1
                     )
                 )
 
-                currentGoalMilestonesTitle!!.sortBy { it.milestoneOrder }
+                currentGoalMilestonesTitle!!.sortBy { it.goalMilestoneOrder }
 
                 milestoneTitleAdapter!!.notifyDataSetChanged()
             }
 
         }
-        currentGoalMilestonesDB.addListenerForSingleValueEvent(getGoalMilestonesListener)
+        currentGoalMilestonesDB.addValueEventListener(getGoalMilestonesListener)
 
 
     }

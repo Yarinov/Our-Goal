@@ -29,7 +29,6 @@ class MilestoneEditDialog : Dialog, View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.milestone_edit_dialog_layout)
 
-        optionMoodButton = findViewById(R.id.milestoneInEditOptionsButton)
 
         this.window!!.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
