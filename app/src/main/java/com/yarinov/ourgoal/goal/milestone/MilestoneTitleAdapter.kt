@@ -39,6 +39,7 @@ class MilestoneTitleAdapter(
 
     private var minimizedMilestones = true
     private var inEditMoodFlag = false
+    private var inEditMoodSortFlag = false
 
     var menuButtonIconsArrayList: ArrayList<ButtonData>? = null
 
@@ -320,9 +321,31 @@ class MilestoneTitleAdapter(
             ).show()
             return
         }
-        holder.sortMilestoneLayout!!.visibility = View.VISIBLE
-        holder.itemView.clearFocus()
 
+        if (position == goalMilestoneTitleList.size -1) {
+            Toast.makeText(
+                context,
+                "You Can't Rearrange The Goal Itself.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        if (inEditMoodSortFlag){
+            Toast.makeText(
+                context,
+                "You Can't Rearrange More Then One Milestone At The Same Time.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        if (!inEditMoodSortFlag) {
+            holder.sortMilestoneLayout!!.visibility = View.VISIBLE
+            holder.itemView.clearFocus()
+
+            inEditMoodSortFlag = true
+        }
 
     }
 
@@ -400,10 +423,19 @@ class MilestoneTitleAdapter(
 
     private fun editMilestoneTitle(position: Int) {
 
+        if (position == goalMilestoneTitleList.size -1) {
+            Toast.makeText(
+                context,
+                "You Can't Edit The Goal Title Here.",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
         if (position < currentGoalMilestoneNumber) {
             Toast.makeText(
                 context,
-                "You Can't Edit Milestone That Was Marked As Complete.",
+                "You Can't Edit Goal Here.",
                 Toast.LENGTH_SHORT
             ).show()
             return
@@ -433,8 +465,8 @@ class MilestoneTitleAdapter(
 
         okButton.setOnClickListener {
 
-            val deleteGoalAlert = AlertDialog.Builder(context)
-            deleteGoalAlert.setMessage("This Action Will Change The Milestone, Are You Sure?")
+            val editMilestoneAlert = AlertDialog.Builder(context)
+            editMilestoneAlert.setMessage("This Action Will Change The Milestone, Are You Sure?")
                 .setPositiveButton(
                     "Yes",
                     DialogInterface.OnClickListener { dialog, which ->
@@ -449,7 +481,7 @@ class MilestoneTitleAdapter(
 
                     }).setNegativeButton("Cancel", null)
 
-            deleteGoalAlert.create().show()
+            editMilestoneAlert.create().show()
         }
     }
 
@@ -561,6 +593,7 @@ class MilestoneTitleAdapter(
                 }
 
                 sortMilestoneLayout!!.visibility = View.GONE
+                inEditMoodSortFlag = false
 
 
             }

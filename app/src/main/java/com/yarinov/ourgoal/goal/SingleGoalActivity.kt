@@ -1,11 +1,13 @@
 package com.yarinov.ourgoal.goal
 
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -70,6 +72,8 @@ class SingleGoalActivity : AppCompatActivity() {
     var commentSectionLayout: LinearLayout? = null
 
     var inEditMoodFlag: Boolean = false
+    var changedGoalTitleFlag: Boolean = false
+    var changedGoalDescriptionFlag: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -197,21 +201,28 @@ class SingleGoalActivity : AppCompatActivity() {
             miniCubeLabel!!.text = "Edit Goal"
             miniCubeIcon!!.setImageResource(R.drawable.edit_goal_ic)
 
-            getUpdatedGoalOnExitEditMood()
+            changedGoalTitleFlag =
+                (titleInEditMood!!.text.toString() != goalTitleLabel!!.text.toString())
 
-            titleInEditMood!!.visibility = View.GONE
-            goalTitleLabel!!.text = goalTitleLabel!!.text.toString()
-            goalTitleLabel!!.visibility = View.VISIBLE
+            changedGoalDescriptionFlag =
+                (descriptionInEditMood!!.text.toString() != goalDescriptionLabel!!.text.toString())
 
-            descriptionInEditMood!!.visibility = View.GONE
-            goalDescriptionLabel!!.text = goalDescriptionLabel!!.text.toString()
-            goalDescriptionLabel!!.visibility = View.VISIBLE
+            getUpdatedGoalOnExitEditMood(changedGoalTitleFlag, changedGoalDescriptionFlag)
+
+
         }
 
 
     }
 
-    private fun getUpdatedGoalOnExitEditMood() {
+    fun getUpdatedGoalFromDB() {
+
+        val view = this.currentFocus
+        if (view != null) {
+            val imm =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
 
         val goalDB =
             FirebaseDatabase.getInstance()
@@ -237,12 +248,104 @@ class SingleGoalActivity : AppCompatActivity() {
 
                 milestoneTitleAdapter!!.notifyDataSetChanged()
 
+                titleInEditMood!!.visibility = View.GONE
+                goalTitleLabel!!.visibility = View.VISIBLE
+
+                descriptionInEditMood!!.visibility = View.GONE
+                goalDescriptionLabel!!.visibility = View.VISIBLE
+
                 milestoneTitleAdapter!!.exitEditMood()
             }
 
         }
 
         goalDB.addListenerForSingleValueEvent(getNewGoalDataListener)
+
+    }
+
+    private fun getUpdatedGoalOnExitEditMood(
+        changedGoalTitleFlag: Boolean,
+        changedGoalDescriptionFlag: Boolean
+    ) {
+
+        var alertDialogFlag = changedGoalDescriptionFlag || changedGoalTitleFlag
+
+        var alertDialogString = ""
+
+        if (alertDialogFlag) {
+
+            if (changedGoalTitleFlag && changedGoalDescriptionFlag) {
+                alertDialogString =
+                    "This Action Will Change The Goal Description And Title, Are You Sure?"
+            } else if (changedGoalTitleFlag) {
+                alertDialogString = "This Action Will Change The Goal Title, Are You Sure?"
+            } else if (changedGoalDescriptionFlag) {
+                alertDialogString = "This Action Will Change The Goal Description, Are You Sure?"
+            }
+
+            val changeTitleAndDescriptionAlert = AlertDialog.Builder(this)
+            changeTitleAndDescriptionAlert.setMessage(alertDialogString)
+                .setPositiveButton(
+                    "Yes",
+                    DialogInterface.OnClickListener { dialog, which ->
+
+                        //Update the Goal Title and description DB
+
+                        if (changedGoalTitleFlag && changedGoalDescriptionFlag) {
+
+                            goalTitleLabel!!.text = titleInEditMood!!.text.toString()
+                            goalDescriptionLabel!!.text = descriptionInEditMood!!.text.toString()
+
+                            FirebaseDatabase.getInstance()
+                                .reference.child(
+                                "goals/${currentGoal!!.userId}/${currentGoal!!.goalId}" +
+                                        "/goalTitle"
+                            )
+                                .setValue(titleInEditMood!!.text.toString())
+
+                            FirebaseDatabase.getInstance()
+                                .reference.child(
+                                "goals/${currentGoal!!.userId}/${currentGoal!!.goalId}" +
+                                        "/goalDescription"
+                            )
+                                .setValue(descriptionInEditMood!!.text.toString())
+
+                            getUpdatedGoalFromDB()
+
+                        } else if (changedGoalTitleFlag) {
+                            FirebaseDatabase.getInstance()
+                                .reference.child(
+                                "goals/${currentGoal!!.userId}/${currentGoal!!.goalId}" +
+                                        "/goalTitle"
+                            )
+                                .setValue(titleInEditMood!!.text.toString()).addOnCompleteListener {
+                                    getUpdatedGoalFromDB()
+                                }
+
+                            goalTitleLabel!!.text = titleInEditMood!!.text.toString()
+                        } else if (changedGoalDescriptionFlag) {
+                            FirebaseDatabase.getInstance()
+                                .reference.child(
+                                "goals/${currentGoal!!.userId}/${currentGoal!!.goalId}" +
+                                        "/goalDescription"
+                            )
+                                .setValue(descriptionInEditMood!!.text.toString())
+                                .addOnCompleteListener {
+                                    getUpdatedGoalFromDB()
+                                }
+
+                            goalDescriptionLabel!!.text = descriptionInEditMood!!.text.toString()
+                        }
+
+
+                    }).setNegativeButton("Cancel", null)
+
+            changeTitleAndDescriptionAlert.create().show()
+
+        } else {
+
+            getUpdatedGoalFromDB()
+        }
     }
 
     private fun loadUserProfilePic() {
