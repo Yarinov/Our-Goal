@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -140,7 +139,7 @@ class HomeFragment : Fragment() {
             override fun onDataChange(p0: DataSnapshot) {
 
                 //Add all current user friends
-                for (userId in p0.child("friends").children){
+                for (userId in p0.child("friends").children) {
 
                     //Check if user isn't hidden -> If not, add to usersId list
                     if (!p0.child("hidden_friends/${userId.key.toString()}").exists())
@@ -169,14 +168,14 @@ class HomeFragment : Fragment() {
 
             val userGoalsDB =
                 FirebaseDatabase.getInstance()
-                    .reference.child("goals/$userId")
+                    .reference.child("goals")
 
             val getAllUserGoalsListener = object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {}
 
                 override fun onDataChange(p0: DataSnapshot) {
 
-                    for (goal in p0.children) {
+                    for (goal in p0.child(userId).children) {
 
                         val userGoalMap = goal.value as HashMap<*, *>
                         val userGoal = Goal(
@@ -191,11 +190,17 @@ class HomeFragment : Fragment() {
                             userGoalMap["userId"].toString()
                         )
 
-                        feedGoalsList.add(userGoal)
+                        //Check if goal isn't hidden
+                        val isGoalHiddenFlag =
+                            p0.child("hidden_goals/${currentUser!!.uid}/${userGoal.goalId}")
+                                .exists()
+                        if (!isGoalHiddenFlag)
+                            feedGoalsList.add(userGoal)
                     }
 
                     feedAdapter!!.sortByAsc()
                     feedAdapter!!.notifyDataSetChanged()
+
                 }
 
             }

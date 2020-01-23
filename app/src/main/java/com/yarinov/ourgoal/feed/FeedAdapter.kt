@@ -132,7 +132,9 @@ class FeedAdapter(
         var lowerDivider =
             popupView.findViewById<View>(R.id.lowerDivider)
 
-        //Check if current goal is current user's goal. If so make the delete section in the option menu visible and the unfollow user hide
+        //Check if current goal is current user's goal.
+        //If so make the delete section in the option menu visible and the unfollow user hide,
+        //else hide the last divider
         if (currentGoal.userId == currentUserId) {
             deleteSectionOnGoalOptionMenu.visibility = View.VISIBLE
             unfollowSectionOnGoalOptionMenu.visibility = View.GONE
@@ -170,6 +172,20 @@ class FeedAdapter(
         unfollowSectionOnGoalOptionMenu.setOnClickListener {
             unfollowUser(currentGoal, goalOptionsMenuPopupWindow)
         }
+
+        //hide goal
+        hideSectionOnGoalOptionMenu.setOnClickListener {
+            hideCurrentGoal(currentGoal, goalOptionsMenuPopupWindow)
+        }
+    }
+
+    private fun hideCurrentGoal(currentGoal: Goal, goalOptionsMenuPopupWindow: PopupWindow) {
+
+        FirebaseDatabase.getInstance()
+            .reference.child("goals/hidden_goals/$currentUserId/${currentGoal.goalId}")
+            .setValue(true).addOnCompleteListener {
+                goalOptionsMenuPopupWindow.dismiss()
+            }
     }
 
     private fun unfollowUser(currentGoal: Goal, goalOptionsMenuPopupWindow: PopupWindow) {

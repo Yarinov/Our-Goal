@@ -89,14 +89,14 @@ class LoadFeedAsyncTask : AsyncTask<Void, Void, String> {
 
             val userGoalsDB =
                 FirebaseDatabase.getInstance()
-                    .reference.child("goals/$userId")
+                    .reference.child("goals")
 
             val getAllUserGoalsListener = object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {}
 
                 override fun onDataChange(p0: DataSnapshot) {
 
-                    for (goal in p0.children) {
+                    for (goal in p0.child(userId).children) {
 
                         val userGoalMap = goal.value as HashMap<*, *>
                         val userGoal = Goal(
@@ -111,7 +111,11 @@ class LoadFeedAsyncTask : AsyncTask<Void, Void, String> {
                             userGoalMap["userId"].toString()
                         )
 
-                        feedGoalsList.add(userGoal)
+                        //Check if goal isn't hidden
+                        val isGoalHiddenFlag =
+                            p0.child("hidden_goals/$currentUserId/${userGoal.goalId}").exists()
+                        if (!isGoalHiddenFlag)
+                            feedGoalsList.add(userGoal)
                     }
 
                     feedAdapter!!.sortByAsc()
