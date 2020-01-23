@@ -1,24 +1,26 @@
 package com.yarinov.ourgoal.feed
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageException
 import com.shuhart.stepview.StepView
-import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
 import com.yarinov.ourgoal.goal.SingleGoalActivity
@@ -34,6 +36,8 @@ class FeedAdapter(
     private var goalsList: ArrayList<Goal>,
     private var currentUserId: String
 ) : RecyclerView.Adapter<FeedAdapter.ViewHolder>() {
+
+    var unfollowUserText: TextView? = null
 
     var currentGoalMilestonesTitle: ArrayList<MilestoneTitle>? = null
 
@@ -60,7 +64,7 @@ class FeedAdapter(
         holder.goalDescriptionLabel!!.text = currentGoal.goalDescription
 
         //Get goal's user name
-        getGoalUserName(currentGoal, holder)
+        getGoalUserName(currentGoal, holder.userNameLabel, 0)
 
         //Get Comments Count
         getCommentsCount(currentGoal, holder)
@@ -86,8 +90,123 @@ class FeedAdapter(
 
         AdapterUtils().setFadeAnimation(holder.itemView, 1000)
 
-        holder.timeStampLabel!!.text = AdapterUtils().getTimeSincePosted(position, currentGoal.datePosted)
+        holder.timeStampLabel!!.text =
+            AdapterUtils().getTimeSincePosted(position, currentGoal.datePosted)
 
+        //Setup option menu
+        goalOptionsMenuSetup(holder, position)
+
+    }
+
+    private fun goalOptionsMenuSetup(
+        holder: ViewHolder,
+        position: Int
+    ) {
+
+        var currentGoal = goalsList[position]
+
+        val popupView = (context as Activity).layoutInflater.inflate(
+            R.layout.goal_options_menu_layout,
+            null
+        )
+
+        //Set the goal's user full name on the setting menu
+        unfollowUserText = popupView.findViewById<TextView>(R.id.unfollowUserText)
+
+        getGoalUserName(currentGoal, unfollowUserText, 1)
+
+        var shareSectionOnGoalOptionMenu =
+            popupView.findViewById<LinearLayout>(R.id.shareSectionOnGoalOptionMenu)
+        var hideSectionOnGoalOptionMenu =
+            popupView.findViewById<LinearLayout>(R.id.hideSectionOnGoalOptionMenu)
+        var unfollowSectionOnGoalOptionMenu =
+            popupView.findViewById<LinearLayout>(R.id.unfollowSectionOnGoalOptionMenu)
+        var reportSectionOnGoalOptionMenu =
+            popupView.findViewById<LinearLayout>(R.id.reportSectionOnGoalOptionMenu)
+        var deleteSectionOnGoalOptionMenu =
+            popupView.findViewById<LinearLayout>(R.id.deleteSectionOnGoalOptionMenu)
+
+
+        var upperDivider =
+            popupView.findViewById<View>(R.id.upperDivider)
+        var lowerDivider =
+            popupView.findViewById<View>(R.id.lowerDivider)
+
+        //Check if current goal is current user's goal. If so make the delete section in the option menu visible and the unfollow user hide
+        if (currentGoal.userId == currentUserId) {
+            deleteSectionOnGoalOptionMenu.visibility = View.VISIBLE
+            unfollowSectionOnGoalOptionMenu.visibility = View.GONE
+            upperDivider.visibility = View.GONE
+        }else{
+            lowerDivider.visibility = View.GONE
+        }
+
+        var goalOptionsMenuPopupWindow = PopupWindow(context)
+        goalOptionsMenuPopupWindow.contentView = popupView
+        goalOptionsMenuPopupWindow.width = LinearLayout.LayoutParams.MATCH_PARENT
+        goalOptionsMenuPopupWindow.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        goalOptionsMenuPopupWindow.isFocusable = true
+        goalOptionsMenuPopupWindow.setBackgroundDrawable(ColorDrawable())
+        goalOptionsMenuPopupWindow.animationStyle = R.style.popup_window_animation_bottom
+
+        //On 'More' icon press -> open the option menu and dim the background. When dismiss clear dim.
+        holder.goalOptions!!.setOnClickListener {
+
+            val root = context.window.decorView.rootView as ViewGroup
+            AdapterUtils().applyDim(root, 0.5f)
+            goalOptionsMenuPopupWindow.showAtLocation(popupView, Gravity.BOTTOM, 0, 0)
+
+            goalOptionsMenuPopupWindow.setOnDismissListener {
+                AdapterUtils().clearDim(root)
+            }
+        }
+
+        //Delete the goal
+        deleteSectionOnGoalOptionMenu.setOnClickListener {
+            deleteCurrentUserGoal(currentGoal, goalOptionsMenuPopupWindow)
+        }
+
+        //unfollow user
+        unfollowSectionOnGoalOptionMenu.setOnClickListener {
+            unfollowUser(currentGoal, goalOptionsMenuPopupWindow)
+        }
+    }
+
+    private fun unfollowUser(currentGoal: Goal, goalOptionsMenuPopupWindow: PopupWindow) {
+
+        FirebaseDatabase.getInstance()
+            .reference.child("connections/$currentUserId/hidden_friends/${currentGoal.userId}")
+            .setValue(true).addOnCompleteListener {
+                goalOptionsMenuPopupWindow.dismiss()
+            }
+    }
+
+    private fun deleteCurrentUserGoal(
+        currentGoal: Goal,
+        goalOptionsMenuPopupWindow: PopupWindow
+    ) {
+        val deleteGoalAlert = AlertDialog.Builder(context)
+        deleteGoalAlert.setMessage("This Action Will Delete The Goal Itself, Are You Sure?")
+            .setPositiveButton(
+                "Delete Goal",
+                DialogInterface.OnClickListener { dialog, which ->
+
+                    //Update the milestone DB
+                    FirebaseDatabase.getInstance()
+                        .reference.child("goals/milestones/${currentGoal.userId}/${currentGoal.goalId}")
+                        .removeValue()
+
+                    //Update number of steps in the goal DB
+                    FirebaseDatabase.getInstance()
+                        .reference.child("goals/${currentGoal.userId}/${currentGoal.goalId}")
+                        .removeValue()
+
+                    notifyDataSetChanged()
+                    goalOptionsMenuPopupWindow.dismiss()
+
+                }).setNegativeButton("Cancel", null)
+
+        deleteGoalAlert.create().show()
     }
 
 
@@ -215,7 +334,12 @@ class FeedAdapter(
         currentUserGoalCommentsDB.addListenerForSingleValueEvent(getCommentsCountListener)
     }
 
-    private fun getGoalUserName(currentGoal: Goal, holder: ViewHolder) {
+    /**
+     * This function will set the user's full name in the textViews.
+     * View position: 0 - User name Label in the post itself
+     *                  1 - User name label in the goal option menu
+     */
+    private fun getGoalUserName(currentGoal: Goal, textView: TextView?, viewPosition: Int) {
 
         val currentUserGoalDB =
             FirebaseDatabase.getInstance()
@@ -228,7 +352,13 @@ class FeedAdapter(
 
                 val userFullName =
                     "${p0.child("firstName").value.toString()} ${p0.child("lastName").value.toString()}"
-                holder.userNameLabel!!.text = userFullName
+
+
+                if (viewPosition == 0)
+                    textView!!.text = userFullName
+                else if (viewPosition == 1)
+                    textView!!.text = "Unfollow $userFullName"
+
             }
 
         }

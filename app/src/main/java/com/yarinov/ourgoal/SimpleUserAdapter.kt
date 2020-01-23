@@ -24,6 +24,8 @@ class SimpleUserAdapter(
     private var simpleUsersList: List<User>
 ) : RecyclerView.Adapter<SimpleUserAdapter.ViewHolder>() {
 
+    private val searchResultLimit = 10
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val view =
@@ -58,7 +60,12 @@ class SimpleUserAdapter(
     }
 
     override fun getItemCount(): Int {
-        return simpleUsersList.size
+
+        //Limit to 10 results
+        return if (simpleUsersList.size < searchResultLimit)
+            simpleUsersList.size
+        else
+            simpleUsersList.size
     }
 
     override fun getItemId(position: Int): Long {

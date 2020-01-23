@@ -1,7 +1,11 @@
 package com.yarinov.ourgoal.utils.adapter_utils
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageException
@@ -10,9 +14,7 @@ import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
-import java.time.Duration
 import java.util.*
-import kotlin.collections.ArrayList
 
 class AdapterUtils {
 
@@ -24,7 +26,7 @@ class AdapterUtils {
     }
 
     @SuppressLint("SetTextI18n")
-    public fun getTimeSincePosted(position: Int, datePosted: String) : String {
+    public fun getTimeSincePosted(position: Int, datePosted: String): String {
 
 
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'")
@@ -47,6 +49,9 @@ class AdapterUtils {
         val postedDateDateMonth = postedDateCalendar[Calendar.MONTH]
         val postedDateYear = postedDateCalendar[Calendar.YEAR]
 
+        val postedDateToShow =
+            "${getMonthName(postedDateDateMonth)} ${postedDateCalendar[Calendar.DAY_OF_MONTH]} $postedDateDateHr:$postedDateDateMin $postedDateYear"
+
         return if (currentDateYear == postedDateYear) {
             if (currentDateMonth == postedDateDateMonth) {
                 if (currentDateDay == postedDateDateDay) {
@@ -57,21 +62,81 @@ class AdapterUtils {
                             "${currentDateMin - postedDateDateMin} m"
                         }
                     } else {
-                       "${currentDateHr - postedDateDateHr} h"
+                        "${currentDateHr - postedDateDateHr} h"
                     }
                 } else {
-                    "${currentDateDay - postedDateDateDay} d"
+                    if ((currentDateDay - postedDateDateDay) < 7)
+                        "${currentDateDay - postedDateDateDay} d"
+                    else postedDateToShow
+
                 }
             } else {
-                "${currentDateMonth - postedDateDateMonth} m"
+                postedDateToShow
             }
         } else {
-            "${currentDateYear - postedDateYear} y"
+            postedDateToShow
         }
 
     }
 
-    public fun loadUserProfilePic(
+    fun getMonthName(monthNumber: Int): String {
+
+        return when (monthNumber) {
+            0 -> {
+                "Jan"
+            }
+            1 -> {
+                "Feb"
+            }
+            2 -> {
+                "Mar"
+            }
+            3 -> {
+                "Apr"
+            }
+            4 -> {
+                "May"
+            }
+            5 -> {
+                "Jun"
+            }
+            6 -> {
+                "Jul"
+            }
+            7 -> {
+                "Aug"
+            }
+            8 -> {
+                "Sep"
+            }
+            9 -> {
+                "Oct"
+            }
+            10 -> {
+                "Nov"
+            }
+            else -> {
+                "Dec"
+            }
+        }
+
+
+    }
+
+    fun applyDim(parent: ViewGroup, dimAmount: Float) {
+        val dim: Drawable = ColorDrawable(Color.BLACK)
+        dim.setBounds(0, 0, parent.width, parent.height)
+        dim.alpha = (255 * dimAmount).toInt()
+        val overlay = parent.overlay
+        overlay.add(dim)
+    }
+
+    fun clearDim(parent: ViewGroup) {
+        val overlay = parent.overlay
+        overlay.clear()
+    }
+
+    fun loadUserProfilePic(
         circleImageView: CircleImageView?,
         userId: String
     ) {
@@ -95,7 +160,7 @@ class AdapterUtils {
             }
     }
 
-    fun getStepWeight(goal:Goal): Long {
+    fun getStepWeight(goal: Goal): Long {
 
         return 100 / (goal.goalSteps + 1)
     }

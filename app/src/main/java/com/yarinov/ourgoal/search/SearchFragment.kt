@@ -21,6 +21,7 @@ import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.SimpleUserAdapter
 import com.yarinov.ourgoal.user.User
 
+
 /**
  * A simple [Fragment] subclass.
  */
@@ -34,7 +35,6 @@ class SearchFragment : Fragment() {
     var searchResultAdapter: SimpleUserAdapter? = null
 
     var rootDB: FirebaseDatabase? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

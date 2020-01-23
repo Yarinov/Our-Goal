@@ -51,7 +51,7 @@ class LoadFeedAsyncTask : AsyncTask<Void, Void, String> {
 
         val currentUserConnectionDB =
             FirebaseDatabase.getInstance()
-                .reference.child("connections/${this.currentUserId}/friends")
+                .reference.child("connections/${this.currentUserId}")
 
         val getAllFriendsIdListener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
@@ -59,8 +59,13 @@ class LoadFeedAsyncTask : AsyncTask<Void, Void, String> {
             override fun onDataChange(p0: DataSnapshot) {
 
                 //Add all current user friends
-                for (userId in p0.children)
-                    usersIdList.add(userId.key.toString())
+                for (userId in p0.child("friends").children){
+
+                    //Check if user isn't hidden -> If not, add to usersId list
+                    if (!p0.child("hidden_friends/${userId.key.toString()}").exists())
+                        usersIdList.add(userId.key.toString())
+                }
+
 
                 usersIdList.add(currentUserId)
 

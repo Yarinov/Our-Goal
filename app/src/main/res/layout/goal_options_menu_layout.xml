@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:orientation="vertical"
+    android:textAlignment="gravity"
+    android:textDirection="locale">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="4sp"
+        app:cardCornerRadius="8sp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/shareSectionOnGoalOptionMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/shareGoalIcon"
+                    android:layout_width="25sp"
+                    android:layout_height="25sp"
+                    android:layout_margin="12sp"
+                    custom:srcCompat="@drawable/share_goal_in_goal_option_menu" />
+
+                <TextView
+                    android:id="@+id/shareGoalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/lato"
+                    android:text="Share Goal"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider8"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginRight="15sp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/hideSectionOnGoalOptionMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/hideGoalIcon"
+                    android:layout_width="25sp"
+                    android:layout_height="25sp"
+                    android:layout_margin="12sp"
+                    app:srcCompat="@drawable/hide_goal_in_goal_option_menu" />
+
+                <TextView
+                    android:id="@+id/hideGoalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/lato"
+                    android:text="Hide Goal"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/upperDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginRight="15sp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/unfollowSectionOnGoalOptionMenu"
+                android:layout_width="match_parent"
+                android:layout_height="41dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/blockUserIcon"
+                    android:layout_width="25sp"
+                    android:layout_height="25sp"
+                    android:layout_margin="12sp"
+                    app:srcCompat="@drawable/unfollow_user_in_goal_option_menu" />
+
+                <TextView
+                    android:id="@+id/unfollowUserText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/lato"
+                    android:text="Unfollow User-Name"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider10"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginRight="15sp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/reportSectionOnGoalOptionMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/reportGoalIcon"
+                    android:layout_width="25sp"
+                    android:layout_height="25sp"
+                    android:layout_margin="12sp"
+                    app:srcCompat="@drawable/report_goal_in_goal_option_menu" />
+
+                <TextView
+                    android:id="@+id/reportGoalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/lato"
+                    android:text="Report Goal"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/lowerDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15sp"
+                android:layout_marginRight="15sp"
+                android:background="@color/gray" />
+
+            <LinearLayout
+                android:id="@+id/deleteSectionOnGoalOptionMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/deleteGoalIcon"
+                    android:layout_width="25sp"
+                    android:layout_height="25sp"
+                    android:layout_margin="12sp"
+                    app:srcCompat="@drawable/delete_milestone_ic" />
+
+                <TextView
+                    android:id="@+id/deleteGoalText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/lato"
+                    android:text="Delete Goal"
+                    android:textColor="@android:color/holo_red_light"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

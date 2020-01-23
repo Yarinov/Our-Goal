@@ -132,7 +132,7 @@ class HomeFragment : Fragment() {
 
         val currentUserConnectionDB =
             FirebaseDatabase.getInstance()
-                .reference.child("connections/${currentUser!!.uid}/friends")
+                .reference.child("connections/${currentUser!!.uid}")
 
         val getAllFriendsIdListener = object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
@@ -140,8 +140,12 @@ class HomeFragment : Fragment() {
             override fun onDataChange(p0: DataSnapshot) {
 
                 //Add all current user friends
-                for (userId in p0.children)
-                    usersIdList.add(userId.key.toString())
+                for (userId in p0.child("friends").children){
+
+                    //Check if user isn't hidden -> If not, add to usersId list
+                    if (!p0.child("hidden_friends/${userId.key.toString()}").exists())
+                        usersIdList.add(userId.key.toString())
+                }
 
                 usersIdList.add(currentUser!!.uid)
 

@@ -45,6 +45,8 @@ class ConnectionFragment : Fragment() {
 
     var currentUser: FirebaseUser? = null
 
+    var friendRequestPopupWindowFlag: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,8 +56,10 @@ class ConnectionFragment : Fragment() {
         val connectionFragmentView =
             inflater.inflate(R.layout.fragment_connection, container, false)
 
+        //Get current user
         currentUser = FirebaseAuth.getInstance().currentUser
 
+        //init user friend list and friend requests list
         usersRequestList = ArrayList()
         usersFriendsList = ArrayList()
 
@@ -72,11 +76,18 @@ class ConnectionFragment : Fragment() {
         getFriendRequests()
         getFriendsList()
 
+        //user clicked on the friend requests section ->
+        //if friend request list isn't empty -> Open popup with this friend requests
+        //else -> do nothing
         friendRequestsSection!!.setOnClickListener {
-            if (usersRequestList!!.isNotEmpty())
+            if (usersRequestList!!.isNotEmpty() && !friendRequestPopupWindowFlag){
                 openFriendRequestsPopupWindow()
+                friendRequestPopupWindowFlag = true
+            }
+
         }
 
+        //Setup the friend requests adapter
         friendRequestAdapter =
             context?.let { FriendRequestAdapter(it, usersRequestList!!, currentUser!!.uid) }
 
@@ -85,6 +96,8 @@ class ConnectionFragment : Fragment() {
 
     private fun getFriendsList() {
 
+        //Get all current user's friend
+        //First step is to get all the user ids from the connection table
         var friendsIdList: ArrayList<String> = ArrayList()
 
         val currentUserConnectionDB =
@@ -96,7 +109,7 @@ class ConnectionFragment : Fragment() {
 
             override fun onDataChange(p0: DataSnapshot) {
 
-                if (p0.exists()) {//If user have friends
+                if (p0.exists()) {//If user have friends -> Add each id to the list and pass the list to convert them to User object
 
                     for (friendId in p0.children)
                         friendsIdList.add(friendId.key.toString())
@@ -113,8 +126,10 @@ class ConnectionFragment : Fragment() {
 
     private fun convertIdsToUsers(friendsIdList: ArrayList<String>) {
 
+        //Reset the friend list
         usersFriendsList?.clear()
 
+        //For each id in the list get the user data
         for (userId in friendsIdList) {
 
             val userDatabase = FirebaseDatabase.getInstance().reference.child("users/$userId")
@@ -146,27 +161,33 @@ class ConnectionFragment : Fragment() {
 
     private fun openFriendRequestsPopupWindow() {
 
+        //get the popup layout
         val popupView = layoutInflater.inflate(R.layout.friend_requests_popup_layout, null)
 
         val friendRequestRecyclerView =
             popupView.findViewById<RecyclerView>(R.id.friendRequestRecyclerView)
 
+        //setup the popup
         friendRequestPopupWindow = PopupWindow(activity)
         friendRequestPopupWindow!!.contentView = popupView
         friendRequestPopupWindow!!.width = LinearLayout.LayoutParams.MATCH_PARENT
         friendRequestPopupWindow!!.height = LinearLayout.LayoutParams.WRAP_CONTENT
         friendRequestPopupWindow!!.isFocusable = true
         friendRequestPopupWindow!!.setBackgroundDrawable(ColorDrawable())
+        friendRequestPopupWindow!!.animationStyle = R.style.popup_window_animation_right
         friendRequestPopupWindow!!.showAtLocation(popupView, Gravity.TOP, 0, 0)
         //friendRequestPopupWindow!!.showAsDropDown(popupView)
 
+        //setup the recyclerView in the popup
         friendRequestRecyclerView.adapter = friendRequestAdapter
         friendRequestRecyclerView.layoutManager = LinearLayoutManager(context)
         friendRequestRecyclerView.hasFixedSize()
 
+        //when exit the friend requests popup -> get updated friends list
         friendRequestPopupWindow!!.setOnDismissListener {
             getFriendRequests()
             getFriendsList()
+            friendRequestPopupWindowFlag = false
         }
 
     }

@@ -53,9 +53,10 @@
                     android:id="@+id/goalOptions"
                     android:layout_width="30sp"
                     android:layout_height="30sp"
-                    android:layout_margin="15sp"
+                    android:layout_marginTop="15sp"
+                    android:layout_marginRight="2sp"
                     android:gravity="right"
-                    custom:srcCompat="@drawable/more_ic" />
+                    app:srcCompat="@drawable/more_menu_goal_in_feed_ic" />
             </LinearLayout>
 
             <TextView

@@ -43,15 +43,16 @@ class FriendRequestAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        //hide divider on the last object on the list
         if (position == friendRequestsList.size - 1)
             holder.divider!!.visibility = View.GONE
 
-
+        //Set the user name
         holder.userNameLabel!!.text =
             "${friendRequestsList[position].firstName} ${friendRequestsList[position].lastName}"
         //holder.userNameLabel!!.isSelected = true
 
-
+        //If current user will press on any of the user's name in the list -> Move to the same user profile
         holder.userNameLabel!!.setOnClickListener {
             var moveToUserIntent = Intent(context, ProfileActivity::class.java)
             moveToUserIntent.putExtra("userId", friendRequestsList[position].userId)
