@@ -15,6 +15,7 @@ class GoalsInProfileAdapter(
     private val context: Context,
     private var myGoalsList: ArrayList<Goal>) : RecyclerView.Adapter<GoalsInProfileAdapter.ViewHolder>() {
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
         val view =
@@ -38,7 +39,9 @@ class GoalsInProfileAdapter(
 
 
     override fun getItemCount(): Int {
+
         return myGoalsList.size
+
     }
 
     override fun getItemId(position: Int): Long {

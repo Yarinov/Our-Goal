@@ -1,5 +1,8 @@
 package com.yarinov.ourgoal.user.profile
 
+import android.annotation.SuppressLint
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -48,6 +51,11 @@ class ProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+        var userAchievementCardView = findViewById<CardView>(R.id.userAchievementCardView)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            userAchievementCardView.outlineSpotShadowColor = Color.parseColor("#D56D6E")
+        }
         currentUser = FirebaseAuth.getInstance().currentUser
 
         userInProfileGoalsList = ArrayList()
@@ -56,8 +64,8 @@ class ProfileActivity : AppCompatActivity() {
         profileUserNameLabel = findViewById(R.id.profileUserNameLabel)
         profileUserInfoLabel = findViewById(R.id.profileUserInfoLabel)
         goalsTitleLabel = findViewById(R.id.goalsTitleLabel)
-        followSection = findViewById(R.id.followSection)
-        textInFollowSection = findViewById(R.id.textInFollowSection)
+//        followSection = findViewById(R.id.followSection)
+//        textInFollowSection = findViewById(R.id.textInFollowSection)
         inProfileGoalsList = findViewById(R.id.inProfileGoalsList)
 
         var extra = intent.extras
@@ -67,18 +75,15 @@ class ProfileActivity : AppCompatActivity() {
         currentUserProfileFlag = currentUser?.uid.equals(userInProfileId)
 
         //If current user went to his profile, disable the 'Follow Section'
-        if (currentUserProfileFlag!!)
-            followSection!!.visibility = View.GONE
+//        if (currentUserProfileFlag!!)
+//            followSection!!.visibility = View.GONE
 
         getUserInProfileData()
 
         inProfileGoalsList?.adapter = goalsInProfileAdapter
         inProfileGoalsList?.layoutManager = LinearLayoutManager(this)
-        inProfileGoalsList?.hasFixedSize()
 
-        followSection?.setOnClickListener {
-            followSectionPressed()
-        }
+
     }
 
     private fun followSectionPressed() {
@@ -224,9 +229,13 @@ class ProfileActivity : AppCompatActivity() {
         if (i == 1) {
             textInFollowSection!!.text = "Friends"
             followSection!!.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
+            followSection!!.visibility = View.VISIBLE
         } else if (i == 2) {
             textInFollowSection!!.text = "Friend Request Sent"
             followSection!!.setBackgroundColor(ContextCompat.getColor(this, R.color.gray))
+            followSection!!.visibility = View.VISIBLE
+        }else{
+            followSection!!.visibility = View.VISIBLE
         }
 
     }

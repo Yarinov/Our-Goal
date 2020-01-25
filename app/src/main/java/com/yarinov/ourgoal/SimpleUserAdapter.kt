@@ -65,7 +65,7 @@ class SimpleUserAdapter(
         return if (simpleUsersList.size < searchResultLimit)
             simpleUsersList.size
         else
-            simpleUsersList.size
+            searchResultLimit
     }
 
     override fun getItemId(position: Int): Long {
