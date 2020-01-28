@@ -1,5 +1,7 @@
 package com.yarinov.ourgoal.user.profile
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -8,10 +10,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.PopupWindow
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -30,6 +29,9 @@ import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 import de.hdodenhof.circleimageview.CircleImageView
 
 class ProfileActivity : AppCompatActivity() {
+
+    var defaultLayout: LinearLayout? = null
+    var editLayout: CardView? = null
 
     var userInProfileId: String? = null
     var currentUserProfileFlag: Boolean? = null
@@ -66,11 +68,31 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var userFirstName: String
     lateinit var userLastName: String
     lateinit var userInfo: String
+    lateinit var userEmail: String
 
     //FriendSectionOptionMenu
     var removeFriendInFriendSectionOptionMenu: TextView? = null
     var cancelFriendRequestInFriendSectionOptionMenu: TextView? = null
     var cancelInFriendSectionOptionMenu: TextView? = null
+
+    //Edit Profile Mood
+    var inEditProfileMoodFlag = false
+    //Name section
+    var currentUserFullNameInEditProfileMoodLabel: TextView? = null
+    var currentUserFirstNameInEditProfileMoodEditView: TextView? = null
+    var currentUserLastNameInEditProfileMoodEditView: TextView? = null
+    var nameEditLayout: LinearLayout? = null
+    var changeNameEditLayout: LinearLayout? = null
+    //Info section
+    var currentUserInfoInEditProfileMoodLabel: TextView? = null
+    var currentUserInfoInEditProfileMoodEditView: EditText? = null
+    var infoEditLayout: LinearLayout? = null
+    var changeInfoEditLayout: LinearLayout? = null
+    //Email section
+    var currentUserEmailInEditProfileMoodLabel: TextView? = null
+    var currentUserEmailInEditProfileMoodEditView: EditText? = null
+    var emailEditLayout: LinearLayout? = null
+    var changeEmailEditLayout: LinearLayout? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,6 +109,9 @@ class ProfileActivity : AppCompatActivity() {
         userInProfileGoalsList = ArrayList()
         goalsInProfileAdapter = GoalsInProfileAdapter(this, userInProfileGoalsList!!)
 
+        defaultLayout = findViewById(R.id.defaultLayout)
+        editLayout = findViewById(R.id.editLayout)
+
         profileUserNameLabel = findViewById(R.id.profileUserNameLabel)
         profileUserInfoLabel = findViewById(R.id.profileUserInfoLabel)
         goalsTitleLabel = findViewById(R.id.goalsTitleLabel)
@@ -100,6 +125,30 @@ class ProfileActivity : AppCompatActivity() {
         profileImage = findViewById(R.id.profileImage)
         friendStatusSection = findViewById(R.id.friendStatusSection)
         followStatusSection = findViewById(R.id.followStatusSection)
+
+        //Edit profile mood
+        //Name section
+        currentUserFullNameInEditProfileMoodLabel =
+            findViewById(R.id.currentUserFullNameInEditProfileMoodLabel)
+        currentUserFirstNameInEditProfileMoodEditView =
+            findViewById(R.id.currentUserFirstNameInEditProfileMoodEditView)
+        currentUserLastNameInEditProfileMoodEditView =
+            findViewById(R.id.currentUserLastNameInEditProfileMoodEditView)
+        nameEditLayout = findViewById(R.id.nameEditLayout)
+        changeNameEditLayout = findViewById(R.id.changeNameEditLayout)
+        //Info section
+        currentUserInfoInEditProfileMoodLabel =
+            findViewById(R.id.currentUserInfoInEditProfileMoodLabel)
+        currentUserInfoInEditProfileMoodEditView =
+            findViewById(R.id.currentUserInfoInEditProfileMoodEditView)
+        infoEditLayout = findViewById(R.id.infoEditLayout)
+        changeInfoEditLayout = findViewById(R.id.changeInfoEditLayout)
+        //Email section
+        currentUserEmailInEditProfileMoodLabel = findViewById(R.id.currentUserEmailInEditProfileMoodLabel)
+        currentUserEmailInEditProfileMoodEditView =
+            findViewById(R.id.currentUserEmailInEditProfileMoodEditView)
+        emailEditLayout = findViewById(R.id.emailEditLayout)
+        changeEmailEditLayout = findViewById(R.id.changeEmailEditLayout)
 
 
         var extra = intent.extras
@@ -134,7 +183,170 @@ class ProfileActivity : AppCompatActivity() {
         }
 
 
+        editProfileLabel!!.setOnClickListener {
+            editProfileMood()
+        }
     }
+
+    private fun editProfileMood() {
+
+        var changeNameFlag = false
+        var changeInfoFlag = false
+        var changeEmailFlag = false
+        var changePasswordFlag = false
+        var changePrivacyFlag = false
+
+        if (!inEditProfileMoodFlag) {
+
+            enterEditProfileMoodUpdateUI()
+
+            //Change name section
+            nameEditLayout!!.setOnClickListener {
+
+                changeNameFlag = if (!changeNameFlag) {
+
+                    //Open 'Change name' section
+                    fadeInView(changeNameEditLayout!!)
+
+                    true
+                } else {
+
+                    //Close 'Chane name' section
+                    fadeOutView(changeNameEditLayout!!)
+
+                    false
+                }
+
+            }
+
+            infoEditLayout!!.setOnClickListener {
+
+                if (!changeInfoFlag) {
+
+                    fadeOutAndInViews(currentUserInfoInEditProfileMoodLabel!!, changeInfoEditLayout!!)
+
+                    changeInfoFlag = true
+                }else{
+
+                    fadeOutAndInViews(changeInfoEditLayout!!, currentUserInfoInEditProfileMoodLabel!!)
+
+                    changeInfoFlag = false
+                }
+
+            }
+
+            emailEditLayout!!.setOnClickListener {
+
+                if (!changeEmailFlag){
+
+                    fadeInView(changeEmailEditLayout!!)
+
+                    changeEmailFlag = true
+                }else{
+
+                    fadeOutView(changeEmailEditLayout!!)
+
+                    changeEmailFlag = false
+                }
+            }
+            inEditProfileMoodFlag = true
+
+        } else {
+
+            exitEditProfileMoodUpdateUI()
+
+            inEditProfileMoodFlag = false
+
+        }
+
+
+    }
+
+    private fun fadeInView(view: View) {
+
+        view.visibility = View.VISIBLE
+        view.alpha = 0.0f
+
+        view.animate()
+            .alpha(1.0f)
+            .setListener(null)
+
+    }
+
+    private fun fadeOutView(view: View) {
+
+        view.animate()
+            .alpha(0.0f)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    view.visibility = View.GONE
+                }
+            })
+
+    }
+
+    private fun fadeOutAndInViews(viewToFadeOut: View, viewToFadeIn: View){
+
+        viewToFadeOut.animate()
+            .alpha(0.0f)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    viewToFadeOut.visibility = View.GONE
+
+                    viewToFadeIn.visibility = View.VISIBLE
+                    viewToFadeIn.alpha = 0.0f
+
+                    viewToFadeIn.animate()
+                        .alpha(1.0f)
+                        .setListener(null)
+                }
+            })
+
+    }
+
+    private fun exitEditProfileMoodUpdateUI() {
+
+        editLayout!!.animate()
+            .alpha(0.0f)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    editLayout!!.visibility = View.GONE
+
+                    defaultLayout!!.visibility = View.VISIBLE
+                    defaultLayout!!.alpha = 0.0f
+
+                    defaultLayout!!.animate()
+                        .translationX(0f)
+                        .alpha(1.0f)
+                        .setListener(null)
+                }
+            })
+    }
+
+    private fun enterEditProfileMoodUpdateUI() {
+
+        defaultLayout!!.animate()
+            .translationX(-defaultLayout!!.width.toFloat())
+            .alpha(0.0f)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    defaultLayout!!.visibility = View.GONE
+
+                    editLayout!!.visibility = View.VISIBLE
+                    editLayout!!.alpha = 0.0f
+
+                    editLayout!!.animate()
+                        .alpha(1.0f)
+                        .setListener(null)
+                }
+            })
+
+    }
+
 
     private fun followSectionPressed() {
 
@@ -408,10 +620,21 @@ class ProfileActivity : AppCompatActivity() {
                 userFirstName = p0.child("firstName").value.toString()
                 userLastName = p0.child("lastName").value.toString()
                 userInfo = p0.child("userInfo").value.toString()
+                userEmail = p0.child("userEmail").value.toString()
 
 
                 profileUserNameLabel!!.text = "$userFirstName $userLastName"
                 profileUserInfoLabel!!.text = userInfo
+
+                //Set full name and info in edit profile mood
+                currentUserFullNameInEditProfileMoodLabel!!.text = "$userFirstName $userLastName"
+                currentUserFirstNameInEditProfileMoodEditView!!.text = userFirstName
+                currentUserLastNameInEditProfileMoodEditView!!.text = userLastName
+
+                currentUserInfoInEditProfileMoodLabel!!.text = userInfo
+                currentUserInfoInEditProfileMoodEditView!!.setText(userInfo)
+
+                currentUserEmailInEditProfileMoodLabel!!.text = userEmail
 
                 if (currentUserProfileFlag!!) {
                     goalsTitleLabel!!.text = "My Goals"

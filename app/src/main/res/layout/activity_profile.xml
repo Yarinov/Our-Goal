@@ -52,234 +52,493 @@
             android:visibility="gone" />
 
         <LinearLayout
-            android:id="@+id/friendAndFollowStatusSection"
+            android:id="@+id/defaultLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8sp"
-            android:layout_marginBottom="8sp"
-            android:gravity="center|center_vertical"
-            android:orientation="horizontal">
-
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <LinearLayout
-                android:id="@+id/friendStatusSection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5sp"
-                android:layout_marginRight="10sp"
-                android:layout_marginBottom="5sp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/friendStatusIcon"
-                    android:layout_width="40sp"
-                    android:layout_height="40sp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="3sp"
-                    app:srcCompat="@drawable/none_friend_status_ic" />
-
-                <TextView
-                    android:id="@+id/friendStatusLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="3sp"
-                    android:fontFamily="@font/lato"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:text="Add Friend"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/followStatusSection"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10sp"
-                android:layout_marginTop="5sp"
-                android:layout_marginBottom="5sp"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/followStatusIcon"
-                    android:layout_width="40sp"
-                    android:layout_height="40sp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="3sp"
-                    app:srcCompat="@drawable/feed_status_in_user_profile_ic" />
-
-                <TextView
-                    android:id="@+id/followStatusLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="3sp"
-                    android:fontFamily="@font/lato"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:text="Follow"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/profileUserInfoLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15sp"
-            android:layout_marginTop="10sp"
-            android:layout_marginRight="15sp"
-            android:fontFamily="@font/lato"
-            android:gravity="center"
-            android:text="THis is the about part of the user where he/she can write whatever they want about themself and then everyone will see this as the bio of the current user" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/userAchievementCardView"
+                android:id="@+id/friendAndFollowStatusSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="35sp"
-                android:layout_marginTop="15sp"
-                android:layout_marginRight="35sp"
-                android:layout_marginBottom="15sp"
-                app:cardCornerRadius="8sp"
-                app:cardElevation="5sp"
-                app:cardMaxElevation="12sp">
+                android:layout_marginTop="8sp"
+                android:layout_marginBottom="8sp"
+                android:gravity="center|center_vertical"
+                android:orientation="horizontal">
+
+
+                <LinearLayout
+                    android:id="@+id/friendStatusSection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:layout_marginRight="10sp"
+                    android:layout_marginBottom="5sp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/friendStatusIcon"
+                        android:layout_width="40sp"
+                        android:layout_height="40sp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="3sp"
+                        app:srcCompat="@drawable/none_friend_status_ic" />
+
+                    <TextView
+                        android:id="@+id/friendStatusLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="3sp"
+                        android:fontFamily="@font/lato"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="Add Friend"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/followStatusSection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginTop="5sp"
+                    android:layout_marginBottom="5sp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/followStatusIcon"
+                        android:layout_width="40sp"
+                        android:layout_height="40sp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="3sp"
+                        app:srcCompat="@drawable/feed_status_in_user_profile_ic" />
+
+                    <TextView
+                        android:id="@+id/followStatusLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="3sp"
+                        android:fontFamily="@font/lato"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="Follow"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/profileUserInfoLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15sp"
+                android:layout_marginTop="10sp"
+                android:layout_marginRight="15sp"
+                android:fontFamily="@font/lato"
+                android:gravity="center"
+                android:text="THis is the about part of the user where he/she can write whatever they want about themself and then everyone will see this as the bio of the current user" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/userAchievementCardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35sp"
+                    android:layout_marginTop="15sp"
+                    android:layout_marginRight="35sp"
+                    android:layout_marginBottom="15sp"
+                    app:cardCornerRadius="8sp"
+                    app:cardElevation="5sp"
+                    app:cardMaxElevation="12sp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imageView11"
+                                android:layout_width="25sp"
+                                android:layout_height="25sp"
+                                android:layout_margin="7sp"
+                                android:tint="@color/colorPrimary"
+                                app:srcCompat="@drawable/user_achievements_in_user_profile_ic" />
+
+                            <TextView
+                                android:id="@+id/textView18"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/lato"
+                                android:text="Achievements" />
+
+                            <ImageView
+                                android:id="@+id/imageView13"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_margin="3sp"
+                                app:srcCompat="@drawable/plus_primary_ic" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5sp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imageView16"
+                                android:layout_width="20sp"
+                                android:layout_height="20sp"
+                                android:layout_marginRight="5sp"
+                                app:srcCompat="@drawable/gold_user_achievement_ic" />
+
+                            <TextView
+                                android:id="@+id/textView22"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10sp"
+                                android:fontFamily="@font/lato"
+                                android:text="0" />
+
+                            <ImageView
+                                android:id="@+id/imageView15"
+                                android:layout_width="20sp"
+                                android:layout_height="20sp"
+                                android:layout_marginRight="5sp"
+                                app:srcCompat="@drawable/silver_user_achievement_ic" />
+
+                            <TextView
+                                android:id="@+id/textView21"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10sp"
+                                android:fontFamily="@font/lato"
+                                android:text="0" />
+
+                            <ImageView
+                                android:id="@+id/imageView14"
+                                android:layout_width="20sp"
+                                android:layout_height="20sp"
+                                android:layout_marginRight="5sp"
+                                app:srcCompat="@drawable/bronze_user_achievement_ic" />
+
+                            <TextView
+                                android:id="@+id/textView20"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10sp"
+                                android:fontFamily="@font/lato"
+                                android:text="0" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="50sp"
+                    android:background="@color/colorPrimary"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/goalsTitleLabel"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13sp"
+                        android:layout_marginTop="50sp"
+                        android:layout_marginBottom="3sp"
+                        android:fontFamily="@font/lato"
+                        android:text="First's Goals"
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
 
-                        <ImageView
-                            android:id="@+id/imageView11"
-                            android:layout_width="25sp"
-                            android:layout_height="25sp"
-                            android:layout_margin="7sp"
-                            android:tint="@color/colorPrimary"
-                            app:srcCompat="@drawable/user_achievements_in_user_profile_ic" />
-
-                        <TextView
-                            android:id="@+id/textView18"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/lato"
-                            android:text="User Achievements" />
-
-                        <ImageView
-                            android:id="@+id/imageView13"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_margin="3sp"
-                            app:srcCompat="@drawable/plus_primary_ic" />
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <View
+                        android:id="@+id/divider3"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="5sp"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="13sp"
+                        android:background="@color/white" />
 
-                        <ImageView
-                            android:id="@+id/imageView16"
-                            android:layout_width="20sp"
-                            android:layout_height="20sp"
-                            android:layout_marginRight="5sp"
-                            app:srcCompat="@drawable/gold_user_achievement_ic" />
-
-                        <TextView
-                            android:id="@+id/textView22"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10sp"
-                            android:fontFamily="@font/lato"
-                            android:text="0" />
-
-                        <ImageView
-                            android:id="@+id/imageView15"
-                            android:layout_width="20sp"
-                            android:layout_height="20sp"
-                            android:layout_marginRight="5sp"
-                            app:srcCompat="@drawable/silver_user_achievement_ic" />
-
-                        <TextView
-                            android:id="@+id/textView21"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10sp"
-                            android:fontFamily="@font/lato"
-                            android:text="0" />
-
-                        <ImageView
-                            android:id="@+id/imageView14"
-                            android:layout_width="20sp"
-                            android:layout_height="20sp"
-                            android:layout_marginRight="5sp"
-                            app:srcCompat="@drawable/bronze_user_achievement_ic" />
-
-                        <TextView
-                            android:id="@+id/textView20"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10sp"
-                            android:fontFamily="@font/lato"
-                            android:text="0" />
-                    </LinearLayout>
-
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/inProfileGoalsList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="13sp"
+                        android:layout_marginTop="5sp"
+                        android:layout_marginRight="5sp"
+                        android:layout_marginBottom="5sp" />
                 </LinearLayout>
-            </androidx.cardview.widget.CardView>
+
+            </FrameLayout>
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/editLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="20sp"
+            android:visibility="gone"
+            app:cardCornerRadius="12sp"
+            app:cardElevation="8sp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="50sp"
-                android:background="@color/colorPrimary"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/goalsTitleLabel"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="13sp"
-                    android:layout_marginTop="50sp"
-                    android:layout_marginBottom="3sp"
-                    android:fontFamily="@font/lato"
-                    android:text="First's Goals"
-                    android:textColor="@color/white"
-                    android:textSize="18sp" />
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/nameEditLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10sp"
+                        android:layout_marginTop="15sp"
+                        android:layout_marginRight="10sp"
+                        android:layout_marginBottom="10sp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textView12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/lato_bold"
+                            android:text="Name"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/currentUserFullNameInEditProfileMoodLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/lato"
+                            android:gravity="right"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/changeNameEditLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:animateLayoutChanges="true"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/currentUserFirstNameInEditProfileMoodEditView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10sp"
+                                android:layout_weight="1"
+                                android:ems="10"
+                                android:fontFamily="@font/lato"
+                                android:hint="First Name"
+                                android:inputType="textPersonName" />
+
+                            <EditText
+                                android:id="@+id/currentUserLastNameInEditProfileMoodEditView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10sp"
+                                android:layout_weight="1"
+                                android:ems="10"
+                                android:fontFamily="@font/lato"
+                                android:hint="Last Name"
+                                android:inputType="textPersonName" />
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/button2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="10sp"
+                            android:layout_marginBottom="5sp"
+                            android:text="Ok" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 <View
-                    android:id="@+id/divider3"
+                    android:id="@+id/divider11"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginLeft="13sp"
-                    android:background="@color/white" />
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginTop="5sp"
+                    android:layout_marginRight="10sp"
+                    android:layout_marginBottom="5sp"
+                    android:background="?android:attr/listDivider" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/inProfileGoalsList"
+                <LinearLayout
+                    android:id="@+id/infoEditLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="13sp"
-                    android:layout_marginTop="5sp"
-                    android:layout_marginRight="5sp"
-                    android:layout_marginBottom="5sp" />
-            </LinearLayout>
+                    android:layout_margin="10sp"
+                    android:orientation="vertical">
 
-        </FrameLayout>
+                    <TextView
+                        android:id="@+id/textView16"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8sp"
+                        android:fontFamily="@font/lato_bold"
+                        android:text="Info"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/currentUserInfoInEditProfileMoodLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/lato" />
+
+                    <LinearLayout
+                        android:id="@+id/changeInfoEditLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/currentUserInfoInEditProfileMoodEditView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:ems="10"
+                            android:fontFamily="@font/lato"
+                            android:gravity="start|top"
+                            android:inputType="textMultiLine"
+                            android:visibility="visible" />
+
+                        <Button
+                            android:id="@+id/button3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginTop="5sp"
+                            android:fontFamily="@font/lato"
+                            android:text="Ok" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider12"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginTop="5sp"
+                    android:layout_marginRight="10sp"
+                    android:layout_marginBottom="5sp"
+                    android:background="?android:attr/listDivider" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/emailEditLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10sp"
+                        android:layout_marginTop="15sp"
+                        android:layout_marginRight="10sp"
+                        android:layout_marginBottom="10sp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/texiew12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/lato_bold"
+                            android:text="Email"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/currentUserEmailInEditProfileMoodLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/lato"
+                            android:gravity="right"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/changeEmailEditLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:animateLayoutChanges="true"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/currentUserEmailInEditProfileMoodEditView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10sp"
+                                android:layout_weight="1"
+                                android:ems="10"
+                                android:fontFamily="@font/lato"
+                                android:hint="Enter New Email"
+                                android:inputType="textEmailAddress" />
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/changeEmailButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginRight="10sp"
+                            android:layout_marginBottom="5sp"
+                            android:text="Ok" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/divider13"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginTop="5sp"
+                    android:layout_marginRight="10sp"
+                    android:layout_marginBottom="5sp"
+                    android:background="?android:attr/listDivider" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
