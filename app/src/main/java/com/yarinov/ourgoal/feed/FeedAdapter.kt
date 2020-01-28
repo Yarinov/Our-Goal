@@ -191,10 +191,11 @@ class FeedAdapter(
     private fun unfollowUser(currentGoal: Goal, goalOptionsMenuPopupWindow: PopupWindow) {
 
         FirebaseDatabase.getInstance()
-            .reference.child("connections/$currentUserId/hidden_friends/${currentGoal.userId}")
-            .setValue(true).addOnCompleteListener {
+            .reference.child("connections/$currentUserId/follow/${currentGoal.userId}")
+            .removeValue().addOnCompleteListener {
                 goalOptionsMenuPopupWindow.dismiss()
             }
+
     }
 
     private fun deleteCurrentUserGoal(

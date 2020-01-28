@@ -22,34 +22,46 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/shareGoalText"
+                android:id="@+id/followUserInFollowSectionOptionMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10sp"
-                android:layout_marginTop="10sp"
+                android:layout_marginTop="15sp"
+                android:layout_marginBottom="8sp"
                 android:layout_weight="1"
                 android:fontFamily="@font/lato"
                 android:text="Follow"
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/hideGoalText"
+                android:id="@+id/unfollowUserInFollowSectionOptionMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10sp"
-                android:layout_marginTop="5sp"
+                android:layout_marginTop="18sp"
+                android:layout_marginBottom="8sp"
                 android:layout_weight="1"
                 android:fontFamily="@font/lato"
                 android:text="Unfollow"
+                android:textColor="@android:color/holo_red_light"
                 android:textSize="18sp" />
 
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8sp"
+                android:layout_marginRight="8sp"
+                android:layout_weight="1"
+                android:background="?android:attr/listDivider" />
+
             <TextView
-                android:id="@+id/unfollowUserText"
+                android:id="@+id/cancelInFollowSectionOptionMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10sp"
-                android:layout_marginTop="5sp"
-                android:layout_marginBottom="10sp"
+                android:layout_marginTop="8sp"
+                android:layout_marginBottom="15sp"
                 android:layout_weight="1"
                 android:fontFamily="@font/lato"
                 android:text="Cancel"

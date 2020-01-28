@@ -133,6 +133,16 @@ class FriendRequestAdapter(
                     .reference.child("connections/${friendRequestsList[position].userId}/friends/$currentUserId")
                     .setValue(true)
 
+                //Add follow to both user
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/${currentUserId}/follow/${friendRequestsList[position].userId}")
+                    .setValue(true)
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/${friendRequestsList[position].userId}/follow/${currentUserId}")
+                    .setValue(true)
+
+
                 denyButton!!.visibility = View.GONE
                 acceptButton!!.isEnabled = false
 

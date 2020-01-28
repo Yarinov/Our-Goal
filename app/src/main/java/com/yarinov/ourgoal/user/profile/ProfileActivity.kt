@@ -61,6 +61,7 @@ class ProfileActivity : AppCompatActivity() {
     var userFollowFlag: Boolean? = null
 
     var friendStatusSection: LinearLayout? = null
+    var followStatusSection: LinearLayout? = null
 
     lateinit var userFirstName: String
     lateinit var userLastName: String
@@ -98,6 +99,7 @@ class ProfileActivity : AppCompatActivity() {
         followStatusIcon = findViewById(R.id.followStatusIcon)
         profileImage = findViewById(R.id.profileImage)
         friendStatusSection = findViewById(R.id.friendStatusSection)
+        followStatusSection = findViewById(R.id.followStatusSection)
 
 
         var extra = intent.extras
@@ -126,6 +128,85 @@ class ProfileActivity : AppCompatActivity() {
         friendStatusSection!!.setOnClickListener {
             friendSectionPressed()
         }
+
+        followStatusSection!!.setOnClickListener {
+            followSectionPressed()
+        }
+
+
+    }
+
+    private fun followSectionPressed() {
+
+        //Setup option menu for follow section
+        val optionPopupView = layoutInflater.inflate(
+            R.layout.follow_status_options_menu_layout,
+            null
+        )
+
+        val followUserInFollowSectionOptionMenu: TextView =
+            optionPopupView.findViewById(R.id.followUserInFollowSectionOptionMenu)
+        val unfollowUserInFollowSectionOptionMenu: TextView =
+            optionPopupView.findViewById(R.id.unfollowUserInFollowSectionOptionMenu)
+        val cancelInFollowSectionOptionMenu: TextView =
+            optionPopupView.findViewById(R.id.cancelInFollowSectionOptionMenu)
+
+        var followSectionOptionMenu = PopupWindow(this)
+        followSectionOptionMenu.contentView = optionPopupView
+        followSectionOptionMenu.width = LinearLayout.LayoutParams.MATCH_PARENT
+        followSectionOptionMenu.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        followSectionOptionMenu.isFocusable = true
+        followSectionOptionMenu.setBackgroundDrawable(ColorDrawable())
+        followSectionOptionMenu.animationStyle = R.style.popup_window_animation_bottom
+
+        cancelInFollowSectionOptionMenu.setOnClickListener {
+            followSectionOptionMenu.dismiss()
+        }
+
+        if (userFollowFlag!!) {//If current user already following user in profile
+
+            followUserInFollowSectionOptionMenu.visibility = View.GONE
+
+            val root = window.decorView.rootView as ViewGroup
+            AdapterUtils().applyDim(root, 0.5f)
+            followSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
+
+            followSectionOptionMenu.setOnDismissListener {
+                AdapterUtils().clearDim(root)
+            }
+
+            //Remove follow
+            unfollowUserInFollowSectionOptionMenu.setOnClickListener {
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/${currentUser!!.uid}/follow/$userInProfileId")
+                    .removeValue()
+
+                followSectionOptionMenu.dismiss()
+            }
+
+        } else {//If current user isn't following user in profile
+
+            unfollowUserInFollowSectionOptionMenu.visibility = View.GONE
+
+            val root = window.decorView.rootView as ViewGroup
+            AdapterUtils().applyDim(root, 0.5f)
+            followSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
+
+            followSectionOptionMenu.setOnDismissListener {
+                AdapterUtils().clearDim(root)
+            }
+
+            //Follow user in profile
+            followUserInFollowSectionOptionMenu.setOnClickListener {
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/${currentUser!!.uid}/follow/$userInProfileId")
+                    .setValue(true)
+
+                followSectionOptionMenu.dismiss()
+            }
+        }
     }
 
     private fun friendSectionPressed() {
@@ -145,11 +226,13 @@ class ProfileActivity : AppCompatActivity() {
             optionPopupView.findViewById(R.id.cancelInFriendSectionOptionMenu)
 
 
-        var nonRespondLayout:LinearLayout = optionPopupView.findViewById(R.id.nonRespondLayout)
-        var respondLayout:LinearLayout = optionPopupView.findViewById(R.id.respondLayout)
+        var nonRespondLayout: LinearLayout = optionPopupView.findViewById(R.id.nonRespondLayout)
+        var respondLayout: LinearLayout = optionPopupView.findViewById(R.id.respondLayout)
 
-        val acceptFriendRequestLabel: TextView = optionPopupView.findViewById(R.id.acceptFriendRequestLabel)
-        val deleteFriendRequestLabel: TextView = optionPopupView.findViewById(R.id.deleteFriendRequestLabel)
+        val acceptFriendRequestLabel: TextView =
+            optionPopupView.findViewById(R.id.acceptFriendRequestLabel)
+        val deleteFriendRequestLabel: TextView =
+            optionPopupView.findViewById(R.id.deleteFriendRequestLabel)
 
         var friendSectionOptionMenu = PopupWindow(this)
         friendSectionOptionMenu.contentView = optionPopupView
@@ -159,155 +242,153 @@ class ProfileActivity : AppCompatActivity() {
         friendSectionOptionMenu.setBackgroundDrawable(ColorDrawable())
         friendSectionOptionMenu.animationStyle = R.style.popup_window_animation_bottom
 
+        cancelInFriendSectionOptionMenu!!.setOnClickListener {
+            friendSectionOptionMenu.dismiss()
+        }
+
         //If already friend -> open menu
-        if (friendPathFlag!!) {
+        when {
+            friendPathFlag!! -> {
 
-            nonRespondLayout.visibility = View.VISIBLE
-            cancelFriendRequestInFriendSectionOptionMenu!!.visibility = View.GONE
+                nonRespondLayout.visibility = View.VISIBLE
+                cancelFriendRequestInFriendSectionOptionMenu!!.visibility = View.GONE
 
-            val root = window.decorView.rootView as ViewGroup
-            AdapterUtils().applyDim(root, 0.5f)
-            friendSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
+                val root = window.decorView.rootView as ViewGroup
+                AdapterUtils().applyDim(root, 0.5f)
+                friendSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
 
-            friendSectionOptionMenu.setOnDismissListener {
-                AdapterUtils().clearDim(root)
+                friendSectionOptionMenu.setOnDismissListener {
+                    AdapterUtils().clearDim(root)
+                }
+
+                //Remove friend
+                removeFriendInFriendSectionOptionMenu!!.setOnClickListener {
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/${currentUser!!.uid}/friends/$userInProfileId")
+                        .removeValue()
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/$userInProfileId/friends/${currentUser!!.uid}")
+                        .removeValue()
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/${currentUser!!.uid}/follow/$userInProfileId")
+                        .removeValue()
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/$userInProfileId/follow/${currentUser!!.uid}")
+                        .removeValue()
+
+                    friendSectionOptionMenu.dismiss()
+
+                }
+
             }
+            friendRequestSentPathFlag!! -> { //if current user already sent friend request -> open menu
 
-            //Remove friend
-            removeFriendInFriendSectionOptionMenu!!.setOnClickListener {
+                nonRespondLayout.visibility = View.VISIBLE
+                removeFriendInFriendSectionOptionMenu!!.visibility = View.GONE
 
-                FirebaseDatabase.getInstance()
-                    .reference.child("connections/${currentUser!!.uid}/friends/$userInProfileId")
-                    .removeValue()
+                val root = window.decorView.rootView as ViewGroup
+                AdapterUtils().applyDim(root, 0.5f)
+                friendSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
 
-                FirebaseDatabase.getInstance()
-                    .reference.child("connections/$userInProfileId/friends/${currentUser!!.uid}")
-                    .removeValue()
+                friendSectionOptionMenu.setOnDismissListener {
+                    AdapterUtils().clearDim(root)
+                }
 
-                friendSectionOptionMenu.dismiss()
+                //Cancel friend request
+                cancelFriendRequestInFriendSectionOptionMenu!!.setOnClickListener {
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/${currentUser!!.uid}/friend_request/sent/$userInProfileId")
+                        .removeValue()
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/$userInProfileId/friend_request/received/${currentUser!!.uid}")
+                        .removeValue()
+
+                    friendSectionOptionMenu.dismiss()
+                }
 
             }
+            friendRequestReceivedPathFlag!! -> {//if current user received from user in profile a friend request
 
-        } else if (friendRequestSentPathFlag!!) { //if current user already sent friend request -> open menu
+                respondLayout.visibility = View.VISIBLE
 
-            nonRespondLayout.visibility = View.VISIBLE
-            removeFriendInFriendSectionOptionMenu!!.visibility = View.GONE
+                val root = window.decorView.rootView as ViewGroup
+                AdapterUtils().applyDim(root, 0.5f)
+                friendSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
 
-            val root = window.decorView.rootView as ViewGroup
-            AdapterUtils().applyDim(root, 0.5f)
-            friendSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
+                friendSectionOptionMenu.setOnDismissListener {
+                    AdapterUtils().clearDim(root)
+                }
 
-            friendSectionOptionMenu.setOnDismissListener {
-                AdapterUtils().clearDim(root)
+                //Accept friend request
+                acceptFriendRequestLabel.setOnClickListener {
+
+                    //Remove request from current user DB
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/${currentUser!!.uid}/friend_request/received/$userInProfileId")
+                        .removeValue()
+
+                    //Remove request from the user who sent the friend request
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/$userInProfileId/friend_request/sent/${currentUser!!.uid}")
+                        .removeValue()
+
+                    //Adding the connection to both users DB
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/${currentUser!!.uid}/friends/$userInProfileId")
+                        .setValue(true)
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/$userInProfileId/friends/${currentUser!!.uid}")
+                        .setValue(true)
+
+                    //Add follow to both user
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/${currentUser!!.uid}/follow/$userInProfileId")
+                        .setValue(true)
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/$userInProfileId/follow/${currentUser!!.uid}")
+                        .setValue(true)
+
+                    friendSectionOptionMenu.dismiss()
+                }
+
+                //Delete friend request
+                deleteFriendRequestLabel.setOnClickListener {
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/${currentUser!!.uid}/friend_request/received/$userInProfileId")
+                        .removeValue()
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/$userInProfileId/friend_request/sent/${currentUser!!.uid}")
+                        .removeValue()
+
+
+                    friendSectionOptionMenu.dismiss()
+                }
+
+
             }
+            else -> {//No connection between current user and user in profile
 
-            //Cancel friend request
-            cancelFriendRequestInFriendSectionOptionMenu!!.setOnClickListener {
-
+                //Send friend request
                 FirebaseDatabase.getInstance()
                     .reference.child("connections/${currentUser!!.uid}/friend_request/sent/$userInProfileId")
-                    .removeValue()
+                    .setValue(true)
 
                 FirebaseDatabase.getInstance()
                     .reference.child("connections/$userInProfileId/friend_request/received/${currentUser!!.uid}")
-                    .removeValue()
-
-                friendSectionOptionMenu.dismiss()
-            }
-
-        } else if (friendRequestReceivedPathFlag!!) {//if current user received from user in profile a friend request
-
-            respondLayout.visibility = View.VISIBLE
-
-            val root = window.decorView.rootView as ViewGroup
-            AdapterUtils().applyDim(root, 0.5f)
-            friendSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
-
-            friendSectionOptionMenu.setOnDismissListener {
-                AdapterUtils().clearDim(root)
-            }
-
-            //Accept friend request
-            acceptFriendRequestLabel.setOnClickListener {
-
-                //Remove request from current user DB
-                FirebaseDatabase.getInstance()
-                    .reference.child("connections/${currentUser!!.uid}/friend_request/received/$userInProfileId")
-                    .removeValue()
-
-                //Remove request from the user who sent the friend request
-                FirebaseDatabase.getInstance()
-                    .reference.child("connections/$userInProfileId/friend_request/sent/${currentUser!!.uid}")
-                    .removeValue()
-
-                //Adding the connection to both users DB
-                FirebaseDatabase.getInstance()
-                    .reference.child("connections/${currentUser!!.uid}/friends/$userInProfileId")
                     .setValue(true)
 
-                FirebaseDatabase.getInstance()
-                    .reference.child("connections/$userInProfileId/friends/${currentUser!!.uid}")
-                    .setValue(true)
-
-                friendSectionOptionMenu.dismiss()
             }
-
-            //Delete friend request
-            deleteFriendRequestLabel.setOnClickListener {
-
-                FirebaseDatabase.getInstance()
-                    .reference.child("connections/${currentUser!!.uid}/friend_request/received/$userInProfileId")
-                    .removeValue()
-
-                FirebaseDatabase.getInstance()
-                    .reference.child("connections/$userInProfileId/friend_request/sent/${currentUser!!.uid}")
-                    .removeValue()
-
-
-                friendSectionOptionMenu.dismiss()
-            }
-
-
-        } else {//No connection between current user and user in profile
-
-            //Send friend request
-            FirebaseDatabase.getInstance()
-                .reference.child("connections/${currentUser!!.uid}/friend_request/sent/$userInProfileId")
-                .setValue(true)
-
-            FirebaseDatabase.getInstance()
-                .reference.child("connections/$userInProfileId/friend_request/received/${currentUser!!.uid}")
-                .setValue(true)
-
         }
-
-    }
-
-    private fun followSectionPressed() {
-
-        val currentUserDB =
-            FirebaseDatabase.getInstance()
-                .reference.child("connections/${currentUser!!.uid}/friends/$userInProfileId")
-
-        if (friendPathFlag!!) {
-            //Remove Friend
-        } else if (friendRequestSentPathFlag!!) {
-            //Delete friend request
-        } else if (blockedPathFlag!!) {
-            //Remove blocked user
-        } else {
-
-            //Send friend request
-            FirebaseDatabase.getInstance()
-                .reference.child("connections/${currentUser!!.uid}/friend_request/sent/$userInProfileId")
-                .setValue(true)
-
-            FirebaseDatabase.getInstance()
-                .reference.child("connections/$userInProfileId/friend_request/received/${currentUser!!.uid}")
-                .setValue(true)
-
-        }
-
 
     }
 
@@ -416,18 +497,11 @@ class ProfileActivity : AppCompatActivity() {
                     }
 
                     //Check follow status.
-                    //If friends -> check if current user unfollow user in profile.
-                    //if not friends -> check if current user followed user in profile
-                    if (friendPathFlag!!) {
-                        if (friendFollowFlag!!) {
-                            setFollowSection(0)
-                        } else
-                            setFollowSection(1)
+                    if (userFollowFlag!!) {
+                        setFollowSection(1)
                     } else {
-                        if (userFollowFlag!!) {
-                            setFollowSection(1)
-                        } else
-                            setFollowSection(0)
+
+                        setFollowSection(0)
                     }
                 }
 
@@ -451,6 +525,11 @@ class ProfileActivity : AppCompatActivity() {
             )
         } else if (i == 0) {
             followStatusLabel!!.text = "Follow"
+
+            ImageViewCompat.setImageTintList(
+                followStatusIcon!!,
+                ColorStateList.valueOf(ContextCompat.getColor(this, android.R.color.black))
+            )
         }
 
     }
