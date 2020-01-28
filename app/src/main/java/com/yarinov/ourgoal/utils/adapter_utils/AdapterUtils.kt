@@ -50,7 +50,7 @@ class AdapterUtils {
         val postedDateYear = postedDateCalendar[Calendar.YEAR]
 
         val postedDateToShow =
-            "${getMonthName(postedDateDateMonth)} ${postedDateCalendar[Calendar.DAY_OF_MONTH]} $postedDateDateHr:$postedDateDateMin $postedDateYear"
+            "$postedDateDateHr:$postedDateDateMin ${getMonthName(postedDateDateMonth)} ${postedDateCalendar[Calendar.DAY_OF_MONTH]} $postedDateYear"
 
         return if (currentDateYear == postedDateYear) {
             if (currentDateMonth == postedDateDateMonth) {

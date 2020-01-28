@@ -1,14 +1,21 @@
 package com.yarinov.ourgoal.user.profile
 
-import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -19,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
+import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
+import de.hdodenhof.circleimageview.CircleImageView
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -29,8 +38,14 @@ class ProfileActivity : AppCompatActivity() {
     var profileUserInfoLabel: TextView? = null
     var goalsTitleLabel: TextView? = null
 
-    var followSection: CardView? = null
-    var textInFollowSection: TextView? = null
+    var editProfileLabel: TextView? = null
+    var profileImage: CircleImageView? = null
+
+    var friendAndFollowStatusSection: LinearLayout? = null
+    var friendStatusLabel: TextView? = null
+    var followStatusLabel: TextView? = null
+    var friendStatusIcon: ImageView? = null
+    var followStatusIcon: ImageView? = null
 
     var userInProfileGoalsList: ArrayList<Goal>? = null
     lateinit var goalsInProfileAdapter: GoalsInProfileAdapter
@@ -40,11 +55,21 @@ class ProfileActivity : AppCompatActivity() {
 
     var friendPathFlag: Boolean? = null
     var blockedPathFlag: Boolean? = null
-    var friendRequestPathFlag: Boolean? = null
+    var friendRequestSentPathFlag: Boolean? = null
+    var friendRequestReceivedPathFlag: Boolean? = null
+    var friendFollowFlag: Boolean? = null
+    var userFollowFlag: Boolean? = null
+
+    var friendStatusSection: LinearLayout? = null
 
     lateinit var userFirstName: String
     lateinit var userLastName: String
     lateinit var userInfo: String
+
+    //FriendSectionOptionMenu
+    var removeFriendInFriendSectionOptionMenu: TextView? = null
+    var cancelFriendRequestInFriendSectionOptionMenu: TextView? = null
+    var cancelInFriendSectionOptionMenu: TextView? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,9 +89,16 @@ class ProfileActivity : AppCompatActivity() {
         profileUserNameLabel = findViewById(R.id.profileUserNameLabel)
         profileUserInfoLabel = findViewById(R.id.profileUserInfoLabel)
         goalsTitleLabel = findViewById(R.id.goalsTitleLabel)
-//        followSection = findViewById(R.id.followSection)
-//        textInFollowSection = findViewById(R.id.textInFollowSection)
         inProfileGoalsList = findViewById(R.id.inProfileGoalsList)
+        editProfileLabel = findViewById(R.id.editProfileLabel)
+        friendAndFollowStatusSection = findViewById(R.id.friendAndFollowStatusSection)
+        friendStatusLabel = findViewById(R.id.friendStatusLabel)
+        followStatusLabel = findViewById(R.id.followStatusLabel)
+        friendStatusIcon = findViewById(R.id.friendStatusIcon)
+        followStatusIcon = findViewById(R.id.followStatusIcon)
+        profileImage = findViewById(R.id.profileImage)
+        friendStatusSection = findViewById(R.id.friendStatusSection)
+
 
         var extra = intent.extras
         userInProfileId = extra!!.getString("userId")
@@ -74,15 +106,180 @@ class ProfileActivity : AppCompatActivity() {
         //Check if the current user is in his profile
         currentUserProfileFlag = currentUser?.uid.equals(userInProfileId)
 
-        //If current user went to his profile, disable the 'Follow Section'
-//        if (currentUserProfileFlag!!)
-//            followSection!!.visibility = View.GONE
+        //If current user went to his profile, disable 'Follow', 'Add friend' and show edit profile
+        if (currentUserProfileFlag!!) {
+
+            //Show edit profile
+            editProfileLabel!!.visibility = View.VISIBLE
+
+            //hide add friend and follow section
+            friendAndFollowStatusSection!!.visibility = View.GONE
+        }
 
         getUserInProfileData()
 
         inProfileGoalsList?.adapter = goalsInProfileAdapter
         inProfileGoalsList?.layoutManager = LinearLayoutManager(this)
 
+        AdapterUtils().loadUserProfilePic(profileImage, userInProfileId!!)
+
+        friendStatusSection!!.setOnClickListener {
+            friendSectionPressed()
+        }
+    }
+
+    private fun friendSectionPressed() {
+
+
+        //Setup option menu for friend section
+        val optionPopupView = layoutInflater.inflate(
+            R.layout.friend_status_options_menu_layout,
+            null
+        )
+
+        removeFriendInFriendSectionOptionMenu =
+            optionPopupView.findViewById(R.id.removeFriendInFriendSectionOptionMenu)
+        cancelFriendRequestInFriendSectionOptionMenu =
+            optionPopupView.findViewById(R.id.cancelFriendRequestInFriendSectionOptionMenu)
+        cancelInFriendSectionOptionMenu =
+            optionPopupView.findViewById(R.id.cancelInFriendSectionOptionMenu)
+
+
+        var nonRespondLayout:LinearLayout = optionPopupView.findViewById(R.id.nonRespondLayout)
+        var respondLayout:LinearLayout = optionPopupView.findViewById(R.id.respondLayout)
+
+        val acceptFriendRequestLabel: TextView = optionPopupView.findViewById(R.id.acceptFriendRequestLabel)
+        val deleteFriendRequestLabel: TextView = optionPopupView.findViewById(R.id.deleteFriendRequestLabel)
+
+        var friendSectionOptionMenu = PopupWindow(this)
+        friendSectionOptionMenu.contentView = optionPopupView
+        friendSectionOptionMenu.width = LinearLayout.LayoutParams.MATCH_PARENT
+        friendSectionOptionMenu.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        friendSectionOptionMenu.isFocusable = true
+        friendSectionOptionMenu.setBackgroundDrawable(ColorDrawable())
+        friendSectionOptionMenu.animationStyle = R.style.popup_window_animation_bottom
+
+        //If already friend -> open menu
+        if (friendPathFlag!!) {
+
+            nonRespondLayout.visibility = View.VISIBLE
+            cancelFriendRequestInFriendSectionOptionMenu!!.visibility = View.GONE
+
+            val root = window.decorView.rootView as ViewGroup
+            AdapterUtils().applyDim(root, 0.5f)
+            friendSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
+
+            friendSectionOptionMenu.setOnDismissListener {
+                AdapterUtils().clearDim(root)
+            }
+
+            //Remove friend
+            removeFriendInFriendSectionOptionMenu!!.setOnClickListener {
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/${currentUser!!.uid}/friends/$userInProfileId")
+                    .removeValue()
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/$userInProfileId/friends/${currentUser!!.uid}")
+                    .removeValue()
+
+                friendSectionOptionMenu.dismiss()
+
+            }
+
+        } else if (friendRequestSentPathFlag!!) { //if current user already sent friend request -> open menu
+
+            nonRespondLayout.visibility = View.VISIBLE
+            removeFriendInFriendSectionOptionMenu!!.visibility = View.GONE
+
+            val root = window.decorView.rootView as ViewGroup
+            AdapterUtils().applyDim(root, 0.5f)
+            friendSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
+
+            friendSectionOptionMenu.setOnDismissListener {
+                AdapterUtils().clearDim(root)
+            }
+
+            //Cancel friend request
+            cancelFriendRequestInFriendSectionOptionMenu!!.setOnClickListener {
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/${currentUser!!.uid}/friend_request/sent/$userInProfileId")
+                    .removeValue()
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/$userInProfileId/friend_request/received/${currentUser!!.uid}")
+                    .removeValue()
+
+                friendSectionOptionMenu.dismiss()
+            }
+
+        } else if (friendRequestReceivedPathFlag!!) {//if current user received from user in profile a friend request
+
+            respondLayout.visibility = View.VISIBLE
+
+            val root = window.decorView.rootView as ViewGroup
+            AdapterUtils().applyDim(root, 0.5f)
+            friendSectionOptionMenu.showAtLocation(optionPopupView, Gravity.BOTTOM, 0, 0)
+
+            friendSectionOptionMenu.setOnDismissListener {
+                AdapterUtils().clearDim(root)
+            }
+
+            //Accept friend request
+            acceptFriendRequestLabel.setOnClickListener {
+
+                //Remove request from current user DB
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/${currentUser!!.uid}/friend_request/received/$userInProfileId")
+                    .removeValue()
+
+                //Remove request from the user who sent the friend request
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/$userInProfileId/friend_request/sent/${currentUser!!.uid}")
+                    .removeValue()
+
+                //Adding the connection to both users DB
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/${currentUser!!.uid}/friends/$userInProfileId")
+                    .setValue(true)
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/$userInProfileId/friends/${currentUser!!.uid}")
+                    .setValue(true)
+
+                friendSectionOptionMenu.dismiss()
+            }
+
+            //Delete friend request
+            deleteFriendRequestLabel.setOnClickListener {
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/${currentUser!!.uid}/friend_request/received/$userInProfileId")
+                    .removeValue()
+
+                FirebaseDatabase.getInstance()
+                    .reference.child("connections/$userInProfileId/friend_request/sent/${currentUser!!.uid}")
+                    .removeValue()
+
+
+                friendSectionOptionMenu.dismiss()
+            }
+
+
+        } else {//No connection between current user and user in profile
+
+            //Send friend request
+            FirebaseDatabase.getInstance()
+                .reference.child("connections/${currentUser!!.uid}/friend_request/sent/$userInProfileId")
+                .setValue(true)
+
+            FirebaseDatabase.getInstance()
+                .reference.child("connections/$userInProfileId/friend_request/received/${currentUser!!.uid}")
+                .setValue(true)
+
+        }
 
     }
 
@@ -94,7 +291,7 @@ class ProfileActivity : AppCompatActivity() {
 
         if (friendPathFlag!!) {
             //Remove Friend
-        } else if (friendRequestPathFlag!!) {
+        } else if (friendRequestSentPathFlag!!) {
             //Delete friend request
         } else if (blockedPathFlag!!) {
             //Remove blocked user
@@ -109,7 +306,6 @@ class ProfileActivity : AppCompatActivity() {
                 .reference.child("connections/$userInProfileId/friend_request/received/${currentUser!!.uid}")
                 .setValue(true)
 
-            setFollowSection(2)
         }
 
 
@@ -203,39 +399,83 @@ class ProfileActivity : AppCompatActivity() {
 
                     friendPathFlag = p0.child("friends/$userInProfileId").exists()
                     blockedPathFlag = p0.child("blocked/$userInProfileId").exists()
-                    friendRequestPathFlag =
+                    friendRequestSentPathFlag =
                         p0.child("friend_request/sent/$userInProfileId").exists()
+                    friendRequestReceivedPathFlag =
+                        p0.child("friend_request/received/$userInProfileId").exists()
+                    friendFollowFlag = p0.child("hidden_friends/$userInProfileId").exists()
+                    userFollowFlag = p0.child("follow/$userInProfileId").exists()
 
                     //Check if friends
                     when {
-                        friendPathFlag!! -> setFollowSection(1)
-                        friendRequestPathFlag!! -> setFollowSection(2)
-                        blockedPathFlag!! -> setFollowSection(-1)
-                        else -> setFollowSection(0)
+                        friendPathFlag!! -> setFriendSection(1)
+                        friendRequestSentPathFlag!! -> setFriendSection(2)
+                        friendRequestReceivedPathFlag!! -> setFriendSection(3)
+                        blockedPathFlag!! -> setFriendSection(-1)
+                        else -> setFriendSection(0)
+                    }
+
+                    //Check follow status.
+                    //If friends -> check if current user unfollow user in profile.
+                    //if not friends -> check if current user followed user in profile
+                    if (friendPathFlag!!) {
+                        if (friendFollowFlag!!) {
+                            setFollowSection(0)
+                        } else
+                            setFollowSection(1)
+                    } else {
+                        if (userFollowFlag!!) {
+                            setFollowSection(1)
+                        } else
+                            setFollowSection(0)
                     }
                 }
 
             }
 
-            currentUserDB.addListenerForSingleValueEvent(getRelationshipListener)
+            currentUserDB.addValueEventListener(getRelationshipListener)
 
         }
     }
 
     private fun setFollowSection(i: Int) {
 
-        //0 - None | 1 - Friends | 2 - Sent friend request | -1 - Blocked
+        //0 - Not Following | 1 - Following
 
         if (i == 1) {
-            textInFollowSection!!.text = "Friends"
-            followSection!!.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent))
-            followSection!!.visibility = View.VISIBLE
-        } else if (i == 2) {
-            textInFollowSection!!.text = "Friend Request Sent"
-            followSection!!.setBackgroundColor(ContextCompat.getColor(this, R.color.gray))
-            followSection!!.visibility = View.VISIBLE
-        }else{
-            followSection!!.visibility = View.VISIBLE
+            followStatusLabel!!.text = "Following"
+
+            ImageViewCompat.setImageTintList(
+                followStatusIcon!!,
+                ColorStateList.valueOf(ContextCompat.getColor(this, R.color.colorPrimary))
+            )
+        } else if (i == 0) {
+            followStatusLabel!!.text = "Follow"
+        }
+
+    }
+
+    private fun setFriendSection(i: Int) {
+
+        //0 - None | 1 - Friends | 2 - Sent friend request | 3 - Friend request received | -1 - Blocked
+
+        when (i) {
+            0 -> {
+                friendStatusLabel!!.text = "Add Friend"
+                friendStatusIcon!!.setImageResource(R.drawable.none_friend_status_ic)
+            }
+            1 -> {
+                friendStatusLabel!!.text = "Friends"
+                friendStatusIcon!!.setImageResource(R.drawable.accepted_friend_status_ic)
+            }
+            2 -> {
+                friendStatusLabel!!.text = "Friend Request Sent"
+                friendStatusIcon!!.setImageResource(R.drawable.wating_friend_status_ic)
+            }
+            3 -> {
+                friendStatusLabel!!.text = "Respond"
+                friendStatusIcon!!.setImageResource(R.drawable.wating_friend_status_ic)
+            }
         }
 
     }

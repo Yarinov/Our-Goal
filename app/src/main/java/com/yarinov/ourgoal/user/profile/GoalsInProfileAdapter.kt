@@ -2,6 +2,7 @@ package com.yarinov.ourgoal.user.profile
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
+import com.yarinov.ourgoal.goal.SingleGoalActivity
 import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 
 class GoalsInProfileAdapter(
@@ -35,6 +37,15 @@ class GoalsInProfileAdapter(
         holder.goalDescriptionLabel!!.text = currentGoal.goalDescription
 
         AdapterUtils().setFadeAnimation(holder.itemView, 950)
+
+        holder.itemView.setOnClickListener {
+
+            val moveToSingleGoalIntent = Intent(context, SingleGoalActivity::class.java)
+
+            moveToSingleGoalIntent.putExtra("currentGoal", currentGoal)
+
+            context.startActivity(moveToSingleGoalIntent)
+        }
     }
 
 

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:orientation="vertical"
+    android:textAlignment="gravity"
+    android:textDirection="locale">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="4sp"
+        app:cardCornerRadius="8sp">
+
+        <LinearLayout
+            android:id="@+id/nonRespondLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/removeFriendInFriendSectionOptionMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="15sp"
+                android:layout_marginBottom="8sp"
+                android:layout_weight="1"
+                android:fontFamily="@font/lato"
+                android:text="Remove Friend"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/cancelFriendRequestInFriendSectionOptionMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="18sp"
+                android:layout_marginBottom="8sp"
+                android:layout_weight="1"
+                android:fontFamily="@font/lato"
+                android:text="Cancel Friend Request"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="18sp" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8sp"
+                android:layout_marginRight="8sp"
+                android:layout_weight="1"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:id="@+id/cancelInFriendSectionOptionMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="8sp"
+                android:layout_marginBottom="15sp"
+                android:layout_weight="1"
+                android:fontFamily="@font/lato"
+                android:text="Cancel"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/respondLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/acceptFriendRequestLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="15sp"
+                android:layout_marginBottom="8sp"
+                android:layout_weight="1"
+                android:fontFamily="@font/lato"
+                android:text="Accept"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp" />
+
+            <View
+                android:id="@+id/divider9"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="8sp"
+                android:layout_marginRight="8sp"
+                android:layout_weight="1"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:id="@+id/deleteFriendRequestLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10sp"
+                android:layout_marginTop="8sp"
+                android:layout_marginBottom="15sp"
+                android:layout_weight="1"
+                android:fontFamily="@font/lato"
+                android:text="Remove Friend Request"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

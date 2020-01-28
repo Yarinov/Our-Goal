@@ -52,6 +52,9 @@ dependencies {
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    //BubbleLayout
+    implementation 'com.github.MasayukiSuda:BubbleLayout:v1.2.1'
+
     //Timber
     implementation 'com.jakewharton.timber:timber:4.1.1'
 
