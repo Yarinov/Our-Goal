@@ -4,7 +4,8 @@ class User(
     var userId: String,
     var userEmail: String,
     var firstName: String,
-    var lastName: String) {
+    var lastName: String
+) {
 
     var userImageUri: String
     var userInfo: String
@@ -36,7 +37,6 @@ class User(
         this.userImageUri = userImageUri
         this.userInfo = userInfo
     }
-
 
 
 }

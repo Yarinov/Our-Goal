@@ -47,7 +47,6 @@ class LoginFragment : Fragment() {
     }
 
 
-
     private fun loginToApp() {
 
         var email = emailInput!!.text

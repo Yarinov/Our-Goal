@@ -47,16 +47,16 @@ class GoalMilestoneAdapter(
     @SuppressLint("SetTextI18n")
     fun rearrangeMilestoneArray() {
 
-        for (milestone in goalMilestoneList){
+        for (milestone in goalMilestoneList) {
             milestoneNumberTitle!!.text = "Milestone #${milestone.goalMilestoneOrder}"
         }
 
 
     }
 
-    fun insertMilestoneData(){
+    fun insertMilestoneData() {
 
-        for (milestone in goalMilestoneList){
+        for (milestone in goalMilestoneList) {
             milestone.goalMilestoneOrder = goalMilestoneList.indexOf(milestone) + 1
         }
 
@@ -97,7 +97,7 @@ class GoalMilestoneAdapter(
             milestoneTitleInputEditText =
                 mView.findViewById(R.id.milestoneTitleInputEditText) as EditText
 
-            milestoneTitleInputEditText!!.addTextChangedListener(object : TextWatcher{
+            milestoneTitleInputEditText!!.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(p0: Editable?) {}
 
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}

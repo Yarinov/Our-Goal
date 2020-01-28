@@ -15,7 +15,8 @@ import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 
 class GoalsInProfileAdapter(
     private val context: Context,
-    private var myGoalsList: ArrayList<Goal>) : RecyclerView.Adapter<GoalsInProfileAdapter.ViewHolder>() {
+    private var myGoalsList: ArrayList<Goal>
+) : RecyclerView.Adapter<GoalsInProfileAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

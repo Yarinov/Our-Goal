@@ -16,7 +16,11 @@ class CommentSection(
         this.CommentsList = ArrayList()
     }
 
-    constructor(commentSectionId: String, goalId: String, CommentsList: List<Comment>) : this(goalId) {
+    constructor(
+        commentSectionId: String,
+        goalId: String,
+        CommentsList: List<Comment>
+    ) : this(goalId) {
         this.commentSectionId = commentSectionId
         this.CommentsList = CommentsList
     }

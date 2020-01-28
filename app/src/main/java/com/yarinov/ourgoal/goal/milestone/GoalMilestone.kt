@@ -19,7 +19,11 @@ class GoalMilestone(var goalMilestoneTitle: String, var goalMilestoneOrder: Int)
         goalMilestoneId = parcel.readString().toString()
     }
 
-    constructor(goalMilestoneId: String, goalMilestoneTitle: String, goalMilestoneOrder: Int) : this(
+    constructor(
+        goalMilestoneId: String,
+        goalMilestoneTitle: String,
+        goalMilestoneOrder: Int
+    ) : this(
         goalMilestoneTitle,
         goalMilestoneOrder
     ) {

@@ -139,7 +139,7 @@ class FeedAdapter(
             deleteSectionOnGoalOptionMenu.visibility = View.VISIBLE
             unfollowSectionOnGoalOptionMenu.visibility = View.GONE
             upperDivider.visibility = View.GONE
-        }else{
+        } else {
             lowerDivider.visibility = View.GONE
         }
 

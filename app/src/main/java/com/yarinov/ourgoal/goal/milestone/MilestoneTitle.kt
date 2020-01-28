@@ -7,8 +7,7 @@ class MilestoneTitle(var milestoneTitle: String, var milestoneOrder: Int) : Parc
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readInt()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(milestoneTitle)

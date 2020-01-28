@@ -19,7 +19,10 @@ class Supporter(var supporterUserId: String, var supportGoalId: String) : Parcel
         supportId = parcel.readString().toString()
     }
 
-    constructor(supportId: String, supporterUserId: String, supportGoalId: String) : this(supporterUserId, supportGoalId) {
+    constructor(supportId: String, supporterUserId: String, supportGoalId: String) : this(
+        supporterUserId,
+        supportGoalId
+    ) {
         this.supportId = supportId
 
     }

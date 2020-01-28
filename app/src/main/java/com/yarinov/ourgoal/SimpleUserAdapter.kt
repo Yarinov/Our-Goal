@@ -9,9 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageException
-import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.user.User
 import com.yarinov.ourgoal.user.profile.ProfileActivity
 import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils

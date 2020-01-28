@@ -12,7 +12,7 @@ class AuthenticationActivity : AppCompatActivity() {
     private var switchAuthMood: TextView? = null
 
     private var authenticationViewPager: ViewPager? = null
-    private var authenticationPagerViewAdapter : AuthenticationPagerViewAdapter? = null
+    private var authenticationPagerViewAdapter: AuthenticationPagerViewAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

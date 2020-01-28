@@ -80,7 +80,7 @@ class ConnectionFragment : Fragment() {
         //if friend request list isn't empty -> Open popup with this friend requests
         //else -> do nothing
         friendRequestsSection!!.setOnClickListener {
-            if (usersRequestList!!.isNotEmpty() && !friendRequestPopupWindowFlag){
+            if (usersRequestList!!.isNotEmpty() && !friendRequestPopupWindowFlag) {
                 openFriendRequestsPopupWindow()
                 friendRequestPopupWindowFlag = true
             }

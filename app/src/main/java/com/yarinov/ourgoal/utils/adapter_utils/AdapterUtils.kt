@@ -19,14 +19,14 @@ import java.util.*
 class AdapterUtils {
 
 
-    public fun setFadeAnimation(view: View, animationDuration: Int) {
+    fun setFadeAnimation(view: View, animationDuration: Int) {
         val anim = AlphaAnimation(0.0f, 1.0f)
         anim.duration = animationDuration.toLong()
         view.startAnimation(anim)
     }
 
     @SuppressLint("SetTextI18n")
-    public fun getTimeSincePosted(position: Int, datePosted: String): String {
+    fun getTimeSincePosted(position: Int, datePosted: String): String {
 
 
         val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:sss'Z'")

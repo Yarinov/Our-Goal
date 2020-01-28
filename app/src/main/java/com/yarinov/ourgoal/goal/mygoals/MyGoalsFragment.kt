@@ -93,7 +93,8 @@ class MyGoalsFragment : Fragment() {
                     for (goal in dataSnapshot.children) {
 
                         val userGoalMap = goal.value as HashMap<*, *>
-                        val userGoal = Goal(userGoalMap["goalId"].toString(),
+                        val userGoal = Goal(
+                            userGoalMap["goalId"].toString(),
                             userGoalMap["goalTitle"].toString(),
                             userGoalMap["goalDescription"].toString(),
                             userGoalMap["goalProgress"] as Long,
@@ -101,7 +102,8 @@ class MyGoalsFragment : Fragment() {
                             userGoalMap["commentSectionId"].toString(),
                             userGoalMap["goalStatus"].toString(),
                             userGoalMap["datePosted"].toString(),
-                            userGoalMap["userId"].toString())
+                            userGoalMap["userId"].toString()
+                        )
 
                         myGoalsList?.add(userGoal)
 

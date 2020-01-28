@@ -140,7 +140,7 @@ class HomeFragment : Fragment() {
             override fun onDataChange(p0: DataSnapshot) {
 
                 //Add all the users which current user follow
-                for (userId in p0.children){
+                for (userId in p0.children) {
                     usersIdList.add(userId.key.toString())
                 }
 

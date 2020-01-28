@@ -5,7 +5,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -160,7 +159,7 @@ class MyGoalsAdapter(
                     val stepWeight = 100 / (currentGoal.goalSteps + 1)
                     val milestonesAccomplished = currentGoal.goalProgress / stepWeight
 
-                    holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt() , true)
+                    holder.myGoalProgressBar!!.go(milestonesAccomplished.toInt(), true)
 
                 } else if (currentGoal.goalSteps != 0.toLong() && currentGoal.goalProgress == 0.toLong()) {
                     holder.myGoalProgressBar!!.go(0, true)

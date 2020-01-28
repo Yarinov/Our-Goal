@@ -11,9 +11,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageException
-import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.user.User
 import com.yarinov.ourgoal.user.profile.ProfileActivity
@@ -60,7 +57,10 @@ class FriendRequestAdapter(
         }
 
 
-        AdapterUtils().loadUserProfilePic(holder.userProfilePic, friendRequestsList[position].userId)
+        AdapterUtils().loadUserProfilePic(
+            holder.userProfilePic,
+            friendRequestsList[position].userId
+        )
 
 
     }

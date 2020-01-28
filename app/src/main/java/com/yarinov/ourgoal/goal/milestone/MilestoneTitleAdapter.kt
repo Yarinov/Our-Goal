@@ -322,7 +322,7 @@ class MilestoneTitleAdapter(
             return
         }
 
-        if (position == goalMilestoneTitleList.size -1) {
+        if (position == goalMilestoneTitleList.size - 1) {
             Toast.makeText(
                 context,
                 "You Can't Rearrange The Goal Itself.",
@@ -331,7 +331,7 @@ class MilestoneTitleAdapter(
             return
         }
 
-        if (inEditMoodSortFlag){
+        if (inEditMoodSortFlag) {
             Toast.makeText(
                 context,
                 "You Can't Rearrange More Then One Milestone At The Same Time.",
@@ -423,7 +423,7 @@ class MilestoneTitleAdapter(
 
     private fun editMilestoneTitle(position: Int) {
 
-        if (position == goalMilestoneTitleList.size -1) {
+        if (position == goalMilestoneTitleList.size - 1) {
             Toast.makeText(
                 context,
                 "You Can't Edit The Goal Title Here.",

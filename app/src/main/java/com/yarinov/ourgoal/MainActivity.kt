@@ -51,15 +51,16 @@ class MainActivity : AppCompatActivity() {
 
         currentUser = FirebaseAuth.getInstance().currentUser
 
-        if (currentUser == null){
-            val moveToAuthenticationActivityIntent = Intent(this, AuthenticationActivity::class.java)
+        if (currentUser == null) {
+            val moveToAuthenticationActivityIntent =
+                Intent(this, AuthenticationActivity::class.java)
             startActivity(moveToAuthenticationActivityIntent)
             finish()
         }
 
     }
 
-    private fun setupTabIcons(){
+    private fun setupTabIcons() {
         mainTabLayout!!.getTabAt(0)!!.setIcon(R.drawable.search_black_ic)
         mainTabLayout!!.getTabAt(1)!!.setIcon(R.drawable.home_black_ic).select()
         mainTabLayout!!.getTabAt(2)!!.setIcon(R.drawable.my_goals_black_ic)
@@ -75,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }.setNegativeButton("Cancel", null)
 
-       alert.create().show()
+        alert.create().show()
 
 
     }
