@@ -109,6 +109,7 @@ class RegistrationFragment : Fragment() {
                             lastNameInput
                         )
                         rootDB!!.getReference("users/${newUser.userId}").setValue(newUser)
+                        rootDB!!.getReference("users/${newUser.userId}/privateAccount").setValue(false)
 
                         val toMainActivityIntent = Intent(context, MainActivity::class.java)
                         startActivity(toMainActivityIntent)

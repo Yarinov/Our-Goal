@@ -292,252 +292,419 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/editLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="20sp"
             android:visibility="gone"
             app:cardCornerRadius="12sp"
             app:cardElevation="8sp">
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:scrollbars="none">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical" >
 
                     <LinearLayout
-                        android:id="@+id/nameEditLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10sp"
-                        android:layout_marginTop="15sp"
-                        android:layout_marginRight="10sp"
-                        android:layout_marginBottom="10sp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/textView12"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/lato_bold"
-                            android:text="Name"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/currentUserFullNameInEditProfileMoodLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/lato"
-                            android:gravity="right"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/changeNameEditLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:animateLayoutChanges="true"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-                            <EditText
-                                android:id="@+id/currentUserFirstNameInEditProfileMoodEditView"
+                            <LinearLayout
+                                android:id="@+id/nameEditLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="10sp"
-                                android:layout_weight="1"
-                                android:ems="10"
-                                android:fontFamily="@font/lato"
-                                android:hint="First Name"
-                                android:inputType="textPersonName" />
+                                android:layout_marginLeft="10sp"
+                                android:layout_marginTop="15sp"
+                                android:layout_marginRight="10sp"
+                                android:layout_marginBottom="10sp"
+                                android:orientation="horizontal">
 
-                            <EditText
-                                android:id="@+id/currentUserLastNameInEditProfileMoodEditView"
+                                <TextView
+                                    android:id="@+id/textView12"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/lato_bold"
+                                    android:text="Name"
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/currentUserFullNameInEditProfileMoodLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/lato"
+                                    android:gravity="right"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/changeNameEditLayout"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="10sp"
-                                android:layout_weight="1"
-                                android:ems="10"
-                                android:fontFamily="@font/lato"
-                                android:hint="Last Name"
-                                android:inputType="textPersonName" />
+                                android:layout_height="match_parent"
+                                android:animateLayoutChanges="true"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+
+                                    <EditText
+                                        android:id="@+id/currentUserFirstNameInEditProfileMoodEditView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="10sp"
+                                        android:layout_weight="1"
+                                        android:ems="10"
+                                        android:fontFamily="@font/lato"
+                                        android:hint="First Name"
+                                        android:inputType="textPersonName" />
+
+                                    <EditText
+                                        android:id="@+id/currentUserLastNameInEditProfileMoodEditView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="10sp"
+                                        android:layout_weight="1"
+                                        android:ems="10"
+                                        android:fontFamily="@font/lato"
+                                        android:hint="Last Name"
+                                        android:inputType="textPersonName" />
+                                </LinearLayout>
+
+                                <Button
+                                    android:id="@+id/changeNameButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginRight="10sp"
+                                    android:layout_marginBottom="5sp"
+                                    android:background="@drawable/ok_button_edit_profile"
+                                    android:fontFamily="@font/lato"
+                                    android:text="Ok"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="14sp"
+                                    android:textAllCaps="false"/>
+
+                            </LinearLayout>
+
                         </LinearLayout>
 
-                        <Button
-                            android:id="@+id/button2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
-                            android:layout_marginRight="10sp"
-                            android:layout_marginBottom="5sp"
-                            android:text="Ok" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/divider11"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginTop="5sp"
-                    android:layout_marginRight="10sp"
-                    android:layout_marginBottom="5sp"
-                    android:background="?android:attr/listDivider" />
-
-                <LinearLayout
-                    android:id="@+id/infoEditLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10sp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/textView16"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8sp"
-                        android:fontFamily="@font/lato_bold"
-                        android:text="Info"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/currentUserInfoInEditProfileMoodLabel"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/lato" />
-
-                    <LinearLayout
-                        android:id="@+id/changeInfoEditLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <EditText
-                            android:id="@+id/currentUserInfoInEditProfileMoodEditView"
+                        <View
+                            android:id="@+id/divider11"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:fontFamily="@font/lato"
-                            android:gravity="start|top"
-                            android:inputType="textMultiLine"
-                            android:visibility="visible" />
-
-                        <Button
-                            android:id="@+id/button3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="10sp"
                             android:layout_marginTop="5sp"
-                            android:fontFamily="@font/lato"
-                            android:text="Ok" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/divider12"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginTop="5sp"
-                    android:layout_marginRight="10sp"
-                    android:layout_marginBottom="5sp"
-                    android:background="?android:attr/listDivider" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/emailEditLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10sp"
-                        android:layout_marginTop="15sp"
-                        android:layout_marginRight="10sp"
-                        android:layout_marginBottom="10sp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/texiew12"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/lato_bold"
-                            android:text="Email"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/currentUserEmailInEditProfileMoodLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/lato"
-                            android:gravity="right"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/changeEmailEditLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:animateLayoutChanges="true"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                            android:layout_marginRight="10sp"
+                            android:layout_marginBottom="5sp"
+                            android:background="?android:attr/listDivider" />
 
                         <LinearLayout
+                            android:id="@+id/infoEditLayout"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10sp"
+                            android:orientation="vertical">
 
-                            <EditText
-                                android:id="@+id/currentUserEmailInEditProfileMoodEditView"
+                            <TextView
+                                android:id="@+id/textView16"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="10sp"
-                                android:layout_weight="1"
-                                android:ems="10"
-                                android:fontFamily="@font/lato"
-                                android:hint="Enter New Email"
-                                android:inputType="textEmailAddress" />
+                                android:layout_marginBottom="8sp"
+                                android:fontFamily="@font/lato_bold"
+                                android:text="Info"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/currentUserInfoInEditProfileMoodLabel"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/lato" />
+
+                            <LinearLayout
+                                android:id="@+id/changeInfoEditLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <EditText
+                                    android:id="@+id/currentUserInfoInEditProfileMoodEditView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:ems="10"
+                                    android:fontFamily="@font/lato"
+                                    android:gravity="start|top"
+                                    android:inputType="textMultiLine"
+                                    android:visibility="visible" />
+
+                                <Button
+                                    android:id="@+id/changeInfoButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginTop="5sp"
+                                    android:background="@drawable/ok_button_edit_profile"
+                                    android:fontFamily="@font/lato"
+                                    android:text="Ok"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="14sp"
+                                    android:textAllCaps="false" />
+                            </LinearLayout>
 
                         </LinearLayout>
 
-                        <Button
-                            android:id="@+id/changeEmailButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
+                        <View
+                            android:id="@+id/divider12"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="10sp"
+                            android:layout_marginTop="5sp"
                             android:layout_marginRight="10sp"
                             android:layout_marginBottom="5sp"
-                            android:text="Ok" />
+                            android:background="?android:attr/listDivider" />
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/emailEditLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10sp"
+                                android:layout_marginTop="15sp"
+                                android:layout_marginRight="10sp"
+                                android:layout_marginBottom="10sp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/texiew12"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/lato_bold"
+                                    android:text="Email"
+                                    android:textSize="16sp" />
+
+                                <TextView
+                                    android:id="@+id/currentUserEmailInEditProfileMoodLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/lato"
+                                    android:gravity="right"
+                                    android:textSize="16sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/changeEmailEditLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:animateLayoutChanges="true"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+
+                                    <EditText
+                                        android:id="@+id/currentUserEmailInEditProfileMoodEditView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="10sp"
+                                        android:layout_weight="1"
+                                        android:ems="10"
+                                        android:fontFamily="@font/lato"
+                                        android:hint="Enter New Email"
+                                        android:inputType="textEmailAddress" />
+
+                                </LinearLayout>
+
+                                <Button
+                                    android:id="@+id/changeEmailButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginRight="10sp"
+                                    android:layout_marginBottom="5sp"
+                                    android:background="@drawable/ok_button_edit_profile"
+                                    android:fontFamily="@font/lato"
+                                    android:text="Ok"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="14sp"
+                                    android:textAllCaps="false" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/divider13"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="10sp"
+                            android:layout_marginTop="5sp"
+                            android:layout_marginRight="10sp"
+                            android:layout_marginBottom="5sp"
+                            android:background="?android:attr/listDivider" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/passwordEditLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10sp"
+                                android:layout_marginTop="15sp"
+                                android:layout_marginRight="10sp"
+                                android:layout_marginBottom="10sp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/passwordLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/lato_bold"
+                                    android:text="Change Password"
+                                    android:textSize="16sp" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/changePasswordEditLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:animateLayoutChanges="true"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical">
+
+                                    <EditText
+                                        android:id="@+id/changePasswordCurrentPasswordEditView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="10sp"
+                                        android:layout_weight="1"
+                                        android:ems="10"
+                                        android:fontFamily="@font/lato"
+                                        android:hint="Enter Current Password"
+                                        android:inputType="textPassword" />
+
+                                    <EditText
+                                        android:id="@+id/changePasswordNewPasswordEditView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="10sp"
+                                        android:layout_weight="1"
+                                        android:ems="10"
+                                        android:fontFamily="@font/lato"
+                                        android:hint="Enter New Password"
+                                        android:inputType="textPassword" />
+
+                                    <EditText
+                                        android:id="@+id/changePasswordReNewPasswordEditView"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_margin="10sp"
+                                        android:layout_weight="1"
+                                        android:ems="10"
+                                        android:fontFamily="@font/lato"
+                                        android:hint="Re-Enter New Password"
+                                        android:inputType="textPassword" />
+
+
+                                </LinearLayout>
+
+                                <Button
+                                    android:id="@+id/changePasswordButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="right"
+                                    android:layout_marginRight="10sp"
+                                    android:layout_marginBottom="5sp"
+                                    android:background="@drawable/ok_button_edit_profile"
+                                    android:fontFamily="@font/lato"
+                                    android:text="Ok"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="14sp"
+                                    android:textAllCaps="false" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/divider14"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginLeft="10sp"
+                            android:layout_marginTop="5sp"
+                            android:layout_marginRight="10sp"
+                            android:layout_marginBottom="5sp"
+                            android:background="?android:attr/listDivider" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/accountPrivacyEditLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10sp"
+                                android:layout_marginTop="15sp"
+                                android:layout_marginRight="10sp"
+                                android:layout_marginBottom="10sp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/accountPrivacyLabel"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/lato_bold"
+                                    android:text="Private Account"
+                                    android:textSize="16sp" />
+
+                                <com.suke.widget.SwitchButton
+                                    android:id="@+id/privacySwitchButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="30sp"
+                                    app:sb_checked_color="@color/colorPrimary"
+                                    app:sb_show_indicator="false" />
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
                     </LinearLayout>
-
                 </LinearLayout>
+            </ScrollView>
 
-                <View
-                    android:id="@+id/divider13"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginTop="5sp"
-                    android:layout_marginRight="10sp"
-                    android:layout_marginBottom="5sp"
-                    android:background="?android:attr/listDivider" />
-            </LinearLayout>
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>

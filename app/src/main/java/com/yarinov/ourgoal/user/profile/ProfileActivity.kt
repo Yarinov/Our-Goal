@@ -2,6 +2,8 @@ package com.yarinov.ourgoal.user.profile
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.Context
+import android.content.DialogInterface
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -10,19 +12,23 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.suke.widget.SwitchButton
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
 import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
@@ -83,17 +89,29 @@ class ProfileActivity : AppCompatActivity() {
     var currentUserLastNameInEditProfileMoodEditView: TextView? = null
     var nameEditLayout: LinearLayout? = null
     var changeNameEditLayout: LinearLayout? = null
+    var changeNameButton: Button? = null
     //Info section
     var currentUserInfoInEditProfileMoodLabel: TextView? = null
     var currentUserInfoInEditProfileMoodEditView: EditText? = null
     var infoEditLayout: LinearLayout? = null
     var changeInfoEditLayout: LinearLayout? = null
+    var changeInfoButton: Button? = null
     //Email section
     var currentUserEmailInEditProfileMoodLabel: TextView? = null
     var currentUserEmailInEditProfileMoodEditView: EditText? = null
     var emailEditLayout: LinearLayout? = null
     var changeEmailEditLayout: LinearLayout? = null
-
+    var changeEmailButton: Button? = null
+    //Password Section
+    var passwordEditLayout: LinearLayout? = null
+    var changePasswordEditLayout: LinearLayout? = null
+    var changePasswordButton: Button? = null
+    var changePasswordCurrentPasswordEditView: EditText? = null
+    var changePasswordNewPasswordEditView: EditText? = null
+    var changePasswordReNewPasswordEditView: EditText? = null
+    //Account Privacy Section
+    var privacySwitchButton: SwitchButton? = null
+    var privateAccountFlag: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,6 +154,8 @@ class ProfileActivity : AppCompatActivity() {
             findViewById(R.id.currentUserLastNameInEditProfileMoodEditView)
         nameEditLayout = findViewById(R.id.nameEditLayout)
         changeNameEditLayout = findViewById(R.id.changeNameEditLayout)
+        changeNameButton = findViewById(R.id.changeNameButton)
+
         //Info section
         currentUserInfoInEditProfileMoodLabel =
             findViewById(R.id.currentUserInfoInEditProfileMoodLabel)
@@ -143,12 +163,28 @@ class ProfileActivity : AppCompatActivity() {
             findViewById(R.id.currentUserInfoInEditProfileMoodEditView)
         infoEditLayout = findViewById(R.id.infoEditLayout)
         changeInfoEditLayout = findViewById(R.id.changeInfoEditLayout)
+        changeInfoButton = findViewById(R.id.changeInfoButton)
+
         //Email section
-        currentUserEmailInEditProfileMoodLabel = findViewById(R.id.currentUserEmailInEditProfileMoodLabel)
+        currentUserEmailInEditProfileMoodLabel =
+            findViewById(R.id.currentUserEmailInEditProfileMoodLabel)
         currentUserEmailInEditProfileMoodEditView =
             findViewById(R.id.currentUserEmailInEditProfileMoodEditView)
         emailEditLayout = findViewById(R.id.emailEditLayout)
         changeEmailEditLayout = findViewById(R.id.changeEmailEditLayout)
+        changeEmailButton = findViewById(R.id.changeEmailButton)
+
+        //Password Section
+        passwordEditLayout = findViewById(R.id.passwordEditLayout)
+        changePasswordEditLayout = findViewById(R.id.changePasswordEditLayout)
+        changePasswordButton = findViewById(R.id.changePasswordButton)
+        changePasswordCurrentPasswordEditView =
+            findViewById(R.id.changePasswordCurrentPasswordEditView)
+        changePasswordNewPasswordEditView = findViewById(R.id.changePasswordNewPasswordEditView)
+        changePasswordReNewPasswordEditView = findViewById(R.id.changePasswordReNewPasswordEditView)
+
+        //Account Privacy Section
+        privacySwitchButton = findViewById(R.id.privacySwitchButton)
 
 
         var extra = intent.extras
@@ -188,13 +224,21 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupAccountPrivacy() {
+
+        //Setup the toggle button -> if account is private set the button as 'Active'
+        privacySwitchButton!!.isChecked = privateAccountFlag!!
+
+        //TODO Add more private elements here
+
+    }
+
     private fun editProfileMood() {
 
         var changeNameFlag = false
         var changeInfoFlag = false
         var changeEmailFlag = false
         var changePasswordFlag = false
-        var changePrivacyFlag = false
 
         if (!inEditProfileMoodFlag) {
 
@@ -207,6 +251,44 @@ class ProfileActivity : AppCompatActivity() {
 
                     //Open 'Change name' section
                     fadeInView(changeNameEditLayout!!)
+
+                    changeNameButton!!.setOnClickListener {
+
+                        val newFirstName =
+                            currentUserFirstNameInEditProfileMoodEditView!!.text.toString()
+                        val newLastName =
+                            currentUserLastNameInEditProfileMoodEditView!!.text.toString()
+
+                        val changeFirstAndLastNameAlert = AlertDialog.Builder(this)
+                        changeFirstAndLastNameAlert.setMessage("This Action Will Change Your Name, Are You Sure?")
+                            .setPositiveButton(
+                                "Yes",
+                                DialogInterface.OnClickListener { dialog, which ->
+
+                                    //Update new first and last name in db
+                                    FirebaseDatabase.getInstance()
+                                        .reference.child(
+                                        "users/$userInProfileId/firstName"
+                                    ).setValue(newFirstName)
+
+                                    FirebaseDatabase.getInstance()
+                                        .reference.child(
+                                        "users/$userInProfileId/lastName"
+                                    ).setValue(newLastName)
+
+                                    //close the change name section
+                                    hideKeypad()
+                                    getUserInProfileData()
+                                    fadeOutView(changeNameEditLayout!!)
+
+                                    changeNameFlag = false
+
+                                }).setNegativeButton(
+                                "Cancel", null
+                            )
+
+                        changeFirstAndLastNameAlert.create().show()
+                    }
 
                     true
                 } else {
@@ -223,12 +305,50 @@ class ProfileActivity : AppCompatActivity() {
 
                 if (!changeInfoFlag) {
 
-                    fadeOutAndInViews(currentUserInfoInEditProfileMoodLabel!!, changeInfoEditLayout!!)
+                    fadeOutAndInViews(
+                        currentUserInfoInEditProfileMoodLabel!!,
+                        changeInfoEditLayout!!
+                    )
 
+                    changeInfoButton!!.setOnClickListener {
+                        val newUserInfo = currentUserInfoInEditProfileMoodEditView!!.text.toString()
+
+                        val changeInfoAlert = AlertDialog.Builder(this)
+                        changeInfoAlert.setMessage("This Action Will Change Your Info, Are You Sure?")
+                            .setPositiveButton(
+                                "Yes",
+                                DialogInterface.OnClickListener { dialog, which ->
+
+                                    //Update new user info in db
+                                    FirebaseDatabase.getInstance()
+                                        .reference.child(
+                                        "users/$userInProfileId/userInfo"
+                                    ).setValue(newUserInfo)
+
+
+                                    //close the change info section
+                                    hideKeypad()
+                                    getUserInProfileData()
+                                    fadeOutAndInViews(
+                                        changeInfoEditLayout!!,
+                                        currentUserInfoInEditProfileMoodLabel!!
+                                    )
+
+                                    changeInfoFlag = false
+
+                                }).setNegativeButton(
+                                "Cancel", null
+                            )
+
+                        changeInfoAlert.create().show()
+                    }
                     changeInfoFlag = true
-                }else{
+                } else {
 
-                    fadeOutAndInViews(changeInfoEditLayout!!, currentUserInfoInEditProfileMoodLabel!!)
+                    fadeOutAndInViews(
+                        changeInfoEditLayout!!,
+                        currentUserInfoInEditProfileMoodLabel!!
+                    )
 
                     changeInfoFlag = false
                 }
@@ -237,18 +357,163 @@ class ProfileActivity : AppCompatActivity() {
 
             emailEditLayout!!.setOnClickListener {
 
-                if (!changeEmailFlag){
+                if (!changeEmailFlag) {
 
                     fadeInView(changeEmailEditLayout!!)
 
+                    changeEmailButton!!.setOnClickListener {
+
+                        val newUserEmail =
+                            currentUserEmailInEditProfileMoodEditView!!.text.toString()
+
+                        //TODO Add confirmation email
+                        val changeUserEmailAlert = AlertDialog.Builder(this)
+                        changeUserEmailAlert.setMessage("This Action Will Change Your Email, Are You Sure?")
+                            .setPositiveButton(
+                                "Yes",
+                                DialogInterface.OnClickListener { dialog, which ->
+
+                                    //Update new email in db
+                                    FirebaseDatabase.getInstance()
+                                        .reference.child(
+                                        "users/$userInProfileId/userEmail"
+                                    ).setValue(newUserEmail)
+
+                                    //Update email in firebase auth
+                                    currentUser!!.updateEmail(newUserEmail)
+
+                                    //close the change name section
+                                    hideKeypad()
+                                    getUserInProfileData()
+                                    fadeOutView(changeEmailEditLayout!!)
+
+                                    changeEmailFlag = false
+
+                                }).setNegativeButton(
+                                "Cancel", null
+                            )
+
+                        changeUserEmailAlert.create().show()
+                    }
                     changeEmailFlag = true
-                }else{
+                } else {
 
                     fadeOutView(changeEmailEditLayout!!)
 
                     changeEmailFlag = false
                 }
             }
+
+            passwordEditLayout!!.setOnClickListener {
+
+                if (!changePasswordFlag) {
+
+                    fadeInView(changePasswordEditLayout!!)
+
+                    changePasswordButton!!.setOnClickListener {
+
+                        val currentUserEmail =
+                            currentUserEmailInEditProfileMoodLabel!!.text.toString()
+                        val oldPassword = changePasswordCurrentPasswordEditView!!.text.toString()
+                        val newPassword = changePasswordNewPasswordEditView!!.text.toString()
+                        val reNewPassword = changePasswordReNewPasswordEditView!!.text.toString()
+
+                        //Check if current password value is the right one
+                        val credential = EmailAuthProvider
+                            .getCredential(currentUserEmail, oldPassword)
+
+                        currentUser!!.reauthenticate(credential).addOnCompleteListener {
+
+                            //If its the right password
+                            if (it.isSuccessful) {
+
+                                //check if the two new password input is larger then 6 and equal
+                                if (newPassword == reNewPassword && newPassword.length >= 6) {
+                                    val changeInfoAlert = AlertDialog.Builder(this)
+                                    changeInfoAlert.setMessage("This Action Will Change Your Password, Are You Sure?")
+                                        .setPositiveButton(
+                                            "Yes",
+                                            DialogInterface.OnClickListener { dialog, which ->
+
+                                                currentUser!!.updatePassword(newPassword)
+
+                                                //close the change info section
+                                                hideKeypad()
+                                                getUserInProfileData()
+                                                fadeOutView(changePasswordEditLayout!!)
+
+                                                changePasswordFlag = false
+
+                                            }).setNegativeButton(
+                                            "Cancel", null
+                                        )
+
+                                    changeInfoAlert.create().show()
+                                } else {
+                                    Toast.makeText(
+                                        this,
+                                        "New Passwords Don't Match Or Too Short(Min 6).",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+
+                            } else {
+                                Toast.makeText(
+                                    this,
+                                    "Wrong Current Password Entered",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+
+                    }
+
+                    changePasswordFlag = true
+                } else {
+
+                    fadeOutView(changePasswordEditLayout!!)
+
+                    changePasswordFlag = false
+                }
+            }
+
+
+
+            privacySwitchButton!!.setOnCheckedChangeListener { view, isChecked ->
+
+                val alertDialogString =
+                    "Change To Public Account?\n Anyone will be able to see your goals."
+                if (!isChecked) {
+
+                    val changeAccountPrivacyAlert = AlertDialog.Builder(this)
+                    changeAccountPrivacyAlert.setMessage(alertDialogString)
+                        .setPositiveButton(
+                            "Yes",
+                            DialogInterface.OnClickListener { dialog, which ->
+
+                                FirebaseDatabase.getInstance()
+                                    .reference.child(
+                                    "users/$userInProfileId/privateAccount"
+                                ).setValue(false)
+
+                            }).setNegativeButton(
+                            "Cancel",
+                            DialogInterface.OnClickListener { dialog, which ->
+
+                                //If user cancel switching account privacy return to private state
+                                privacySwitchButton!!.isChecked = true
+                            })
+
+                    changeAccountPrivacyAlert.create().show()
+                } else {
+
+                    FirebaseDatabase.getInstance()
+                        .reference.child(
+                        "users/$userInProfileId/privateAccount"
+                    ).setValue(true)
+                }
+            }
+
             inEditProfileMoodFlag = true
 
         } else {
@@ -286,7 +551,7 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun fadeOutAndInViews(viewToFadeOut: View, viewToFadeIn: View){
+    private fun fadeOutAndInViews(viewToFadeOut: View, viewToFadeIn: View) {
 
         viewToFadeOut.animate()
             .alpha(0.0f)
@@ -304,6 +569,16 @@ class ProfileActivity : AppCompatActivity() {
                 }
             })
 
+    }
+
+    private fun hideKeypad() {
+        //Soft Hide Keypad
+        val view = this.currentFocus
+        if (view != null) {
+            val imm =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 
     private fun exitEditProfileMoodUpdateUI() {
@@ -621,7 +896,9 @@ class ProfileActivity : AppCompatActivity() {
                 userLastName = p0.child("lastName").value.toString()
                 userInfo = p0.child("userInfo").value.toString()
                 userEmail = p0.child("userEmail").value.toString()
+                privateAccountFlag = p0.child("privateAccount").value as Boolean
 
+                setupAccountPrivacy()
 
                 profileUserNameLabel!!.text = "$userFirstName $userLastName"
                 profileUserInfoLabel!!.text = userInfo
