@@ -1,7 +1,9 @@
 package com.yarinov.ourgoal.goal.comment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.yarinov.ourgoal.R
+import com.yarinov.ourgoal.user.profile.ProfileActivity
 import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
@@ -52,6 +55,13 @@ class CommentAdapter(
 
         holder.timeStampLabel!!.text =
             AdapterUtils().getTimeSincePosted(position, commentsList[position].datePosted)
+
+        //Move to user profile on user's name click
+        holder.userNameLabel!!.setOnClickListener {
+            val moveToUserProfileIntent = Intent(context, ProfileActivity::class.java)
+            moveToUserProfileIntent.putExtra("userId", currentComment.commentUserId)
+            (context as Activity).startActivity(moveToUserProfileIntent)
+        }
 
     }
 

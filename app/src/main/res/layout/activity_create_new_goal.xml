@@ -177,7 +177,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="13sp"
-            android:text="Button" />
+            android:background="@drawable/create_goal_button"
+            android:fontFamily="@font/lato"
+            android:text="Create New Goal"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
 
     </LinearLayout>
 

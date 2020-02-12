@@ -2,6 +2,7 @@ package com.yarinov.ourgoal.goal
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -26,6 +27,7 @@ import com.yarinov.ourgoal.goal.comment.Comment
 import com.yarinov.ourgoal.goal.comment.CommentAdapter
 import com.yarinov.ourgoal.goal.milestone.GoalMilestone
 import com.yarinov.ourgoal.goal.milestone.MilestoneTitleAdapter
+import com.yarinov.ourgoal.user.profile.ProfileActivity
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,6 +35,8 @@ import kotlin.collections.ArrayList
 
 
 class SingleGoalActivity : AppCompatActivity() {
+
+    var exitSingleGoalIcon:ImageView? = null
 
     var currentGoal: Goal? = null
     var currentGoalMilestoneNumber: Long? = null
@@ -88,6 +92,7 @@ class SingleGoalActivity : AppCompatActivity() {
         commentCountLabel = findViewById(R.id.commentCountLabel)
         commentInputEditText = findViewById(R.id.commentInputEditText)
         sendCommentButton = findViewById(R.id.sendCommentButton)
+        exitSingleGoalIcon = findViewById(R.id.exitSingleGoalIcon)
 
         miniCube = findViewById(R.id.miniCube)
         miniCubeIcon = findViewById(R.id.miniCubeIcon)
@@ -167,6 +172,20 @@ class SingleGoalActivity : AppCompatActivity() {
         }
 
         initUI()
+
+        //On user name in post click -> move to user profile
+        goalUserFullNameLabel!!.setOnClickListener {
+
+            val moveToUserProfileIntent = Intent(this, ProfileActivity::class.java)
+            moveToUserProfileIntent.putExtra("userId", currentGoal!!.userId)
+            startActivity(moveToUserProfileIntent)
+
+        }
+
+        //Exit activity when pressing the X button
+        exitSingleGoalIcon!!.setOnClickListener {
+            finish()
+        }
     }
 
     private fun editGoal() {

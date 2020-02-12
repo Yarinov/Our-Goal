@@ -25,6 +25,7 @@ import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
 import com.yarinov.ourgoal.goal.SingleGoalActivity
 import com.yarinov.ourgoal.goal.milestone.MilestoneTitle
+import com.yarinov.ourgoal.user.profile.ProfileActivity
 import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
@@ -82,6 +83,13 @@ class FeedAdapter(
             moveToSingleGoalIntent.putExtra("currentGoal", currentGoal)
 
             context.startActivity(moveToSingleGoalIntent)
+        }
+
+        //Move to user profile on user's name click
+        holder.userNameLabel!!.setOnClickListener {
+            val moveToUserProfileIntent = Intent(context, ProfileActivity::class.java)
+            moveToUserProfileIntent.putExtra("userId", currentGoal.userId)
+            (context as Activity).startActivity(moveToUserProfileIntent)
         }
 
 

@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageView8"
+            android:id="@+id/closeProfileActivityIcon"
             android:layout_width="20sp"
             android:layout_height="20sp"
             android:layout_gravity="right"

@@ -49,8 +49,12 @@ class AdapterUtils {
         val postedDateDateMonth = postedDateCalendar[Calendar.MONTH]
         val postedDateYear = postedDateCalendar[Calendar.YEAR]
 
-        val postedDateToShow =
+
+        val postedDateToShow = if (postedDateDateMin < 10) {
+            "$postedDateDateHr:0$postedDateDateMin ${getMonthName(postedDateDateMonth)} ${postedDateCalendar[Calendar.DAY_OF_MONTH]} $postedDateYear"
+        } else
             "$postedDateDateHr:$postedDateDateMin ${getMonthName(postedDateDateMonth)} ${postedDateCalendar[Calendar.DAY_OF_MONTH]} $postedDateYear"
+
 
         return if (currentDateYear == postedDateYear) {
             if (currentDateMonth == postedDateDateMonth) {

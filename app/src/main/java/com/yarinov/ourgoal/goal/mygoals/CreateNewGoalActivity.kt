@@ -6,6 +6,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -85,11 +86,12 @@ class CreateNewGoalActivity : AppCompatActivity() {
         createGoalButton?.setOnClickListener {
             createGoal()
         }
+
     }
 
     private fun deleteMilestone() {
 
-        //REmove the last item
+        //Remove the last item
         currentGoalMilestones?.removeAt(currentMilestoneNumber - 1)
 
         //Update the adapter with the latest change

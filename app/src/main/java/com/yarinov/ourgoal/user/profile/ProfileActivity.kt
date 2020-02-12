@@ -39,6 +39,8 @@ class ProfileActivity : AppCompatActivity() {
     var defaultLayout: LinearLayout? = null
     var editLayout: CardView? = null
 
+    var closeProfileActivityIcon: ImageView? = null
+
     var userInProfileId: String? = null
     var currentUserProfileFlag: Boolean? = null
 
@@ -85,8 +87,8 @@ class ProfileActivity : AppCompatActivity() {
     var inEditProfileMoodFlag = false
     //Name section
     var currentUserFullNameInEditProfileMoodLabel: TextView? = null
-    var currentUserFirstNameInEditProfileMoodEditView: TextView? = null
-    var currentUserLastNameInEditProfileMoodEditView: TextView? = null
+    var currentUserFirstNameInEditProfileMoodEditView: EditText? = null
+    var currentUserLastNameInEditProfileMoodEditView: EditText? = null
     var nameEditLayout: LinearLayout? = null
     var changeNameEditLayout: LinearLayout? = null
     var changeNameButton: Button? = null
@@ -129,6 +131,8 @@ class ProfileActivity : AppCompatActivity() {
 
         defaultLayout = findViewById(R.id.defaultLayout)
         editLayout = findViewById(R.id.editLayout)
+
+        closeProfileActivityIcon = findViewById(R.id.closeProfileActivityIcon)
 
         profileUserNameLabel = findViewById(R.id.profileUserNameLabel)
         profileUserInfoLabel = findViewById(R.id.profileUserInfoLabel)
@@ -222,6 +226,8 @@ class ProfileActivity : AppCompatActivity() {
         editProfileLabel!!.setOnClickListener {
             editProfileMood()
         }
+
+        closeProfileActivityIcon!!.setOnClickListener { onBackPressed() }
     }
 
     private fun setupAccountPrivacy() {
@@ -241,6 +247,8 @@ class ProfileActivity : AppCompatActivity() {
         var changePasswordFlag = false
 
         if (!inEditProfileMoodFlag) {
+
+            editProfileLabel!!.text = "Finish Edit Profile"
 
             enterEditProfileMoodUpdateUI()
 
@@ -296,6 +304,12 @@ class ProfileActivity : AppCompatActivity() {
                     //Close 'Chane name' section
                     fadeOutView(changeNameEditLayout!!)
 
+                    //clear text from editview
+                    currentUserFirstNameInEditProfileMoodEditView!!.text.clear()
+                    currentUserLastNameInEditProfileMoodEditView!!.text.clear()
+
+                    hideKeypad()
+
                     false
                 }
 
@@ -350,6 +364,8 @@ class ProfileActivity : AppCompatActivity() {
                         currentUserInfoInEditProfileMoodLabel!!
                     )
 
+                    hideKeypad()
+
                     changeInfoFlag = false
                 }
 
@@ -399,6 +415,11 @@ class ProfileActivity : AppCompatActivity() {
                 } else {
 
                     fadeOutView(changeEmailEditLayout!!)
+
+                    //clear emile editView
+                    currentUserEmailInEditProfileMoodEditView!!.text.clear()
+
+                    hideKeypad()
 
                     changeEmailFlag = false
                 }
@@ -473,6 +494,13 @@ class ProfileActivity : AppCompatActivity() {
 
                     fadeOutView(changePasswordEditLayout!!)
 
+                    hideKeypad()
+
+                    //Clear all editViews
+                    changePasswordCurrentPasswordEditView!!.text.clear()
+                    changePasswordNewPasswordEditView!!.text.clear()
+                    changePasswordReNewPasswordEditView!!.text.clear()
+
                     changePasswordFlag = false
                 }
             }
@@ -519,6 +547,8 @@ class ProfileActivity : AppCompatActivity() {
         } else {
 
             exitEditProfileMoodUpdateUI()
+
+            editProfileLabel!!.text = "Edit Profile"
 
             inEditProfileMoodFlag = false
 
@@ -905,8 +935,6 @@ class ProfileActivity : AppCompatActivity() {
 
                 //Set full name and info in edit profile mood
                 currentUserFullNameInEditProfileMoodLabel!!.text = "$userFirstName $userLastName"
-                currentUserFirstNameInEditProfileMoodEditView!!.text = userFirstName
-                currentUserLastNameInEditProfileMoodEditView!!.text = userLastName
 
                 currentUserInfoInEditProfileMoodLabel!!.text = userInfo
                 currentUserInfoInEditProfileMoodEditView!!.setText(userInfo)
@@ -1057,5 +1085,28 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    override fun onBackPressed() {
+
+        if (inEditProfileMoodFlag) {
+
+            val exitEditMoodDialog = AlertDialog.Builder(this)
+            exitEditMoodDialog.setMessage("Any Change Without Saving Will Be Lost, You Still Want To Exit Edit Profile?")
+                .setPositiveButton(
+                    "Yes",
+                    DialogInterface.OnClickListener { dialog, which ->
+
+                        //Exit edit profile mood
+                        editProfileMood()
+
+                    }).setNegativeButton(
+                    "No",
+                    null
+                )
+
+            exitEditMoodDialog.create().show()
+        }else
+            super.onBackPressed()
     }
 }

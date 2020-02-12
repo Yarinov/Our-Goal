@@ -43,7 +43,7 @@
                 android:textSize="22sp" />
 
             <ImageView
-                android:id="@+id/imageView7"
+                android:id="@+id/exitSingleGoalIcon"
                 android:layout_width="20sp"
                 android:layout_height="20sp"
                 android:layout_margin="17sp"
