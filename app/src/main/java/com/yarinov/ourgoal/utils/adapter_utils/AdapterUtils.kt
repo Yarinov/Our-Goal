@@ -147,7 +147,7 @@ class AdapterUtils {
         val storage = FirebaseStorage.getInstance()
 
         val gsReference =
-            storage.getReferenceFromUrl("gs://ourgoal-ebee9.appspot.com/users/profile_pic/$userId.jpg")
+            storage.getReferenceFromUrl("gs://ourgoal-ebee9.appspot.com/users/profile_pic/$userId")
 
         gsReference.downloadUrl
             .addOnSuccessListener {

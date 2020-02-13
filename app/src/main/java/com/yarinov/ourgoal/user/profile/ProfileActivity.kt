@@ -2,11 +2,14 @@ package com.yarinov.ourgoal.user.profile
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
@@ -28,6 +31,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.suke.widget.SwitchButton
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
@@ -85,6 +90,14 @@ class ProfileActivity : AppCompatActivity() {
 
     //Edit Profile Mood
     var inEditProfileMoodFlag = false
+    var changeProfileImageIcon: ImageView? = null
+    var imageUri: Uri? = null
+    val PICK_IMAGE = 22
+    //Edit Mood flags
+    var changeNameFlag = false
+    var changeInfoFlag = false
+    var changeEmailFlag = false
+    var changePasswordFlag = false
     //Name section
     var currentUserFullNameInEditProfileMoodLabel: TextView? = null
     var currentUserFirstNameInEditProfileMoodEditView: EditText? = null
@@ -115,9 +128,14 @@ class ProfileActivity : AppCompatActivity() {
     var privacySwitchButton: SwitchButton? = null
     var privateAccountFlag: Boolean? = null
 
+    var mStorage: StorageReference? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+
+        //the users profile pic storage reference
+        mStorage = FirebaseStorage.getInstance().reference
 
         var userAchievementCardView = findViewById<CardView>(R.id.userAchievementCardView)
 
@@ -149,6 +167,7 @@ class ProfileActivity : AppCompatActivity() {
         followStatusSection = findViewById(R.id.followStatusSection)
 
         //Edit profile mood
+        changeProfileImageIcon = findViewById(R.id.changeProfileImageIcon)
         //Name section
         currentUserFullNameInEditProfileMoodLabel =
             findViewById(R.id.currentUserFullNameInEditProfileMoodLabel)
@@ -240,11 +259,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun editProfileMood() {
-
-        var changeNameFlag = false
-        var changeInfoFlag = false
-        var changeEmailFlag = false
-        var changePasswordFlag = false
 
         if (!inEditProfileMoodFlag) {
 
@@ -505,8 +519,6 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
 
-
-
             privacySwitchButton!!.setOnCheckedChangeListener { view, isChecked ->
 
                 val alertDialogString =
@@ -542,6 +554,9 @@ class ProfileActivity : AppCompatActivity() {
                 }
             }
 
+            //change profile image
+            changeProfileImageIcon!!.setOnClickListener { uploadProfileImage() }
+
             inEditProfileMoodFlag = true
 
         } else {
@@ -554,6 +569,49 @@ class ProfileActivity : AppCompatActivity() {
 
         }
 
+
+    }
+
+    private fun selectImage() {
+        var picIntent = Intent()
+        picIntent.type = "image/*"
+        picIntent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(picIntent, "Choose Photo"), PICK_IMAGE)
+
+
+    }
+
+    private fun uploadImageToDB() {
+
+        if (imageUri != null){
+
+
+            var imageDBRef = mStorage!!.child("users/profile_pic/${currentUser!!.uid}")
+
+            imageDBRef.putFile(imageUri!!)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Profile Image Upload: Done.", Toast.LENGTH_SHORT).show()
+            }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Profile Image Upload: Failed.", Toast.LENGTH_SHORT).show()
+                }
+
+        }
+    }
+
+    private fun uploadProfileImage() { selectImage() }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PICK_IMAGE
+            && resultCode == RESULT_OK
+            && data != null
+            && data.data != null
+        ) {
+            imageUri = data.data
+            uploadImageToDB()
+        }
 
     }
 
@@ -620,6 +678,9 @@ class ProfileActivity : AppCompatActivity() {
                     super.onAnimationEnd(animation)
                     editLayout!!.visibility = View.GONE
 
+                    //hide Edit Profile Icon
+                    fadeOutView(changeProfileImageIcon!!)
+
                     defaultLayout!!.visibility = View.VISIBLE
                     defaultLayout!!.alpha = 0.0f
 
@@ -647,6 +708,9 @@ class ProfileActivity : AppCompatActivity() {
                     editLayout!!.animate()
                         .alpha(1.0f)
                         .setListener(null)
+
+                    //show Edit Profile Icon
+                    fadeInView(changeProfileImageIcon!!)
                 }
             })
 
@@ -1091,22 +1155,26 @@ class ProfileActivity : AppCompatActivity() {
 
         if (inEditProfileMoodFlag) {
 
-            val exitEditMoodDialog = AlertDialog.Builder(this)
-            exitEditMoodDialog.setMessage("Any Change Without Saving Will Be Lost, You Still Want To Exit Edit Profile?")
-                .setPositiveButton(
-                    "Yes",
-                    DialogInterface.OnClickListener { dialog, which ->
+            if (changeNameFlag || changeInfoFlag || changeEmailFlag || changePasswordFlag){
 
-                        //Exit edit profile mood
-                        editProfileMood()
+                val exitEditMoodDialog = AlertDialog.Builder(this)
+                exitEditMoodDialog.setMessage("Any Change Without Saving Will Be Lost, You Still Want To Exit Edit Profile?")
+                    .setPositiveButton(
+                        "Yes",
+                        DialogInterface.OnClickListener { dialog, which ->
 
-                    }).setNegativeButton(
-                    "No",
-                    null
-                )
+                            //Exit edit profile mood
+                            editProfileMood()
 
-            exitEditMoodDialog.create().show()
-        }else
+                        }).setNegativeButton(
+                        "No",
+                        null
+                    )
+
+                exitEditMoodDialog.create().show()
+            }
+
+        } else
             super.onBackPressed()
     }
 }

@@ -1,12 +1,15 @@
 package com.yarinov.ourgoal.feed
 
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,6 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 class HomeFragment : Fragment() {
 
     var profileImage: CircleImageView? = null
+    var userLogoutIcon: ImageView? = null
 
     var feedRecyclerView: RecyclerView? = null
     var feedAdapter: FeedAdapter? = null
@@ -56,6 +60,7 @@ class HomeFragment : Fragment() {
         profileImage = homeView.findViewById(R.id.profileImage)
         feedRecyclerView = homeView.findViewById(R.id.feedRecyclerView)
         swipeContainer = homeView.findViewById(R.id.swipeContainer)
+        userLogoutIcon = homeView.findViewById(R.id.userLogoutIcon)
 
         currentFeedUsersIdList = ArrayList()
         currentFeedGoalsList = ArrayList()
@@ -88,7 +93,23 @@ class HomeFragment : Fragment() {
         swipeContainer!!.setProgressBackgroundColor(R.color.colorPrimary)
         swipeContainer!!.setColorSchemeColors(Color.WHITE)
 
+        //user logout
+        userLogoutIcon!!.setOnClickListener { userLogout()}
         return homeView
+    }
+
+    private fun userLogout() {
+
+        val logoutAlert = AlertDialog.Builder(context as Activity)
+        logoutAlert.setMessage("Are you sure?")
+            .setPositiveButton("Logout") { _, _ ->
+                FirebaseAuth.getInstance().signOut()
+                (context as Activity).finish()
+
+            }.setNegativeButton("Cancel", null)
+
+        logoutAlert.create().show()
+
     }
 
     private fun fetchFeedAsync() {
@@ -108,7 +129,7 @@ class HomeFragment : Fragment() {
         val storage = FirebaseStorage.getInstance()
 
         val gsReference =
-            storage.getReferenceFromUrl("gs://ourgoal-ebee9.appspot.com/users/profile_pic/${currentUser!!.uid}.jpg")
+            storage.getReferenceFromUrl("gs://ourgoal-ebee9.appspot.com/users/profile_pic/${currentUser!!.uid}")
 
         gsReference.downloadUrl
             .addOnSuccessListener {

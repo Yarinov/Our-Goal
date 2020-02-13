@@ -21,14 +21,31 @@
             android:tint="@color/colorPrimary"
             app:srcCompat="@drawable/deny_ic" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profileImage"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/default_user_ic"
-            app:civ_border_color="@color/colorPrimaryDark"
-            app:civ_border_width="3dp" />
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImage"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:src="@drawable/default_user_ic"
+                app:civ_border_color="@color/colorPrimaryDark"
+                app:civ_border_width="3dp" />
+
+            <ImageView
+                android:id="@+id/changeProfileImageIcon"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                android:layout_gravity="bottom"
+                android:tint="@color/colorPrimary"
+                android:visibility="gone"
+                app:srcCompat="@drawable/edit_goal_ic" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/profileUserNameLabel"

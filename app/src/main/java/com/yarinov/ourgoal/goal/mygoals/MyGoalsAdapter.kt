@@ -2,6 +2,7 @@ package com.yarinov.ourgoal.goal.mygoals
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.google.firebase.database.ValueEventListener
 import com.shuhart.stepview.StepView
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
+import com.yarinov.ourgoal.goal.SingleGoalActivity
 import com.yarinov.ourgoal.goal.milestone.MilestoneTitle
 import com.yarinov.ourgoal.utils.adapter_utils.AdapterUtils
 import java.util.*
@@ -48,6 +50,15 @@ class MyGoalsAdapter(
 
         holder.goalTitleLabel!!.text = currentGoal.goalTitle
         holder.goalDescriptionLabel!!.text = currentGoal.goalDescription
+
+        //On goal click move to single goal activity
+        holder.itemView.setOnClickListener {
+            val moveToSingleGoalIntent = Intent(context, SingleGoalActivity::class.java)
+
+            moveToSingleGoalIntent.putExtra("currentGoal", currentGoal)
+
+            context.startActivity(moveToSingleGoalIntent)
+        }
 
 
         //Get Comments Count

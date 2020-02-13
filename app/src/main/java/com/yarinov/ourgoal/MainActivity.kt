@@ -68,17 +68,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        minimizeApp()
+    }
 
-        val alert = AlertDialog.Builder(this@MainActivity)
-        alert.setMessage("Are you sure?")
-            .setPositiveButton("Logout") { _, _ ->
-                FirebaseAuth.getInstance().signOut()
-                finish()
-            }.setNegativeButton("Cancel", null)
+    private fun minimizeApp() {
 
-        alert.create().show()
-
-
+        val startMain = Intent(Intent.ACTION_MAIN)
+        startMain.addCategory(Intent.CATEGORY_HOME)
+        startMain.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(startMain)
     }
 
 

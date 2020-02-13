@@ -371,7 +371,7 @@ class SingleGoalActivity : AppCompatActivity() {
         val storage = FirebaseStorage.getInstance()
 
         val gsReference =
-            storage.getReferenceFromUrl("gs://ourgoal-ebee9.appspot.com/users/profile_pic/${currentGoal!!.userId}.jpg")
+            storage.getReferenceFromUrl("gs://ourgoal-ebee9.appspot.com/users/profile_pic/${currentGoal!!.userId}")
 
         gsReference.downloadUrl
             .addOnSuccessListener {
