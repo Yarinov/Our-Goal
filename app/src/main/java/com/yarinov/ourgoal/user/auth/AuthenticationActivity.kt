@@ -8,6 +8,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.facebook.FacebookButtonBase
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -15,6 +16,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -25,6 +27,8 @@ import com.yarinov.ourgoal.user.User
 
 
 class AuthenticationActivity : AppCompatActivity() {
+
+    var a: FacebookButtonBase? = null
 
 
     var loginMainLayout: LinearLayout? = null
@@ -100,11 +104,6 @@ class AuthenticationActivity : AppCompatActivity() {
             emailAndPasswordLoginToApp()
         }
 
-        //login with google
-        googleSignInIcon!!.setOnClickListener {
-            googleLogin()
-        }
-
         //Create Account
         createAccountButton!!.setOnClickListener {
             signup()
@@ -128,6 +127,30 @@ class AuthenticationActivity : AppCompatActivity() {
             .build()
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        //login with google
+        googleSignInIcon!!.setOnClickListener {
+            googleLogin()
+        }
+
+        //Twitter login setup
+        //login with twitter
+        twitterSignInIcon!!.setOnClickListener {
+            twitterLogin()
+        }
+
+    }
+
+    private fun twitterLogin() {
+
+        val twitterProvider = OAuthProvider.newBuilder("twitter.com")
+
+        mAuth!!.startActivityForSignInWithProvider(this, twitterProvider.build())
+            .addOnSuccessListener {
+                checkForExistingUserAndLogin()
+            }.addOnFailureListener {
+            Toast.makeText(this, "Auth Failed", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun googleLogin() {
@@ -161,63 +184,8 @@ class AuthenticationActivity : AppCompatActivity() {
         mAuth!!.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    val user = mAuth!!.currentUser
 
-                    //Check if user already exits
-                    val userExistFlag =
-                        FirebaseDatabase.getInstance().reference.child("users/${user!!.uid}")
-
-                    userExistFlag.addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onCancelled(p0: DatabaseError) {}
-
-                        override fun onDataChange(p0: DataSnapshot) {
-                            //If this is a new user, add his data to users DB
-                            if (!p0.exists()) {
-
-                                //Get user first and last name
-                                val userNameArray = user.displayName!!.split(" ")
-
-                                var userFirstName: String
-                                var userLastName: String
-
-                                when (userNameArray.size) {
-                                    1 -> {
-                                        userFirstName = userNameArray[0]
-                                        userLastName = ""
-                                    }
-                                    2 -> {
-                                        userFirstName = userNameArray[0]
-                                        userLastName = userNameArray[1]
-                                    }
-                                    else -> {
-
-                                        userFirstName = "${userNameArray[0]} ${userNameArray[1]}"
-                                        userLastName = userNameArray[userNameArray.size - 1]
-                                    }
-                                }
-
-                                var newUser = User(
-                                    user.uid,
-                                    user.email.toString(),
-                                    userFirstName,
-                                    userLastName
-                                )
-
-                                rootDB!!.getReference("users/${newUser.userId}").setValue(newUser)
-                                rootDB!!.getReference("users/${newUser.userId}/privateAccount")
-                                    .setValue(false)
-                            }
-
-
-                            val toMainActivityIntent =
-                                Intent(this@AuthenticationActivity, MainActivity::class.java)
-                            startActivity(toMainActivityIntent)
-                        }
-
-                    })
-
-
+                    checkForExistingUserAndLogin()
                 } else {
                     // If sign in fails, display a message to the user.
                     Toast.makeText(this, "Auth Failed", Toast.LENGTH_SHORT).show()
@@ -225,6 +193,67 @@ class AuthenticationActivity : AppCompatActivity() {
 
                 // ...
             }
+    }
+
+    private fun checkForExistingUserAndLogin() {
+
+        // Sign in success, update UI with the signed-in user's information
+        val user = mAuth!!.currentUser
+
+        //Check if user already exits
+        val userExistFlag =
+            FirebaseDatabase.getInstance().reference.child("users/${user!!.uid}")
+
+        userExistFlag.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(p0: DataSnapshot) {
+                //If this is a new user, add his data to users DB
+                if (!p0.exists()) {
+
+                    //Get user first and last name
+                    val userNameArray = user.displayName!!.split(" ")
+
+                    var userFirstName: String
+                    var userLastName: String
+
+                    when (userNameArray.size) {
+                        1 -> {
+                            userFirstName = userNameArray[0]
+                            userLastName = ""
+                        }
+                        2 -> {
+                            userFirstName = userNameArray[0]
+                            userLastName = userNameArray[1]
+                        }
+                        else -> {
+
+                            userFirstName = "${userNameArray[0]} ${userNameArray[1]}"
+                            userLastName = userNameArray[userNameArray.size - 1]
+                        }
+                    }
+
+                    var newUser = User(
+                        user.uid,
+                        user.email.toString(),
+                        userFirstName,
+                        userLastName
+                    )
+
+                    rootDB!!.getReference("users/${newUser.userId}").setValue(newUser)
+                    rootDB!!.getReference("users/${newUser.userId}/privateAccount")
+                        .setValue(false)
+                }
+
+
+                val toMainActivityIntent =
+                    Intent(this@AuthenticationActivity, MainActivity::class.java)
+                startActivity(toMainActivityIntent)
+            }
+
+        })
+
+
     }
 
     private fun emailAndPasswordLoginToApp() {
