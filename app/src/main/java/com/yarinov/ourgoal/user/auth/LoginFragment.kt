@@ -35,13 +35,10 @@ class LoginFragment : Fragment() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        emailInput = loginFragmentView.findViewById(R.id.emailInput)
-        passwordInput = loginFragmentView.findViewById(R.id.passwordInput)
-        loginButton = loginFragmentView.findViewById(R.id.loginButton)
+//        emailInput = loginFragmentView.findViewById(R.id.emailInput)
+//        passwordInput = loginFragmentView.findViewById(R.id.passwordInput)
 
-        loginButton!!.setOnClickListener {
-            loginToApp()
-        }
+
 
         return loginFragmentView
     }

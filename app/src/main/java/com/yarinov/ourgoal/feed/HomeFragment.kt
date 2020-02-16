@@ -25,6 +25,7 @@ import com.google.firebase.storage.StorageException
 import com.squareup.picasso.Picasso
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.goal.Goal
+import com.yarinov.ourgoal.user.auth.AuthenticationActivity
 import com.yarinov.ourgoal.user.profile.ProfileActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -94,7 +95,7 @@ class HomeFragment : Fragment() {
         swipeContainer!!.setColorSchemeColors(Color.WHITE)
 
         //user logout
-        userLogoutIcon!!.setOnClickListener { userLogout()}
+        userLogoutIcon!!.setOnClickListener { userLogout() }
         return homeView
     }
 
@@ -103,7 +104,14 @@ class HomeFragment : Fragment() {
         val logoutAlert = AlertDialog.Builder(context as Activity)
         logoutAlert.setMessage("Are you sure?")
             .setPositiveButton("Logout") { _, _ ->
+                //signout from firebase
                 FirebaseAuth.getInstance().signOut()
+
+                //go back to login activity
+                val moveToAuthenticationActivityIntent =
+                    Intent(context, AuthenticationActivity::class.java)
+                startActivity(moveToAuthenticationActivityIntent)
+
                 (context as Activity).finish()
 
             }.setNegativeButton("Cancel", null)
