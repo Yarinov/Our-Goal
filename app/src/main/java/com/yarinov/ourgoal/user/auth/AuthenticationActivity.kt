@@ -8,9 +8,17 @@ import android.util.Patterns
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.yarinov.ourgoal.MainActivity
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.user.User
@@ -41,6 +49,17 @@ class AuthenticationActivity : AppCompatActivity() {
     private var passwordEditText: EditText? = null
     private var repasswordEditText: EditText? = null
 
+    //Social login
+    var facebookSignInIcon: ImageView? = null
+    var googleSignInIcon: ImageView? = null
+    var twitterSignInIcon: ImageView? = null
+
+    //Google Login Request Code
+    private val RC_SIGN_IN = 7
+    //Google Sign In Client
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
+
+
     private var createAccountButton: Button? = null
 
     var rootDB: FirebaseDatabase? = null
@@ -60,6 +79,11 @@ class AuthenticationActivity : AppCompatActivity() {
 
         loginButton = findViewById(R.id.loginButton)
 
+        //Social login
+        facebookSignInIcon = findViewById(R.id.facebookSignInIcon)
+        googleSignInIcon = findViewById(R.id.googleSignInIcon)
+        twitterSignInIcon = findViewById(R.id.twitterSignInIcon)
+
         //Signup section init
         rootDB = FirebaseDatabase.getInstance()
         mAuth = FirebaseAuth.getInstance()
@@ -73,7 +97,12 @@ class AuthenticationActivity : AppCompatActivity() {
 
         //login to app
         loginButton!!.setOnClickListener {
-            loginToApp()
+            emailAndPasswordLoginToApp()
+        }
+
+        //login with google
+        googleSignInIcon!!.setOnClickListener {
+            googleLogin()
         }
 
         //Create Account
@@ -90,9 +119,115 @@ class AuthenticationActivity : AppCompatActivity() {
         goToSigninLayout!!.setOnClickListener {
             goToLoginLayout()
         }
+
+        //Google login setup
+        //Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
     }
 
-    private fun loginToApp() {
+    private fun googleLogin() {
+
+        val signInIntent = mGoogleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account!!)
+            } catch (e: ApiException) {
+                // Google Sign In failed, update UI appropriately
+            }
+
+        }
+
+    }
+
+    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
+
+        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
+        mAuth!!.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    val user = mAuth!!.currentUser
+
+                    //Check if user already exits
+                    val userExistFlag =
+                        FirebaseDatabase.getInstance().reference.child("users/${user!!.uid}")
+
+                    userExistFlag.addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onCancelled(p0: DatabaseError) {}
+
+                        override fun onDataChange(p0: DataSnapshot) {
+                            //If this is a new user, add his data to users DB
+                            if (!p0.exists()) {
+
+                                //Get user first and last name
+                                val userNameArray = user.displayName!!.split(" ")
+
+                                var userFirstName: String
+                                var userLastName: String
+
+                                when (userNameArray.size) {
+                                    1 -> {
+                                        userFirstName = userNameArray[0]
+                                        userLastName = ""
+                                    }
+                                    2 -> {
+                                        userFirstName = userNameArray[0]
+                                        userLastName = userNameArray[1]
+                                    }
+                                    else -> {
+
+                                        userFirstName = "${userNameArray[0]} ${userNameArray[1]}"
+                                        userLastName = userNameArray[userNameArray.size - 1]
+                                    }
+                                }
+
+                                var newUser = User(
+                                    user.uid,
+                                    user.email.toString(),
+                                    userFirstName,
+                                    userLastName
+                                )
+
+                                rootDB!!.getReference("users/${newUser.userId}").setValue(newUser)
+                                rootDB!!.getReference("users/${newUser.userId}/privateAccount")
+                                    .setValue(false)
+                            }
+
+
+                            val toMainActivityIntent =
+                                Intent(this@AuthenticationActivity, MainActivity::class.java)
+                            startActivity(toMainActivityIntent)
+                        }
+
+                    })
+
+
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Toast.makeText(this, "Auth Failed", Toast.LENGTH_SHORT).show()
+                }
+
+                // ...
+            }
+    }
+
+    private fun emailAndPasswordLoginToApp() {
 
         var email = emailInput!!.text
         var password = passwordInput!!.text
