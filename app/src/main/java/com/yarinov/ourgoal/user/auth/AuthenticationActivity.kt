@@ -8,7 +8,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.facebook.FacebookButtonBase
+import com.facebook.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,12 +24,13 @@ import com.google.firebase.database.ValueEventListener
 import com.yarinov.ourgoal.MainActivity
 import com.yarinov.ourgoal.R
 import com.yarinov.ourgoal.user.User
+import com.facebook.appevents.AppEventsLogger
+import com.facebook.login.LoginResult
+import com.facebook.login.widget.LoginButton
+import java.util.*
 
 
 class AuthenticationActivity : AppCompatActivity() {
-
-    var a: FacebookButtonBase? = null
-
 
     var loginMainLayout: LinearLayout? = null
     var signupMainLayout: LinearLayout? = null
@@ -137,6 +138,11 @@ class AuthenticationActivity : AppCompatActivity() {
         //login with twitter
         twitterSignInIcon!!.setOnClickListener {
             twitterLogin()
+        }
+
+        //TODO Add facebook login
+        facebookSignInIcon!!.setOnClickListener {
+            Toast.makeText(this, "Coming Soon...", Toast.LENGTH_SHORT).show()
         }
 
     }

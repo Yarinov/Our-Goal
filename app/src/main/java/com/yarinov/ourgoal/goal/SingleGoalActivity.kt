@@ -27,6 +27,8 @@ import com.yarinov.ourgoal.goal.comment.Comment
 import com.yarinov.ourgoal.goal.comment.CommentAdapter
 import com.yarinov.ourgoal.goal.milestone.GoalMilestone
 import com.yarinov.ourgoal.goal.milestone.MilestoneTitleAdapter
+import com.yarinov.ourgoal.user.User
+import com.yarinov.ourgoal.user.mentions_auto_complete.MentionsAutoComplete
 import com.yarinov.ourgoal.user.profile.ProfileActivity
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
@@ -36,7 +38,7 @@ import kotlin.collections.ArrayList
 
 class SingleGoalActivity : AppCompatActivity() {
 
-    var exitSingleGoalIcon:ImageView? = null
+    var exitSingleGoalIcon: ImageView? = null
 
     var currentGoal: Goal? = null
     var currentGoalMilestoneNumber: Long? = null
@@ -79,6 +81,8 @@ class SingleGoalActivity : AppCompatActivity() {
     var changedGoalTitleFlag: Boolean = false
     var changedGoalDescriptionFlag: Boolean = false
 
+    var mentionsAutoComplete: MentionsAutoComplete? = null
+    var mentionUsersIdList: ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -186,7 +190,77 @@ class SingleGoalActivity : AppCompatActivity() {
         exitSingleGoalIcon!!.setOnClickListener {
             finish()
         }
+
+        //Setup mention edit view
+        getUsersToMention()
+
+
     }
+
+    private fun getUsersToMention() {
+
+        mentionUsersIdList = ArrayList()
+
+        val goalCommentsDB = FirebaseDatabase.getInstance()
+            .reference.child("comments/${currentGoal!!.userId}/goals/${currentGoal!!.goalId}/usersInCommentSection")
+
+        val getUsersIdInCommentSectionListener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {}
+
+            override fun onDataChange(p0: DataSnapshot) {
+
+                //If there is a users who already comment in this goal -> Add the ids to the list
+                if (p0.exists()) {
+
+                    for (userId in p0.children) {
+
+                        if (userId.key.toString() != currentUser!!.uid)
+                            mentionUsersIdList!!.add(userId.key.toString())
+                    }
+                }
+
+                //add all current user friends to the list
+                getCurrentUserFriendsToMentionList()
+            }
+
+            private fun getCurrentUserFriendsToMentionList() {
+
+                val currentUserConnectionDB =
+                    FirebaseDatabase.getInstance()
+                        .reference.child("connections/${currentUser!!.uid}/friends")
+
+                val getFriendsIdListener = object : ValueEventListener {
+                    override fun onCancelled(p0: DatabaseError) {}
+
+                    override fun onDataChange(p0: DataSnapshot) {
+
+                        if (p0.exists()) {//If user have friends -> Add each id to the list and pass the list to convert them to User object
+
+                            for (friendId in p0.children)
+                                mentionUsersIdList!!.add(friendId.key.toString())
+                        }
+
+                        //Setup the auto complete with the editView
+                        mentionsAutoComplete = MentionsAutoComplete(
+                            currentUser!!.uid,
+                            currentGoal!!,
+                            commentInputEditText!!,
+                            mentionUsersIdList!!,
+                            this@SingleGoalActivity
+                        )
+                    }
+
+                }
+
+                currentUserConnectionDB.addListenerForSingleValueEvent(getFriendsIdListener)
+            }
+
+        }
+
+        goalCommentsDB.addListenerForSingleValueEvent(getUsersIdInCommentSectionListener)
+
+    }
+
 
     private fun editGoal() {
 
@@ -498,7 +572,13 @@ class SingleGoalActivity : AppCompatActivity() {
                 //Move to last comment posted
                 commentsRecyclerView!!.smoothScrollToPosition(commentsArrayList!!.size)
 
+                //Add user to 'Users In Current Comment Section' list
+                FirebaseDatabase.getInstance()
+                    .reference.child("comments/${currentGoal!!.userId}/goals/${currentGoal!!.goalId}/usersInCommentSection/${currentUser!!.uid}")
+                    .setValue(true)
             }
+
+
     }
 
     private fun initUI() {

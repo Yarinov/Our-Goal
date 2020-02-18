@@ -75,6 +75,9 @@ dependencies {
     //Google auth
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
     implementation 'com.google.android.gms:play-services-drive:17.0.0'
+
+    //Multi Auto Complete(For @)
+    implementation 'com.otaliastudios:autocomplete:1.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -12,144 +12,161 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary"
-        android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
 
-        <TextView
-            android:id="@+id/textView24"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30sp"
-            android:layout_marginRight="15sp"
-            android:layout_marginBottom="50sp"
-            android:fontFamily="@font/lato_bold"
-            android:gravity="right"
-            android:text="Sign Up!"
-            android:textColor="@color/white"
-            android:textSize="36sp" />
+            android:layout_height="wrap_content">
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20sp"
-            app:cardCornerRadius="10sp">
+            <ImageView
+                android:id="@+id/imageView20"
+                android:layout_width="210sp"
+                android:layout_height="90sp"
+                android:layout_gravity="right"
+                app:srcCompat="@drawable/signup_white_circle" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/textView24"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10sp"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/firstNameEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:layout_marginRight="5sp"
-                    android:layout_marginBottom="10sp"
-                    android:ems="10"
-                    android:fontFamily="@font/lato"
-                    android:hint="First Name"
-                    android:inputType="textPersonName"
-                    android:textColor="@color/colorPrimaryDark" />
-
-                <EditText
-                    android:id="@+id/lastNameEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:layout_marginRight="5sp"
-                    android:layout_marginBottom="10sp"
-                    android:ems="10"
-                    android:fontFamily="@font/lato"
-                    android:hint="Last Name"
-                    android:inputType="textPersonName"
-                    android:textColor="@color/colorPrimaryDark" />
-
-                <EditText
-                    android:id="@+id/emailEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:layout_marginRight="5sp"
-                    android:layout_marginBottom="10sp"
-                    android:ems="10"
-                    android:fontFamily="@font/lato"
-                    android:hint="Email "
-                    android:inputType="textEmailAddress"
-                    android:textColor="@color/colorPrimaryDark" />
-
-                <EditText
-                    android:id="@+id/passwordEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:layout_marginRight="5sp"
-                    android:layout_marginBottom="10sp"
-                    android:ems="10"
-                    android:fontFamily="@font/lato"
-                    android:hint="Password"
-                    android:inputType="textPassword"
-                    android:textColor="@color/colorPrimaryDark" />
-
-                <EditText
-                    android:id="@+id/repasswordEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:layout_marginRight="5sp"
-                    android:layout_marginBottom="10sp"
-                    android:ems="10"
-                    android:fontFamily="@font/lato"
-                    android:hint="Re-enter Password"
-                    android:inputType="textPassword"
-                    android:textColor="@color/colorPrimaryDark" />
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <Button
-            android:id="@+id/createAccountButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25sp"
-            android:layout_marginRight="25sp"
-            android:layout_marginBottom="10sp"
-            android:background="@drawable/rounded_primary_button"
-            android:backgroundTint="@color/white"
-            android:fontFamily="@font/lato_bold"
-            android:text="Create Account"
-            android:textColor="@color/colorPrimary" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                android:layout_marginRight="15sp"
+                android:fontFamily="@font/lato"
+                android:gravity="right"
+                android:text="Sign Up!"
+                android:textColor="@color/colorPrimary"
+                android:textSize="36sp" />
+        </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/goToSigninLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_margin="30sp"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView19"
-                android:layout_width="wrap_content"
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/lato"
-                android:gravity="center"
-                android:text="Already A Member?"
-                android:textColor="@color/white"
-                android:textSize="17sp" />
+                android:layout_margin="20sp"
+                app:cardCornerRadius="10sp">
 
-            <TextView
-                android:id="@+id/textView23"
-                android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10sp"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/firstNameEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5sp"
+                        android:layout_marginRight="5sp"
+                        android:layout_marginBottom="10sp"
+                        android:ems="10"
+                        android:fontFamily="@font/lato"
+                        android:hint="First Name"
+                        android:inputType="textPersonName"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                    <EditText
+                        android:id="@+id/lastNameEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5sp"
+                        android:layout_marginRight="5sp"
+                        android:layout_marginBottom="10sp"
+                        android:ems="10"
+                        android:fontFamily="@font/lato"
+                        android:hint="Last Name"
+                        android:inputType="textPersonName"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                    <EditText
+                        android:id="@+id/emailEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5sp"
+                        android:layout_marginRight="5sp"
+                        android:layout_marginBottom="10sp"
+                        android:ems="10"
+                        android:fontFamily="@font/lato"
+                        android:hint="Email "
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                    <EditText
+                        android:id="@+id/passwordEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5sp"
+                        android:layout_marginRight="5sp"
+                        android:layout_marginBottom="10sp"
+                        android:ems="10"
+                        android:fontFamily="@font/lato"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                    <EditText
+                        android:id="@+id/repasswordEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5sp"
+                        android:layout_marginRight="5sp"
+                        android:layout_marginBottom="10sp"
+                        android:ems="10"
+                        android:fontFamily="@font/lato"
+                        android:hint="Re-enter Password"
+                        android:inputType="textPassword"
+                        android:textColor="@color/colorPrimaryDark" />
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/createAccountButton"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4sp"
+                android:layout_marginLeft="25sp"
+                android:layout_marginRight="25sp"
+                android:layout_marginBottom="10sp"
+                android:background="@drawable/rounded_primary_button"
+                android:backgroundTint="@color/white"
                 android:fontFamily="@font/lato_bold"
-                android:text="Login"
-                android:textColor="@color/white"
-                android:textSize="17sp" />
+                android:text="Create Account"
+                android:textColor="@color/colorPrimary" />
+
+            <LinearLayout
+                android:id="@+id/goToSigninLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="30sp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView19"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/lato"
+                    android:gravity="center"
+                    android:text="Already A Member?"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/textView23"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4sp"
+                    android:fontFamily="@font/lato_bold"
+                    android:text="Login"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
